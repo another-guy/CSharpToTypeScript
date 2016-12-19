@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace TsModelGen.TargetNamespace
 {
@@ -8,7 +9,13 @@ namespace TsModelGen.TargetNamespace
 
         public int Age;
 
-        public List<Address> Addresses { get; set; }
+        public IList Addresses1 { get; set; }
+        public IEnumerable Addresses2 { get; set; }
+        public List<Address> Addresses3 { get; set; }
+        public Address[] Addresses4 { get; set; }
+        public ISet<Address> Addresses5 { get; set; }
+        public IList<Address> Addresses6 { get; set; }
+        public IEnumerable<Address> Addresses7 { get; set; }
 
         public Address DefaultAddress;
 

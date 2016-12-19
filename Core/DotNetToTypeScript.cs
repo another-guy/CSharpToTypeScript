@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -85,21 +86,55 @@ namespace TsModelGen.Core
         {
             var fullTypeName = propertyInfoPropertyType.FullName;
 
+            // Primitive types
             string specificTypeName;
             if (DotNetToTypeScriptType.Mapping.TryGetValue(fullTypeName, out specificTypeName))
                 return specificTypeName;
 
+            // Previously processed type
             ProcessingInfo processingInfo;
             if (_processingContext.TryGetValue(fullTypeName, out processingInfo))
                 return GeneratedType.Name(processingInfo.Type.Name);
 
-            if (propertyInfoPropertyType.IsConstructedGenericType && propertyInfoPropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                return GenerateTypeReference(propertyInfoPropertyType.GetGenericArguments().First());
             
-            // TODO Handle nullables
-            // TODO Handle generics
-            // TODO Handle collections
+            // TODO Test this part
+            // Dictionary types
+            if (
+                propertyInfoPropertyType.GetInterfaces().Contains(typeof(IDictionary)) ||
+                propertyInfoPropertyType.GetInterfaces().Contains(typeof(IDictionary<,>))
+            )
+            {
+                // TODO May want to handle in more detals branching on   propertyInfoPropertyType.IsConstructedGenericType
+                return "any";
+            }
 
+            // Array types
+            if (propertyInfoPropertyType.GetInterfaces().Contains(typeof(IEnumerable)))
+            {
+                if (propertyInfoPropertyType.IsConstructedGenericType)
+                {
+                    var generatedTypeName = GenerateTypeReference(propertyInfoPropertyType.GetGenericArguments().First());
+                    return $"{generatedTypeName}[]";
+                }
+                else if (propertyInfoPropertyType.IsArray)
+                {
+                    var generatedTypeName = GenerateTypeReference(propertyInfoPropertyType.GetElementType());
+                    return $"{generatedTypeName}[]";
+                }
+                else
+                    return "any[]";
+            }
+
+            // Generic type
+            if (propertyInfoPropertyType.IsConstructedGenericType)
+            {
+                if (propertyInfoPropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    return GenerateTypeReference(propertyInfoPropertyType.GetGenericArguments().First());
+                
+                // TODO Handle complex generics
+            }
+
+            // Unrecognized type
             return "any";
         }
 
