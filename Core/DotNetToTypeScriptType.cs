@@ -26,6 +26,7 @@ namespace TsModelGen.Core
                     {typeof(sbyte).FullName, "number"},
                     {typeof(float).FullName, "number"},
                     {typeof(double).FullName, "number"},
+                    {typeof(decimal).FullName, "number"},
 
                     {typeof(bool).FullName, "boolean"},
 
