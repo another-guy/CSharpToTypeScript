@@ -7,6 +7,7 @@ using System.Text;
 
 namespace TsModelGen.Core
 {
+    // TODO Fundamental issue: How to get assembly metadata without loading it into AppDomain? If loaded, how to unload? Does AppDomain exist in Net Core?
     public sealed class DotNetToTypeScript
     {
         private readonly Dictionary<string, ProcessingInfo> _processingContext;
@@ -14,6 +15,16 @@ namespace TsModelGen.Core
         public DotNetToTypeScript(IEnumerable<string> targetNameSpaces)
         {
             _processingContext = GetTargetModelTypes(targetNameSpaces);
+        }
+
+        private static Dictionary<string, ProcessingInfo> GetTargetModelTypes(IEnumerable<string> targetNameSpaces)
+        {
+            // TODO Assembly list can be a parameter
+            return Assembly
+                .GetEntryAssembly()
+                .DefinedTypes
+                .Where(typeInfo => targetNameSpaces.Any(@namespace => typeInfo.Namespace.StartsWith(@namespace)))
+                .ToDictionary(typeInfo => typeInfo.FullName, ProcessingInfo.ForPassedType);
         }
 
         public string Translate(ushort totalIterationLimit = 32)
@@ -34,15 +45,6 @@ namespace TsModelGen.Core
             }
             
             return AllGeneratedTypesAsText();
-        }
-
-        private static Dictionary<string, ProcessingInfo> GetTargetModelTypes(IEnumerable<string> targetNameSpaces)
-        {
-            return Assembly
-                .GetEntryAssembly()
-                .DefinedTypes
-                .Where(typeInfo => targetNameSpaces.Any(@namespace => typeInfo.Namespace.StartsWith(@namespace)))
-                .ToDictionary(typeInfo => typeInfo.FullName, ProcessingInfo.ForPassedType);
         }
 
         private void GenerateTypescriptModel(ProcessingInfo processInfo)
