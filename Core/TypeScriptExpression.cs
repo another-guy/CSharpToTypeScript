@@ -6,13 +6,13 @@ namespace TsModelGen.Core
     {
         public static string ClassNameExpression(string generatedTypeName)
         {
-            return $"export class {generatedTypeName}";
+            return $"export class {generatedTypeName} ";
         }
 
         public static string InheritedTypeExpression(TypeInfo parentType)
         {
             var generatedParentTypeName = GeneratedType.Name(parentType.BaseType.Name);
-            return $" extends {generatedParentTypeName} ";
+            return $"extends {generatedParentTypeName} ";
         }
 
         public static string StartClassBodyExpression()

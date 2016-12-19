@@ -88,6 +88,8 @@ namespace TsModelGen.Core
         {
             var fullTypeName = propertyInfoPropertyType.FullName;
 
+            // TODO Move this to a separate class that uses Chain of Responsibility to do the job
+
             // Primitive types
             string specificTypeName;
             if (Map.DotNetToTypeScriptType.TryGetValue(fullTypeName, out specificTypeName))

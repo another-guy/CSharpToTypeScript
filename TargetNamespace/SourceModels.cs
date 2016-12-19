@@ -18,8 +18,10 @@ namespace TsModelGen.TargetNamespace
         public IEnumerable<Address> Addresses7 { get; set; }
 
         public Address DefaultAddress;
+        public IDictionary SomeDictionary;
 
-        public int? Identifier;
+        public int? NullableInt;
+        public bool? NullableBool;
     }
 
     public class Employee : Person
