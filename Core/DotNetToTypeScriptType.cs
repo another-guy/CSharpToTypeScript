@@ -14,28 +14,33 @@ namespace TsModelGen.Core
                 // * primitive types to their TS direct translations
                 () => new Dictionary<string, string>
                 {
-                    {typeof(object).FullName, "any"},
+                    {NameOf<object>(), "any"},
 
-                    {typeof(short).FullName, "number"},
-                    {typeof(int).FullName, "number"},
-                    {typeof(long).FullName, "number"},
-                    {typeof(ushort).FullName, "number"},
-                    {typeof(uint).FullName, "number"},
-                    {typeof(ulong).FullName, "number"},
-                    {typeof(byte).FullName, "number"},
-                    {typeof(sbyte).FullName, "number"},
-                    {typeof(float).FullName, "number"},
-                    {typeof(double).FullName, "number"},
-                    {typeof(decimal).FullName, "number"},
+                    {NameOf<short>(), "number"},
+                    {NameOf<int>(), "number"},
+                    {NameOf<long>(), "number"},
+                    {NameOf<ushort>(), "number"},
+                    {NameOf<uint>(), "number"},
+                    {NameOf<ulong>(), "number"},
+                    {NameOf<byte>(), "number"},
+                    {NameOf<sbyte>(), "number"},
+                    {NameOf<float>(), "number"},
+                    {NameOf<double>(), "number"},
+                    {NameOf<decimal>(), "number"},
 
-                    {typeof(bool).FullName, "boolean"},
+                    {NameOf<bool>(), "boolean"},
 
-                    {typeof(string).FullName, "string"},
+                    {NameOf<string>(), "string"},
 
-                    {typeof(DateTime).FullName, "boolean"}
+                    {NameOf<DateTime>(), "boolean"}
 
-                    // { typeof(char).FullName, "any" },
-                    // { typeof(TimeSpan).FullName, "boolean" },
+                    // { char -> ??? },
+                    // { TimeSpan -> ??? },
                 });
+
+        private static string NameOf<T>()
+        {
+            return typeof(T).FullName;
+        }
     }
 }
