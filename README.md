@@ -1,0 +1,2 @@
+# TsModelGen
+POC for TsModelGeneration
