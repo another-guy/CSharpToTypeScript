@@ -84,6 +84,7 @@ namespace TsModelGen.Core
         private string GenerateTypeReference(Type propertyInfoPropertyType)
         {
             var fullTypeName = propertyInfoPropertyType.FullName;
+
             string specificTypeName;
             if (DotNetToTypeScriptType.Mapping.TryGetValue(fullTypeName, out specificTypeName))
                 return specificTypeName;
@@ -92,6 +93,9 @@ namespace TsModelGen.Core
             if (_processingContext.TryGetValue(fullTypeName, out processingInfo))
                 return GeneratedType.Name(processingInfo.Type.Name);
 
+            if (propertyInfoPropertyType.IsConstructedGenericType && propertyInfoPropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                return GenerateTypeReference(propertyInfoPropertyType.GetGenericArguments().First());
+            
             // TODO Handle nullables
             // TODO Handle generics
             // TODO Handle collections

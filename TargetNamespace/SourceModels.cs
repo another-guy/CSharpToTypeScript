@@ -11,6 +11,8 @@ namespace TsModelGen.TargetNamespace
         public List<Address> Addresses { get; set; }
 
         public Address DefaultAddress;
+
+        public int? Identifier;
     }
 
     public class Employee : Person
