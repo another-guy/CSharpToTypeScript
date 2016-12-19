@@ -6,29 +6,30 @@ using System.Text;
 
 namespace TsModelGen.Core
 {
-    public class DotNetToTypeScript
+    public sealed class DotNetToTypeScript
     {
-        private Dictionary<string, ProcessingInfo> _processingContext;
+        private readonly Dictionary<string, ProcessingInfo> _processingContext;
 
-        public string Translate(IEnumerable<string> targetNameSpaces)
+        public DotNetToTypeScript(IEnumerable<string> targetNameSpaces)
         {
             _processingContext = GetTargetModelTypes(targetNameSpaces);
+        }
 
+        public string Translate(ushort totalIterationLimit = 32)
+        {
             var iteration = 1;
             while (true)
             {
-                if (iteration >= 32) throw new InvalidOperationException("Too many iteration have passed. We seem to be in an infinite loop. Time to crash...");
+                if (iteration++ >= totalIterationLimit) throw new StopTranslationException();
 
-                var processInfos = _processingContext
+                var typesWithoutTranslatedDefinitions = _processingContext
                     .Where(pair => string.IsNullOrWhiteSpace(pair.Value.GeneratedDefinition))
                     .ToList();
 
-                if (processInfos.Count <= 0) break;
+                if (typesWithoutTranslatedDefinitions.Count <= 0) break;
 
-                foreach (var processInfo in processInfos)
-                    GenerateTypescriptModel(processInfo.Value);
-
-                iteration += 1;
+                foreach (var typeEntry in typesWithoutTranslatedDefinitions)
+                    GenerateTypescriptModel(typeEntry.Value);
             }
             
             return AllGeneratedTypesAsText();
@@ -47,28 +48,28 @@ namespace TsModelGen.Core
         {
             var type = processInfo.Type;
 
-            var generatedTypeName = GeneratedTypeNameFromShortName(type.Name);
+            var generatedTypeName = GeneratedType.Name(type.Name);
 
             var sb = new StringBuilder();
-            sb.Append($"export class {generatedTypeName}");
+            sb.Append(TypeScriptExpression.ClassNameExpression(generatedTypeName));
 
             if (type.BaseType.FullName != "System.Object")
-                sb.Append($" extends {GeneratedTypeNameFromShortName(type.BaseType.Name)} ");
+                sb.Append(TypeScriptExpression.InheritedTypeExpression(type));
 
-            sb.AppendLine($" {{");
+            sb.AppendLine(TypeScriptExpression.StartClassBodyExpression());
 
             foreach (var serializableMember in GetTranslatableMembers(processInfo))
             {
-                var fieldName = serializableMember.Item1;
-                var fieldType = GenerateTypeReference(serializableMember.Item2);
-                sb.AppendLine($"  public {fieldName}: {fieldType};");
+                var memberName = serializableMember.Item1;
+                var memberType = GenerateTypeReference(serializableMember.Item2);
+                sb.AppendLine(TypeScriptExpression.MemberDefinitionExpression(memberName, memberType));
             }
 
-            sb.AppendLine($"}}");
-            var generatedDefinition = sb.ToString();
+            sb.AppendLine(TypeScriptExpression.EndClassBodyExpression());
 
-            processInfo.SaveGeneratedDefinition(generatedTypeName, generatedDefinition);
+            processInfo.SaveGeneratedDefinition(generatedTypeName, generatedDefinition: sb.ToString());
         }
+
 
         private static IEnumerable<Tuple<string, Type>> GetTranslatableMembers(ProcessingInfo processInfo)
         {
@@ -89,7 +90,7 @@ namespace TsModelGen.Core
 
             ProcessingInfo processingInfo;
             if (_processingContext.TryGetValue(fullTypeName, out processingInfo))
-                return GeneratedTypeNameFromShortName(processingInfo.Type.Name);
+                return GeneratedType.Name(processingInfo.Type.Name);
 
             // TODO Handle nullables
             // TODO Handle generics
@@ -100,14 +101,7 @@ namespace TsModelGen.Core
 
         private string AllGeneratedTypesAsText()
         {
-            return _processingContext
-                .Values
-                .Aggregate("", (result, processingInfo) => result + processingInfo.GeneratedDefinition + "\n");
-        }
-
-        private static string GeneratedTypeNameFromShortName(string typeName)
-        {
-            return $"{typeName}Generated";
+            return _processingContext.Values.Aggregate("", (result, processingInfo) => $"{result}{processingInfo.GeneratedDefinition}\n");
         }
     }
 }

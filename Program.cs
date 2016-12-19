@@ -12,7 +12,7 @@ namespace TsModelGen
             // TODO Translate into a list of namespaces, types, rules on types (such as 
             var targetNameSpace = "TsModelGen.TargetNamespace";
 
-            var generatedText = new DotNetToTypeScript().Translate(new[] {targetNameSpace});
+            var generatedText = new DotNetToTypeScript(new[] { targetNameSpace }).Translate();
 
             Console.WriteLine(generatedText);
             Console.ReadKey();
