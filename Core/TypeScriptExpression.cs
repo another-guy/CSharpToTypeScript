@@ -20,9 +20,9 @@ namespace TsModelGen.Core
             return "{";
         }
 
-        public static string MemberDefinitionExpression(string memberName, string memberType)
+        public static string MemberDefinitionExpression(string memberName, string memberType, string sourceType)
         {
-            return $"  public {memberName}: {memberType};";
+            return $"  public {memberName}: {memberType}; // {sourceType}";
         }
 
         public static string EndClassBodyExpression()

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace TsModelGen.Core
 {
-    public static class DotNetToTypeScriptType
+    public static class Map
     {
-        public static Dictionary<string, string> Mapping => MappingLazy.Value;
+        public static Dictionary<string, string> DotNetToTypeScriptType => DotNetToTypeScriptTypeLazy.Value;
 
-        private static readonly Lazy<Dictionary<string, string>> MappingLazy =
+        private static readonly Lazy<Dictionary<string, string>> DotNetToTypeScriptTypeLazy =
             new Lazy<Dictionary<string, string>>(
                 // Simple cases:
                 // * object -> any

@@ -26,6 +26,7 @@ namespace TsModelGen.TargetNamespace
     {
         public bool IsSubscribedToNews;
         public decimal Salary { get; set; }
+        public IDictionary<string, Address> SpecialAddresses { get; set; }
     }
 
     public class Address

@@ -64,15 +64,15 @@ namespace TsModelGen.Core
             foreach (var serializableMember in GetTranslatableMembers(processInfo))
             {
                 var memberName = serializableMember.Item1;
-                var memberType = GenerateTypeReference(serializableMember.Item2);
-                sb.AppendLine(TypeScriptExpression.MemberDefinitionExpression(memberName, memberType));
+                var sourceType = serializableMember.Item2;
+                var generatedType = GenerateTypeReference(sourceType);
+                sb.AppendLine(TypeScriptExpression.MemberDefinitionExpression(memberName, generatedType, HumanFriendly(sourceType)));
             }
 
             sb.AppendLine(TypeScriptExpression.EndClassBodyExpression());
 
             processInfo.SaveGeneratedDefinition(generatedTypeName, generatedDefinition: sb.ToString());
         }
-
 
         private static IEnumerable<Tuple<string, Type>> GetTranslatableMembers(ProcessingInfo processInfo)
         {
@@ -90,7 +90,7 @@ namespace TsModelGen.Core
 
             // Primitive types
             string specificTypeName;
-            if (DotNetToTypeScriptType.Mapping.TryGetValue(fullTypeName, out specificTypeName))
+            if (Map.DotNetToTypeScriptType.TryGetValue(fullTypeName, out specificTypeName))
                 return specificTypeName;
 
             // Previously processed type
@@ -102,8 +102,8 @@ namespace TsModelGen.Core
             // TODO Test this part
             // Dictionary types
             if (
-                propertyInfoPropertyType.GetInterfaces().Contains(typeof(IDictionary)) ||
-                propertyInfoPropertyType.GetInterfaces().Contains(typeof(IDictionary<,>))
+                propertyInfoPropertyType.Is(typeof(IDictionary)) ||
+                propertyInfoPropertyType.Is(typeof(IDictionary<,>))
             )
             {
                 // TODO May want to handle in more detals branching on   propertyInfoPropertyType.IsConstructedGenericType
@@ -111,7 +111,7 @@ namespace TsModelGen.Core
             }
 
             // Array types
-            if (propertyInfoPropertyType.GetInterfaces().Contains(typeof(IEnumerable)))
+            if (propertyInfoPropertyType.Is(typeof(IEnumerable)))
             {
                 if (propertyInfoPropertyType.IsConstructedGenericType)
                 {
@@ -140,9 +140,32 @@ namespace TsModelGen.Core
             return "any";
         }
 
+        private string HumanFriendly(Type sourceType)
+        {
+            var baseTypeName = sourceType.Name;
+            var genericTypeArguments = "";
+
+            if (sourceType.IsConstructedGenericType)
+            {
+                baseTypeName = baseTypeName.Substring(0, baseTypeName.Length - 2);
+
+                var typeList = sourceType
+                    .GenericTypeArguments
+                    .Select(HumanFriendly)
+                    .Aggregate((result, type) => result + ", " + type);
+                genericTypeArguments = $"<{typeList}>";
+            }
+            
+            return $"{sourceType.Namespace}.{baseTypeName}{genericTypeArguments}";
+        }
+
         private string AllGeneratedTypesAsText()
         {
-            return _processingContext.Values.Aggregate("", (result, processingInfo) => $"{result}{processingInfo.GeneratedDefinition}\n");
+            var preamble = $"// These TypeScript definitions are generated from .NET classes.\n" +
+                           $"// Any direct changes to these definition will be lost when the code is regenerated.";
+            var generatedText =
+                _processingContext.Values.Aggregate("", (result, processingInfo) => $"{result}{processingInfo.GeneratedDefinition}\n");
+            return $"{preamble}\n\n{generatedText}";
         }
     }
 }
