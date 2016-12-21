@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TsModelGen", "TsModelGen.xproj", "{61637CC8-23B5-4E82-9572-764639D6959D}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TsModelGen", "TsModelGen\TsModelGen.xproj", "{61637CC8-23B5-4E82-9572-764639D6959D}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DemoBuildStep", "DemoBuildStep\DemoBuildStep.xproj", "{59F9CB87-8E40-4B6F-9A2D-5D0A3D969A61}"
 EndProject
