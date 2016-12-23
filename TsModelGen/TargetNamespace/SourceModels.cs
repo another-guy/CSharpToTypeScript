@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TsModelGen.NonTargetNamespace;
+using TsModelGen.TargetNamespace;
 
-namespace TsModelGen.TargetNamespace
+namespace TsModelGen.NonTargetNamespace
 {
     public class Person
     {
         public string FirstName { get; set; }
-
         public int Age;
-
         public IList Addresses1 { get; set; }
         public IEnumerable Addresses2 { get; set; }
         public List<Address> Addresses3 { get; set; }
@@ -19,11 +19,13 @@ namespace TsModelGen.TargetNamespace
 
         public Address DefaultAddress;
         public IDictionary SomeDictionary;
-
         public int? NullableInt;
         public bool? NullableBool;
     }
+}
 
+namespace TsModelGen.TargetNamespace
+{
     public class Employee : Person
     {
         public bool IsSubscribedToNews;
@@ -33,6 +35,13 @@ namespace TsModelGen.TargetNamespace
 
     public class Address
     {
+        public Kind Kind { get; set; }
         public string Street { get; set; }
+    }
+
+    public enum Kind
+    {
+        Domestic,
+        International
     }
 }

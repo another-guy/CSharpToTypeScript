@@ -1,5 +1,6 @@
 ﻿using System;
 using TsModelGen.Core;
+using TsModelGen.Core.Targets;
 
 namespace TsModelGen
 {
@@ -12,9 +13,10 @@ namespace TsModelGen
             // TODO Translate into a list of namespaces, types, rules on types (such as 
             var targetNameSpace = "TsModelGen.TargetNamespace";
 
-            var generatedText = new DotNetToTypeScript(new[] { targetNameSpace }).Translate();
+            new ClosureBuilder().Build(targetNameSpace);
 
-            Console.WriteLine(generatedText);
+            // var generatedText = new DotNetToTypeScript(new[] { targetNameSpace }).Translate();
+            // Console.WriteLine(generatedText);
             Console.ReadKey();
         }
     }
