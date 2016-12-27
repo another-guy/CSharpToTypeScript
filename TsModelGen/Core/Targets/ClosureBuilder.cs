@@ -8,19 +8,23 @@ namespace TsModelGen.Core.Targets
 {
     public sealed class ClosureBuilder
     {
+        private static Func<TypeInfo, bool> GetTypeFilterForNamespace(IEnumerable<string> targetNameSpaces)
+        {
+             return typeInfo =>
+                targetNameSpaces.Any(n => typeInfo.Namespace.StartsWith(n));
+        }
+
+        private static readonly Func<ITypeTranslationContext, bool> UnprocessedTypeTranslationContext =
+            typeContext => typeContext.IsProcessed == false;
+
         public object Build(string @namespace)
         {
             IEnumerable<string> targetNameSpaces = new[] { @namespace }; // TODO Make a parameter
 
-            Func<TypeInfo, bool> typeFilter =
-                typeInfo => targetNameSpaces.Any(n => typeInfo.Namespace.StartsWith(n));
-
-            var translationContext = CreateTranslationContext(typeFilter);
+            var translationContext = CreateTranslationContext(GetTypeFilterForNamespace(targetNameSpaces));
 
             ITypeTranslationContext unprocessed;
-            Func<ITypeTranslationContext, bool> predicate =
-                typeContext => typeContext.IsProcessed == false;
-            while ((unprocessed = translationContext.FirstOrDefault(predicate)) != null)
+            while ((unprocessed = translationContext.FirstOrDefault(UnprocessedTypeTranslationContext)) != null)
                 unprocessed.ResolveDependencies();
             
             // iterate through serializable members of every unvisited type in graph
