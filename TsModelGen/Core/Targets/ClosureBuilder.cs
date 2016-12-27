@@ -48,6 +48,7 @@ namespace TsModelGen.Core.Targets
 
     public sealed class TranslationContext : IEnumerable<ITypeTranslationContext>
     {
+        // TODO Make this dynamic -- let clients alter the chain to fit their need
         private IList<ITypeTranslationContext> TranslationChain { get; } =
             new List<ITypeTranslationContext>();
 
@@ -159,7 +160,9 @@ namespace TsModelGen.Core.Targets
 
             {
                 var baseType = Type.BaseType;
-                if (baseType != null)
+                if (baseType != typeof(object) &&
+                    baseType != typeof(ValueType) &&
+                    baseType != typeof(Enum))
                 {
                     var parentTypeInfo = baseType.GetTypeInfo();
                     Metadata.BaseType = new SourceParentInfo(parentTypeInfo);
@@ -170,7 +173,8 @@ namespace TsModelGen.Core.Targets
 
         private void EnsureTypeWillBeResolved(TypeInfo typeInfo)
         {
-            if (GlobalContext.CanProcess(typeInfo) == false)
+            var noTypeTranslationContextRegistered = GlobalContext.CanProcess(typeInfo) == false;
+            if (noTypeTranslationContextRegistered)
                 GlobalContext.Add(typeInfo);
         }
     }

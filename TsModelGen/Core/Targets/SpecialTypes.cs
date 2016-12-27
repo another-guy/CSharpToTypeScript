@@ -11,6 +11,7 @@ namespace TsModelGen.Core.Targets
         {
             new Dummy(typeof(IDictionary)),
             new Dummy(typeof(IDictionary<,>)),
+            new Dummy(typeof(IEnumerable)),
             new Dummy(typeof(IEnumerable<>)),
             new Dummy(typeof(Nullable<>))
         };
@@ -28,7 +29,7 @@ namespace TsModelGen.Core.Targets
 
         public bool CanProcess(Type type)
         {
-            throw new NotImplementedException();
+            return type.IsChildTypeOfPossiblyOpenGeneric(Type.AsType());
         }
         public bool IsProcessed => true;
         public void ResolveDependencies()

@@ -104,8 +104,8 @@ namespace TsModelGen.Core
             // TODO Test this part
             // Dictionary types
             if (
-                propertyInfoPropertyType.Is(typeof(IDictionary)) ||
-                propertyInfoPropertyType.Is(typeof(IDictionary<,>))
+                propertyInfoPropertyType.IsChildTypeOf(typeof(IDictionary)) ||
+                propertyInfoPropertyType.IsChildTypeOfPossiblyOpenGeneric(typeof(IDictionary<,>))
             )
             {
                 // TODO May want to handle in more detals branching on   propertyInfoPropertyType.IsConstructedGenericType
@@ -113,7 +113,7 @@ namespace TsModelGen.Core
             }
 
             // Array types
-            if (propertyInfoPropertyType.Is(typeof(IEnumerable)))
+            if (propertyInfoPropertyType.IsChildTypeOf(typeof(IEnumerable)))
             {
                 if (propertyInfoPropertyType.IsConstructedGenericType)
                 {
