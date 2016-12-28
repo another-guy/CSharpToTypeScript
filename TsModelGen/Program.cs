@@ -13,7 +13,11 @@ namespace TsModelGen
             // TODO Translate into a list of namespaces, types, rules on types (such as 
             var targetNameSpace = "TsModelGen.TargetNamespace";
 
-            new ClosureBuilder().Build(targetNameSpace);
+            var translationContext = new TranslationContextBuilder().Build(targetNameSpace);
+
+            foreach (var typeTranslationContext in translationContext)
+                if (typeTranslationContext.IsProcessed == false)
+                    typeTranslationContext.Process();
 
             // var generatedText = new DotNetToTypeScript(new[] { targetNameSpace }).Translate();
             // Console.WriteLine(generatedText);
