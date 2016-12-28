@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using TsModelGen.Core;
 using TsModelGen.Core.Targets;
 
@@ -19,8 +20,12 @@ namespace TsModelGen
                 if (typeTranslationContext.IsProcessed == false)
                     typeTranslationContext.Process();
 
-            // var generatedText = new DotNetToTypeScript(new[] { targetNameSpace }).Translate();
-            // Console.WriteLine(generatedText);
+            var generatedCode = translationContext
+                .Select(typeContext => typeContext.TranslatedTypeMetadata.Definition)
+                .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
+                .ToList();
+
+            Console.WriteLine(generatedCode);
             Console.ReadKey();
         }
     }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace TsModelGen.Core.Targets
 {
@@ -109,99 +110,6 @@ namespace TsModelGen.Core.Targets
         TranslatedTypeMetadata TranslatedTypeMetadata { get; }
     }
 
-    public sealed class DirectTypeTranslationContext : ITypeTranslationContext
-    {
-        public DirectTypeTranslationContext(TypeInfo type, string symbol)
-        {
-            Type = type.NullToException(new ArgumentNullException(nameof(type)));
-
-            TranslatedTypeMetadata.Symbol = symbol;
-        }
-
-        public TypeInfo Type { get; }
-
-        public bool AreDependenciesResolved => true;
-        public void ResolveDependencies() { }
-
-        public bool CanProcess(Type type)
-        {
-            return Type.AsType() == type;
-        }
-        public bool IsProcessed => true;
-
-        public void Process() { }
-        public TranslatedTypeMetadata TranslatedTypeMetadata { get; } = new TranslatedTypeMetadata();
-    }
-
-    public sealed class RegularTypeTranslationContext : ITypeTranslationContext
-    {
-        public RegularTypeTranslationContext(ITypeRegistry translationContext, TypeInfo typeInfo)
-        {
-            if (translationContext == null) throw new ArgumentNullException(nameof(translationContext));
-            if (typeInfo == null) throw new ArgumentNullException(nameof(typeInfo));
-            TypeInfo = typeInfo;
-            GlobalContext = translationContext;
-        }
-
-        public TypeInfo TypeInfo { get; }
-        private ITypeRegistry GlobalContext { get; }
-        public string Id => TypeInfo.AssemblyQualifiedName;
-        private SourceTypeMetadata SourceTypeMetadata { get; } = new SourceTypeMetadata();
-
-
-        public bool AreDependenciesResolved { get; private set; } = false;
-
-        public void ResolveDependencies()
-        {
-            AreDependenciesResolved = true;
-            
-            const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
-            foreach (var propertyInfo in TypeInfo.GetProperties(flags))
-            {
-                SourceTypeMetadata[propertyInfo.Name] = new SourceMemberInfo(propertyInfo);
-                EnsureTypeWillBeResolved(propertyInfo.PropertyType.GetTypeInfo());
-            }
-
-            foreach (var fieldInfo in TypeInfo.GetFields(flags))
-            {
-                SourceTypeMetadata[fieldInfo.Name] = new SourceMemberInfo(fieldInfo);
-                EnsureTypeWillBeResolved(fieldInfo.FieldType.GetTypeInfo());
-            }
-
-            {
-                var baseType = TypeInfo.BaseType;
-                if (baseType != typeof(object) &&
-                    baseType != typeof(ValueType) &&
-                    baseType != typeof(Enum))
-                {
-                    var parentTypeInfo = baseType.GetTypeInfo();
-                    SourceTypeMetadata.BaseType = new SourceParentInfo(parentTypeInfo);
-                    EnsureTypeWillBeResolved(parentTypeInfo);
-                }
-            }
-        }
-
-        private void EnsureTypeWillBeResolved(TypeInfo typeInfo)
-        {
-            var noTypeTranslationContextRegistered = GlobalContext.CanProcess(typeInfo) == false;
-            if (noTypeTranslationContextRegistered)
-                GlobalContext.AddTypeTranslationContextForType(typeInfo);
-        }
-
-        public bool CanProcess(Type type)
-        {
-            return TypeInfo.AsType() == type;
-        }
-
-        public bool IsProcessed { get; } = false;
-
-        public void Process()
-        {
-            throw new NotImplementedException();
-        }
-        public TranslatedTypeMetadata TranslatedTypeMetadata { get; } = new TranslatedTypeMetadata();
-    }
-
     public sealed class SourceTypeMetadata
     {
         private IDictionary<string, SourceMemberInfo> MembersSourceInfo { get; } =
@@ -296,23 +204,47 @@ namespace TsModelGen.Core.Targets
         public static readonly List<ITypeTranslationContext> AllProcessors = new List<ITypeTranslationContext>
         {
             // TODO Replace DummySpecialTranslationType with specific entity type translation object
-            new DummySpecialTranslationType(typeof(Enum)),
-            new DummySpecialTranslationType(typeof(ValueType)),
+            new DummySpecialTranslationType(typeof(Enum), "?ENUM?"), // Not ok
+            new DummySpecialTranslationType(typeof(ValueType), "?valuetype?"), // Not ok
 
-            new DummySpecialTranslationType(typeof(IDictionary)),
-            new DummySpecialTranslationType(typeof(IDictionary<,>)),
-            new DummySpecialTranslationType(typeof(IEnumerable)),
-            new DummySpecialTranslationType(typeof(IEnumerable<>)),
-            new DummySpecialTranslationType(typeof(Nullable<>))
+            new DummySpecialTranslationType(typeof(IDictionary), "any"), // Ok
+            new DummySpecialTranslationType(typeof(IDictionary<,>), "any"), // Can be better, if we discover types
+            new DummySpecialTranslationType(typeof(IEnumerable), "any[]"), // Not ok, make strongly typed
+            new DummySpecialTranslationType(typeof(IEnumerable<>), "any[]"), // Not ok, make strongly typed
+            new DummySpecialTranslationType(typeof(Nullable<>), "any") // Not ok, make strongly typed
         };
+    }
+
+    public sealed class DirectTypeTranslationContext : ITypeTranslationContext
+    {
+        public DirectTypeTranslationContext(TypeInfo type, string symbol)
+        {
+            Type = type.NullToException(new ArgumentNullException(nameof(type)));
+
+            TranslatedTypeMetadata.Symbol = symbol;
+        }
+
+        public TypeInfo Type { get; }
+
+        public bool AreDependenciesResolved => true;
+        public void ResolveDependencies() { }
+
+        public bool CanProcess(Type type)
+        {
+            return Type.AsType() == type;
+        }
+        public bool IsProcessed => true;
+
+        public void Process() { }
+        public TranslatedTypeMetadata TranslatedTypeMetadata { get; } = new TranslatedTypeMetadata();
     }
 
     public sealed class DummySpecialTranslationType : ITypeTranslationContext
     {
-        public DummySpecialTranslationType(Type type)
+        public DummySpecialTranslationType(Type type, string symbol)
         {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-            Type = type.GetTypeInfo();
+            Type = type.NullToException(new ArgumentNullException(nameof(type))).GetTypeInfo();
+            TranslatedTypeMetadata.Symbol = symbol.NullToException(new ArgumentNullException(nameof(symbol)));
         }
 
         public TypeInfo Type { get; }
@@ -326,9 +258,99 @@ namespace TsModelGen.Core.Targets
         }
         public bool IsProcessed => true;
 
+        public void Process() { }
+        public TranslatedTypeMetadata TranslatedTypeMetadata { get; } = new TranslatedTypeMetadata();
+    }
+
+    public sealed class RegularTypeTranslationContext : ITypeTranslationContext
+    {
+        public RegularTypeTranslationContext(TranslationContext translationContext, TypeInfo typeInfo)
+        {
+            GlobalContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
+            TypeInfo = typeInfo.NullToException(new ArgumentNullException(nameof(typeInfo)));
+        }
+
+        public TypeInfo TypeInfo { get; }
+        private TranslationContext GlobalContext { get; }
+        public string Id => TypeInfo.AssemblyQualifiedName;
+        private SourceTypeMetadata SourceTypeMetadata { get; } = new SourceTypeMetadata();
+
+
+        public bool AreDependenciesResolved { get; private set; } = false;
+
+        public void ResolveDependencies()
+        {
+            AreDependenciesResolved = true;
+
+            const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+            foreach (var propertyInfo in TypeInfo.GetProperties(flags))
+            {
+                SourceTypeMetadata[propertyInfo.Name] = new SourceMemberInfo(propertyInfo);
+                EnsureTypeWillBeResolved(propertyInfo.PropertyType.GetTypeInfo());
+            }
+
+            foreach (var fieldInfo in TypeInfo.GetFields(flags))
+            {
+                SourceTypeMetadata[fieldInfo.Name] = new SourceMemberInfo(fieldInfo);
+                EnsureTypeWillBeResolved(fieldInfo.FieldType.GetTypeInfo());
+            }
+
+            {
+                var baseType = TypeInfo.BaseType;
+                if (baseType != typeof(object) &&
+                    baseType != typeof(ValueType) &&
+                    baseType != typeof(Enum))
+                {
+                    var parentTypeInfo = baseType.GetTypeInfo();
+                    SourceTypeMetadata.BaseType = new SourceParentInfo(parentTypeInfo);
+                    EnsureTypeWillBeResolved(parentTypeInfo);
+                }
+            }
+        }
+
+        private void EnsureTypeWillBeResolved(TypeInfo typeInfo)
+        {
+            var noTypeTranslationContextRegistered = GlobalContext.CanProcess(typeInfo) == false;
+            if (noTypeTranslationContextRegistered)
+                GlobalContext.AddTypeTranslationContextForType(typeInfo);
+        }
+
+        public bool CanProcess(Type type)
+        {
+            return TypeInfo.AsType() == type;
+        }
+
+        public bool IsProcessed { get; private set; } = false;
+
         public void Process()
         {
-            // TODO populate TranslatedTypeMetadata
+            IsProcessed = true; // Prevent from reevaluation on reentry in case of circular type references.
+
+            TranslatedTypeMetadata.Symbol = $"{TypeInfo.Name}Generated"; // TODO Replace with symbol generation rule (from global context)
+
+            var sb = new StringBuilder();
+
+            // TODO Class case only now, think of interfaces
+            sb.Append($"export class {TranslatedTypeMetadata.Symbol}");
+            if (this.SourceTypeMetadata.BaseType != null)
+            {
+                var typeTranslationContext = GlobalContext
+                    .First(x => x.CanProcess(this.SourceTypeMetadata.BaseType.ParentInfo.AsType()));
+
+                if (typeTranslationContext.IsProcessed == false)
+                    typeTranslationContext.Process();
+
+                var baseTypeSymbol = typeTranslationContext.TranslatedTypeMetadata.Symbol;
+                sb.Append($" extends {baseTypeSymbol}");
+            }
+            sb.AppendLine($" {{");
+            //foreach (var VARIABLE in SourceTypeMetadata.)
+            //{
+                
+            //}
+            sb.AppendLine($"}}");
+            
+            TranslatedTypeMetadata.Definition = sb.ToString();
         }
         public TranslatedTypeMetadata TranslatedTypeMetadata { get; } = new TranslatedTypeMetadata();
     }
