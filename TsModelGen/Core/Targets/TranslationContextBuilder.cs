@@ -18,20 +18,12 @@ namespace TsModelGen.Core.Targets
 
     public sealed class TranslationContextBuilder
     {
-        private static Func<TypeInfo, bool> GetTypeFilterForNamespace(IEnumerable<string> targetNameSpaces)
-        {
-             return typeInfo =>
-                targetNameSpaces.Any(n => typeInfo.Namespace.StartsWith(n));
-        }
-
         private static readonly Func<ITypeTranslationContext, bool> WithUnresolvedDependencies =
             typeContext => typeContext.AreDependenciesResolved == false;
 
-        public TranslationContext Build(string @namespace)
+        public TranslationContext Build(IEnumerable<TypeInfo> translationTargetTypes)
         {
-            IEnumerable<string> targetNameSpaces = new[] { @namespace }; // TODO Make a parameter
-
-            var translationContext = CreateTranslationContext(GetTypeFilterForNamespace(targetNameSpaces));
+            var translationContext = CreateTranslationContext(translationTargetTypes);
 
             ITypeTranslationContext unprocessed;
             while ((unprocessed = translationContext.FirstOrDefault(WithUnresolvedDependencies)) != null)
@@ -40,20 +32,14 @@ namespace TsModelGen.Core.Targets
             return translationContext;
         }
 
-        private TranslationContext CreateTranslationContext(Func<TypeInfo, bool> typePredicateIsMet)
+        private TranslationContext CreateTranslationContext(IEnumerable<TypeInfo> translationTargetTypes)
         {
             var translationContext = new TranslationContext();
-            foreach (var sourceType in RootTypesFromAllAssemblies().Where(typePredicateIsMet))
+            foreach (var sourceType in translationTargetTypes)
                 translationContext.AddTypeTranslationContextForType(sourceType);
             return translationContext;
         }
 
-        private IEnumerable<TypeInfo> RootTypesFromAllAssemblies()
-        {
-            var emptyResult = (IEnumerable<TypeInfo>)new List<TypeInfo>();
-            return new[] {Assembly.GetEntryAssembly().DefinedTypes} // TODO More assemblies to load here
-                .Aggregate(emptyResult, (result, typees) => result.Concat(typees));
-        }
     }
 
     public sealed class TranslationContext : ITypeRegistry, ITypeTranslationEnumerable
@@ -364,7 +350,7 @@ namespace TsModelGen.Core.Targets
 
                 var name = sourceMemberInfo.MemberInfo.Name;
 
-                var type = (sourceMemberInfo.MemberInfo as PropertyInfo)?.PropertyType
+                var type = ((sourceMemberInfo.MemberInfo as PropertyInfo)?.PropertyType)
                     .NullTo((sourceMemberInfo.MemberInfo as FieldInfo)?.FieldType)
                     .NullToException(new InvalidOperationException("Oooops!!!"));
 
