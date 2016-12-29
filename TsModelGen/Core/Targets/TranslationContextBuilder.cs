@@ -344,7 +344,7 @@ namespace TsModelGen.Core.Targets
             var sb = new StringBuilder();
 
             // TODO Class case only now, think of interfaces
-            sb.Append($"export class {_translatedTypeMetadata.Symbol}");
+            sb.Append(TypeScriptExpression.ClassNameExpression(_translatedTypeMetadata.Symbol));
             if (SourceTypeMetadata.BaseType != null)
             {
                 var baseTypeType = SourceTypeMetadata.BaseType.ParentInfo.AsType();
@@ -353,10 +353,10 @@ namespace TsModelGen.Core.Targets
                 var translatedBaseTypeMetadata = typeTranslationContext.Process(baseTypeType);
 
                 var baseTypeSymbol = translatedBaseTypeMetadata.Symbol;
-                sb.Append($" extends {baseTypeSymbol}");
+                sb.Append(TypeScriptExpression.InheritedClassExpression(baseTypeSymbol));
             }
 
-            sb.AppendLine($" {{");
+            sb.Append(TypeScriptExpression.StartClassBodyExpression());
 
             foreach (var memberName in SourceTypeMetadata.Members)
             {
@@ -373,12 +373,11 @@ namespace TsModelGen.Core.Targets
 
                 var memberTypeTranslationContext = GlobalContext.GetByType(type);
                 var translatedMemberTypeMetadata = memberTypeTranslationContext.Process(type); // TODO Process is not needed as a part of Interface!!!
-                
-                var definitionLine = $"    public {name}: {translatedMemberTypeMetadata.Symbol};";
-                sb.AppendLine(definitionLine);
+
+                sb.Append(TypeScriptExpression.MemberDefinitionExpression(name, translatedMemberTypeMetadata.Symbol, type.FullName)); // TODO Addembly qualified name?
             }
 
-            sb.AppendLine($"}}");
+            sb.Append(TypeScriptExpression.EndClassBodyExpression());
 
             _translatedTypeMetadata.Definition = sb.ToString();
 
@@ -394,20 +393,19 @@ namespace TsModelGen.Core.Targets
             return $"export class {generatedTypeName} ";
         }
 
-        public static string InheritedTypeExpression(TypeInfo parentType)
+        public static string InheritedClassExpression(string parentClassName)
         {
-            var generatedParentTypeName = GeneratedType.Name(parentType.BaseType.Name);
-            return $"extends {generatedParentTypeName} ";
+            return $"extends {parentClassName} ";
         }
 
         public static string StartClassBodyExpression()
         {
-            return "{";
+            return "{\n";
         }
 
         public static string MemberDefinitionExpression(string memberName, string memberType, string sourceType)
         {
-            return $"  public {memberName}: {memberType}; // {sourceType}";
+            return $"  public {memberName}: {memberType}; // {sourceType}\n";
         }
 
         public static string EndClassBodyExpression()

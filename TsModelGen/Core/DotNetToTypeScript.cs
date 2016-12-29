@@ -58,7 +58,7 @@ namespace TsModelGen.Core
             sb.Append(TypeScriptExpression.ClassNameExpression(generatedTypeName));
 
             if (type.BaseType.FullName != "System.Object")
-                sb.Append(TypeScriptExpression.InheritedTypeExpression(type));
+                sb.Append(TypeScriptExpression.InheritedClassExpression(type.ToString()));
 
             sb.AppendLine(TypeScriptExpression.StartClassBodyExpression());
 

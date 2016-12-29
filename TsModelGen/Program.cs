@@ -15,8 +15,10 @@ namespace TsModelGen
             // TODO Translate into a list of namespaces, types, rules on types (such as 
             var targetNameSpace = "TsModelGen.TargetNamespace";
 
+            // TODO Target types to be discovered here
             var translationContext = new TranslationContextBuilder().Build(targetNameSpace);
 
+            // TODO Target types to use for iteration instead of RegularTypeTranslationContext
             var generatedCode = translationContext
                 .OfType<RegularTypeTranslationContext>()
                 .Select(typeContext => typeContext.Process(typeContext.TypeInfo.AsType()).Definition)
