@@ -110,9 +110,7 @@ namespace TsModelGen.Core.Targets
 
         bool CanProcess(Type type);
         bool IsProcessed { get; }
-        void Process();
-
-        TranslatedTypeMetadata TranslatedTypeMetadata { get; }
+        TranslatedTypeMetadata Process(Type specificTargetType);
     }
 
     public sealed class SourceTypeMetadata
@@ -225,11 +223,11 @@ namespace TsModelGen.Core.Targets
         public DirectTypeTranslationContext(TypeInfo type, string symbol)
         {
             Type = type.NullToException(new ArgumentNullException(nameof(type)));
-
-            TranslatedTypeMetadata.Symbol = symbol;
+            Symbol = symbol.NullToException(new ArgumentNullException(nameof(symbol)));
         }
 
         public TypeInfo Type { get; }
+        private string Symbol { get; }
 
         public bool AreDependenciesResolved => true;
         public void ResolveDependencies() { }
@@ -240,8 +238,10 @@ namespace TsModelGen.Core.Targets
         }
         public bool IsProcessed => true;
 
-        public void Process() { }
-        public TranslatedTypeMetadata TranslatedTypeMetadata { get; } = new TranslatedTypeMetadata();
+        public TranslatedTypeMetadata Process(Type _)
+        {
+            return new TranslatedTypeMetadata { Symbol = Symbol };
+        }
     }
 
     public sealed class DummySpecialTranslationType : ITypeTranslationContext
@@ -249,10 +249,11 @@ namespace TsModelGen.Core.Targets
         public DummySpecialTranslationType(Type type, string symbol)
         {
             Type = type.NullToException(new ArgumentNullException(nameof(type))).GetTypeInfo();
-            TranslatedTypeMetadata.Symbol = symbol.NullToException(new ArgumentNullException(nameof(symbol)));
+            Symbol = symbol.NullToException(new ArgumentNullException(nameof(symbol)));
         }
 
         public TypeInfo Type { get; }
+        private string Symbol { get; }
 
         public bool AreDependenciesResolved => true;
 
@@ -263,8 +264,10 @@ namespace TsModelGen.Core.Targets
         }
         public bool IsProcessed => true;
 
-        public void Process() { }
-        public TranslatedTypeMetadata TranslatedTypeMetadata { get; } = new TranslatedTypeMetadata();
+        public TranslatedTypeMetadata Process(Type _)
+        {
+            return new TranslatedTypeMetadata { Symbol = Symbol };
+        }
     }
 
     public sealed class RegularTypeTranslationContext : ITypeTranslationContext
@@ -279,6 +282,8 @@ namespace TsModelGen.Core.Targets
         private TranslationContext GlobalContext { get; }
         public string Id => TypeInfo.AssemblyQualifiedName;
         private SourceTypeMetadata SourceTypeMetadata { get; } = new SourceTypeMetadata();
+
+        private readonly TranslatedTypeMetadata _translatedTypeMetadata = new TranslatedTypeMetadata();
 
 
         public bool AreDependenciesResolved { get; private set; } = false;
@@ -327,27 +332,27 @@ namespace TsModelGen.Core.Targets
 
         public bool IsProcessed { get; private set; } = false;
 
-        public void Process()
+        public TranslatedTypeMetadata Process(Type specificTargetType)
         {
             if (IsProcessed) // Prevent from reevaluation on reentry in case of circular type references.
-                return;
+                return _translatedTypeMetadata;
 
             IsProcessed = true;
 
-            TranslatedTypeMetadata.Symbol = $"{TypeInfo.Name}Generated"; // TODO Replace with symbol generation rule (from global context)
+            _translatedTypeMetadata.Symbol = $"{TypeInfo.Name}Generated"; // TODO Replace with symbol generation rule (from global context)
 
             var sb = new StringBuilder();
 
             // TODO Class case only now, think of interfaces
-            sb.Append($"export class {TranslatedTypeMetadata.Symbol}");
+            sb.Append($"export class {_translatedTypeMetadata.Symbol}");
             if (SourceTypeMetadata.BaseType != null)
             {
-                var typeTranslationContext = GlobalContext.GetByType(SourceTypeMetadata.BaseType.ParentInfo.AsType());
+                var baseTypeType = SourceTypeMetadata.BaseType.ParentInfo.AsType();
 
-                if (typeTranslationContext.IsProcessed == false)
-                    typeTranslationContext.Process();
+                var typeTranslationContext = GlobalContext.GetByType(baseTypeType);
+                var translatedBaseTypeMetadata = typeTranslationContext.Process(baseTypeType);
 
-                var baseTypeSymbol = typeTranslationContext.TranslatedTypeMetadata.Symbol;
+                var baseTypeSymbol = translatedBaseTypeMetadata.Symbol;
                 sb.Append($" extends {baseTypeSymbol}");
             }
 
@@ -367,18 +372,18 @@ namespace TsModelGen.Core.Targets
                         throw new InvalidOperationException("Oooops!!!");
 
                 var memberTypeTranslationContext = GlobalContext.GetByType(type);
-                memberTypeTranslationContext.Process(); // TODO Process is not needed as a part of Interface!!!
+                var translatedMemberTypeMetadata = memberTypeTranslationContext.Process(type); // TODO Process is not needed as a part of Interface!!!
                 
-                var definitionLine = $"    public {name}: {memberTypeTranslationContext.TranslatedTypeMetadata.Symbol};";
+                var definitionLine = $"    public {name}: {translatedMemberTypeMetadata.Symbol};";
                 sb.AppendLine(definitionLine);
             }
 
             sb.AppendLine($"}}");
-            
-            TranslatedTypeMetadata.Definition = sb.ToString();
-        }
 
-        public TranslatedTypeMetadata TranslatedTypeMetadata { get; } = new TranslatedTypeMetadata();
+            _translatedTypeMetadata.Definition = sb.ToString();
+
+            return _translatedTypeMetadata;
+        }
     }
 
     // TODO Use this

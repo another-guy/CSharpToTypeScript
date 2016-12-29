@@ -17,12 +17,9 @@ namespace TsModelGen
 
             var translationContext = new TranslationContextBuilder().Build(targetNameSpace);
 
-            foreach (var typeTranslationContext in translationContext)
-                if (typeTranslationContext.IsProcessed == false)
-                    typeTranslationContext.Process();
-
             var generatedCode = translationContext
-                .Select(typeContext => typeContext.TranslatedTypeMetadata.Definition)
+                .OfType<RegularTypeTranslationContext>()
+                .Select(typeContext => typeContext.Process(typeContext.TypeInfo.AsType()).Definition)
                 .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
                 .Aggregate((accumulated, typeDefinition) => accumulated + "\n" + typeDefinition);
 
