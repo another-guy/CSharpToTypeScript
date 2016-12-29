@@ -137,8 +137,7 @@ namespace TsModelGen.Core.Targets
 
         public SourceMemberInfo(MemberInfo memberInfo)
         {
-            if (memberInfo == null) throw new ArgumentNullException(nameof(memberInfo));
-            MemberInfo = memberInfo;
+            MemberInfo = memberInfo.NullToException(new ArgumentNullException(nameof(memberInfo)));
         }
     }
 
@@ -148,8 +147,7 @@ namespace TsModelGen.Core.Targets
 
         public SourceParentInfo(TypeInfo parentInfo)
         {
-            if (parentInfo == null) throw new ArgumentNullException(nameof(parentInfo));
-            ParentInfo = parentInfo;
+            ParentInfo = parentInfo.NullToException(new ArgumentNullException(nameof(parentInfo)));
         }
     }
 
@@ -366,10 +364,9 @@ namespace TsModelGen.Core.Targets
 
                 var name = sourceMemberInfo.MemberInfo.Name;
 
-                Type type;
-                if ((type = (sourceMemberInfo.MemberInfo as PropertyInfo)?.PropertyType) == null)
-                    if ((type = (sourceMemberInfo.MemberInfo as FieldInfo)?.FieldType) == null)
-                        throw new InvalidOperationException("Oooops!!!");
+                var type = (sourceMemberInfo.MemberInfo as PropertyInfo)?.PropertyType
+                    .NullTo((sourceMemberInfo.MemberInfo as FieldInfo)?.FieldType)
+                    .NullToException(new InvalidOperationException("Oooops!!!"));
 
                 var memberTypeTranslationContext = GlobalContext.GetByType(type);
                 var translatedMemberTypeMetadata = memberTypeTranslationContext.Process(type); // TODO Process is not needed as a part of Interface!!!
