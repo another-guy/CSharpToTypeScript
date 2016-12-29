@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TsModelGen.Core;
 using TsModelGen.Core.Targets;
@@ -23,7 +24,7 @@ namespace TsModelGen
             var generatedCode = translationContext
                 .Select(typeContext => typeContext.TranslatedTypeMetadata.Definition)
                 .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
-                .ToList();
+                .Aggregate((accumulated, typeDefinition) => accumulated + "\n" + typeDefinition);
 
             Console.WriteLine(generatedCode);
             Console.ReadKey();

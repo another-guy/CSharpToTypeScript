@@ -87,6 +87,11 @@ namespace TsModelGen.Core.Targets
             TranslationChain.Add(typeTranslationContext);
         }
 
+        public ITypeTranslationContext GetByType(Type type)
+        {
+            return this.First(typeTranslationContext => typeTranslationContext.CanProcess(type));
+        }
+
         public IEnumerator<ITypeTranslationContext> GetEnumerator()
         {
             return TranslationChain.GetEnumerator();
@@ -324,7 +329,10 @@ namespace TsModelGen.Core.Targets
 
         public void Process()
         {
-            IsProcessed = true; // Prevent from reevaluation on reentry in case of circular type references.
+            if (IsProcessed) // Prevent from reevaluation on reentry in case of circular type references.
+                return;
+
+            IsProcessed = true;
 
             TranslatedTypeMetadata.Symbol = $"{TypeInfo.Name}Generated"; // TODO Replace with symbol generation rule (from global context)
 
@@ -332,10 +340,9 @@ namespace TsModelGen.Core.Targets
 
             // TODO Class case only now, think of interfaces
             sb.Append($"export class {TranslatedTypeMetadata.Symbol}");
-            if (this.SourceTypeMetadata.BaseType != null)
+            if (SourceTypeMetadata.BaseType != null)
             {
-                var typeTranslationContext = GlobalContext
-                    .First(x => x.CanProcess(this.SourceTypeMetadata.BaseType.ParentInfo.AsType()));
+                var typeTranslationContext = GlobalContext.GetByType(SourceTypeMetadata.BaseType.ParentInfo.AsType());
 
                 if (typeTranslationContext.IsProcessed == false)
                     typeTranslationContext.Process();
@@ -343,15 +350,34 @@ namespace TsModelGen.Core.Targets
                 var baseTypeSymbol = typeTranslationContext.TranslatedTypeMetadata.Symbol;
                 sb.Append($" extends {baseTypeSymbol}");
             }
+
             sb.AppendLine($" {{");
-            //foreach (var VARIABLE in SourceTypeMetadata.)
-            //{
+
+            foreach (var memberName in SourceTypeMetadata.Members)
+            {
+                var sourceMemberInfo = SourceTypeMetadata[memberName];
                 
-            //}
+                // TODO only process serializable members unless explicitly requested oterwise
+
+                var name = sourceMemberInfo.MemberInfo.Name;
+
+                Type type;
+                if ((type = (sourceMemberInfo.MemberInfo as PropertyInfo)?.PropertyType) == null)
+                    if ((type = (sourceMemberInfo.MemberInfo as FieldInfo)?.FieldType) == null)
+                        throw new InvalidOperationException("Oooops!!!");
+
+                var memberTypeTranslationContext = GlobalContext.GetByType(type);
+                memberTypeTranslationContext.Process(); // TODO Process is not needed as a part of Interface!!!
+                
+                var definitionLine = $"    public {name}: {memberTypeTranslationContext.TranslatedTypeMetadata.Symbol};";
+                sb.AppendLine(definitionLine);
+            }
+
             sb.AppendLine($"}}");
             
             TranslatedTypeMetadata.Definition = sb.ToString();
         }
+
         public TranslatedTypeMetadata TranslatedTypeMetadata { get; } = new TranslatedTypeMetadata();
     }
 }
