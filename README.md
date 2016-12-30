@@ -5,4 +5,4 @@ POC for TsModelGeneration
 
 TODO Add AppVeyor
 
-[Milestones](https://github.com/another-guy/TsModelGen/milestones?direction=desc&sort=count&state=open)
+**[Milestones](https://github.com/another-guy/TsModelGen/milestones?direction=desc&sort=count&state=open)**
