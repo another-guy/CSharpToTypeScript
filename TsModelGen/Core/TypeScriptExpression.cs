@@ -1,4 +1,6 @@
-﻿namespace TsModelGen.Core
+﻿using System;
+
+namespace TsModelGen.Core
 {
     public static class TypeScriptExpression
     {
@@ -6,13 +8,17 @@
         {
             return $"export class {generatedTypeName} ";
         }
+        public static string EnumNameExpression(string generatedTypeName)
+        {
+            return $"export enum {generatedTypeName} ";
+        }
 
         public static string InheritedClassExpression(string parentClassName)
         {
             return $"extends {parentClassName} ";
         }
 
-        public static string StartClassBodyExpression()
+        public static string BlockBegin()
         {
             return "{\n";
         }
@@ -22,9 +28,18 @@
             return $"  public {memberName}: {memberType}; // {sourceType}\n";
         }
 
-        public static string EndClassBodyExpression()
+        public static string BlockEnd()
         {
             return "}";
         }
+
+        public static string EnumMemberExpression(string memberName, object memberValue)
+        {
+            return $"  {memberName} = {memberValue}";
+        }
+
+        public static readonly Func<string, string, string> CommaSeparatedLines =
+            (allPreviousDeclarations, currentDeclaration) =>
+                    $"{allPreviousDeclarations},\n{currentDeclaration}";
     }
 }

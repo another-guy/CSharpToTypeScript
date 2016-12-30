@@ -11,7 +11,7 @@ namespace TsModelGen.Core
         public static readonly List<ITypeTranslationContext> AllProcessors = new List<ITypeTranslationContext>
         {
             // TODO Replace DummySpecialTranslationType with specific entity type translation object
-            new SpecialTypeTranslationContext(typeof(Enum), "?ENUM?"), // Not ok
+            new EnumTypeTranslationContext(), // Ok
             new SpecialTypeTranslationContext(typeof(ValueType), "?valuetype?"), // Not ok
 
             new SpecialTypeTranslationContext(typeof(IDictionary), "any"), // Ok

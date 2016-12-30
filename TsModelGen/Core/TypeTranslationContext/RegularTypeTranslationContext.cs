@@ -90,7 +90,7 @@ namespace TsModelGen.Core.TypeTranslationContext
                 sb.Append(TypeScriptExpression.InheritedClassExpression(baseTypeSymbol));
             }
 
-            sb.Append(TypeScriptExpression.StartClassBodyExpression());
+            sb.Append(TypeScriptExpression.BlockBegin());
 
             foreach (var memberName in SourceTypeMetadata.Members)
             {
@@ -110,7 +110,7 @@ namespace TsModelGen.Core.TypeTranslationContext
                 sb.Append(TypeScriptExpression.MemberDefinitionExpression(name, translatedMemberTypeMetadata.Symbol, type.FullName)); // TODO Addembly qualified name?
             }
 
-            sb.Append(TypeScriptExpression.EndClassBodyExpression());
+            sb.Append(TypeScriptExpression.BlockEnd());
 
             _translatedTypeMetadata.Definition = sb.ToString();
 
