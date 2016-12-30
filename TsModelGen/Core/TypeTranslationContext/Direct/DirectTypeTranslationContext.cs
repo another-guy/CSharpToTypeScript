@@ -5,9 +5,9 @@ namespace TsModelGen.Core.TypeTranslationContext.Direct
 {
     public sealed class DirectTypeTranslationContext : ITypeTranslationContext
     {
-        public DirectTypeTranslationContext(TypeInfo type, string symbol)
+        public DirectTypeTranslationContext(Type type, string symbol)
         {
-            Type = type.NullToException(new ArgumentNullException(nameof(type)));
+            Type = type.NullToException(new ArgumentNullException(nameof(type))).GetTypeInfo();
             Symbol = symbol.NullToException(new ArgumentNullException(nameof(symbol)));
         }
 

@@ -16,11 +16,9 @@ namespace TsModelGen.Core
 
         public TranslationContext()
         {
-            foreach (var rule in DirectMapping.DirectTranslationRules)
-                AddTypeTranslationContext(new DirectTypeTranslationContext(rule.SourceType.GetTypeInfo(), rule.DestinationType));
-
-            foreach (var specialTypeProcessor in SpecialTypes.AllProcessors)
-                AddTypeTranslationContext(specialTypeProcessor);
+            TypeTranslation
+                .ContextChain
+                .ForEach(AddTypeTranslationContext);
         }
 
         public bool CanProcess(TypeInfo typeInfo)
