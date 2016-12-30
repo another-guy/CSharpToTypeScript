@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,8 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
 
         public TranslatedTypeMetadata Process(Type specificEnumType)
         {
+            Debug.Assert(CanProcess(specificEnumType));
+
             var symbol = $"{specificEnumType.Name}Generated"; // TODO Replace with symbol generation rule (from global context)
 
             var definition = GetDefinitionForEnum(symbol, specificEnumType);

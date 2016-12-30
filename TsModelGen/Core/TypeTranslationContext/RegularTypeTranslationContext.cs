@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
@@ -70,6 +71,7 @@ namespace TsModelGen.Core.TypeTranslationContext
 
         public TranslatedTypeMetadata Process(Type specificTargetType)
         {
+            Debug.Assert(CanProcess(specificTargetType));
             if (IsProcessed) // Prevent from reevaluation on reentry in case of circular type references.
                 return _translatedTypeMetadata;
 

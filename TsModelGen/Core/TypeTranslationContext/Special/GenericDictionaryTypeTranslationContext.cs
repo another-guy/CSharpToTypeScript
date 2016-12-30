@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -27,8 +28,10 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
 
         public TranslatedTypeMetadata Process(Type specificTargetType)
         {
-            // TODO Think if can and should Assert here
+            Debug.Assert(CanProcess(specificTargetType));
             var genericArgumentTypes = specificTargetType.GetGenericArguments();
+            Debug.Assert(genericArgumentTypes.Length == 2);
+            
             var keyType = genericArgumentTypes[0];
             var valueType = genericArgumentTypes[1];
 

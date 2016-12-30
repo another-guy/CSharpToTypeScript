@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -24,6 +25,7 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
 
         public TranslatedTypeMetadata Process(Type specificEnumType)
         {
+            Debug.Assert(CanProcess(specificEnumType));
             return new TranslatedTypeMetadata
             {
                 Symbol = specificEnumType

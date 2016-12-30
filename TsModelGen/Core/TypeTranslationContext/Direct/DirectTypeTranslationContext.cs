@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace TsModelGen.Core.TypeTranslationContext.Direct
@@ -23,8 +24,9 @@ namespace TsModelGen.Core.TypeTranslationContext.Direct
         }
         public bool IsProcessed => true;
 
-        public TranslatedTypeMetadata Process(Type _)
+        public TranslatedTypeMetadata Process(Type specificTargetType)
         {
+            Debug.Assert(CanProcess(specificTargetType));
             return new TranslatedTypeMetadata { Symbol = Symbol };
         }
     }
