@@ -51,5 +51,15 @@ namespace TsModelGen.Core
         {
             return $"{genericArgumentTranslatesSymbol}[]";
         }
+
+        public static string UntypedDictionary()
+        {
+            return GenericDictionaryOf("any", "any");
+        }
+
+        public static string GenericDictionaryOf(string translatedKeySymbol, string translatedValueSymbol)
+        {
+            return $"{{ [id: {translatedKeySymbol}]: {translatedValueSymbol}; }}";
+        }
     }
 }

@@ -20,8 +20,7 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
 
         public bool CanProcess(Type type)
         {
-            var canProcess = type.IsChildTypeOfPossiblyOpenGeneric(typeof(IEnumerable<>));
-            return canProcess;
+            return type.IsChildTypeOfPossiblyOpenGeneric(typeof(IEnumerable<>));
         }
 
         public bool IsProcessed { get; } = true;
