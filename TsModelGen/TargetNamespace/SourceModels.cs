@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using TsModelGen.NonTargetNamespace;
 using TsModelGen.TargetNamespace;
 
@@ -43,6 +42,7 @@ namespace TsModelGen.TargetNamespace
     public struct Currency
     {
         public string Name;
+        public char? CharSymbol;
     }
 
     public class Address

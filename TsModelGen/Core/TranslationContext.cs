@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using TsModelGen.Core.TypeTranslationContext;
-using TsModelGen.Core.TypeTranslationContext.Direct;
 
 namespace TsModelGen.Core
 {
@@ -17,7 +16,7 @@ namespace TsModelGen.Core
         public TranslationContext()
         {
             TypeTranslation
-                .ContextChain
+                .CreateContextChain(this)
                 .ForEach(AddTypeTranslationContext);
         }
 

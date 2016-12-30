@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TsModelGen.Core;
 using TsModelGen.Core.TypeTranslationContext;
@@ -21,7 +22,8 @@ namespace TsModelGen
 
             // TODO Target types to use for iteration instead of RegularTypeTranslationContext
 
-            var generatedCode = translationTargetTypes
+            string generatedCode;
+            generatedCode = translationTargetTypes
                 .Select(targetType =>
                         translationContext
                             .First(typeTranslationContext => typeTranslationContext.CanProcess(targetType.AsType()))
@@ -31,12 +33,12 @@ namespace TsModelGen
                 .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
                 .Aggregate((accumulated, typeDefinition) => accumulated + "\n" + typeDefinition);
 
-            //var generatedCode = translationContext
+            //generatedCode = translationContext
             //    .OfType<RegularTypeTranslationContext>()
             //    .Select(typeContext => typeContext.Process(typeContext.TypeInfo.AsType()).Definition)
             //    .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
             //    .Aggregate((accumulated, typeDefinition) => accumulated + "\n" + typeDefinition);
-
+            
             Console.WriteLine(generatedCode);
             Console.ReadKey();
         }

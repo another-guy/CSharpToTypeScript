@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TsModelGen.Core.TypeTranslationContext;
 using TsModelGen.Core.TypeTranslationContext.Direct;
@@ -10,10 +9,12 @@ namespace TsModelGen.Core
     public static class TypeTranslation
     {
         // TODO Clean this up
-        public static readonly ITypeTranslationContext[] ContextChain =
+        public static ITypeTranslationContext[] CreateContextChain(TranslationContext globalTranslationContext)
+        {
             // Simple cases:
             // * object -> any
             // * primitive types to their TS direct translations
+            return new ITypeTranslationContext[]
             {
                 new DirectTypeTranslationContext(typeof(object), "any"),
                 new DirectTypeTranslationContext(typeof(short), "number"),
@@ -29,18 +30,21 @@ namespace TsModelGen.Core
                 new DirectTypeTranslationContext(typeof(decimal), "number"),
                 new DirectTypeTranslationContext(typeof(bool), "boolean"),
                 new DirectTypeTranslationContext(typeof(string), "string"),
+                new DirectTypeTranslationContext(typeof(char), "string"),  // TODO consider better options if possible
 
                 // {TypeInfoOf<DateTime>(), "boolean"}
                 // { char -> ??? },
                 // { TimeSpan -> ??? },
-                
-                // TODO Replace DummySpecialTranslationType with specific entity type translation object
+
                 new EnumTypeTranslationContext(), // Ok
-                new SpecialTypeTranslationContext(typeof(IDictionary), "{ [id: any]: any; }"), // TODO 1. Is it better than `any` ? 2. Or `{ [id: any]: any; }` ?
+                // TODO Replace DummySpecialTranslationType with specific entity type translation object
+                new NullableTypeTranslationContext(globalTranslationContext), // Ok
+                new SpecialTypeTranslationContext(typeof(IDictionary), "{ [id: any]: any; }"),
+                // TODO 1. Is it better than `any` ? 2. Or `{ [id: any]: any; }` ?
                 new SpecialTypeTranslationContext(typeof(IDictionary<,>), "any"), // Can be better, if we discover types
                 new SpecialTypeTranslationContext(typeof(IEnumerable), "any[]"), // Ok
-                new SpecialTypeTranslationContext(typeof(IEnumerable<>), "any[]"), // Not ok, make strongly typed
-                new SpecialTypeTranslationContext(typeof(Nullable<>), "any") // Not ok, make strongly typed
+                new SpecialTypeTranslationContext(typeof(IEnumerable<>), "any[]") // Not ok, make strongly typed
             };
+        }
     }
 }
