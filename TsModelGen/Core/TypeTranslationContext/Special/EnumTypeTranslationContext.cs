@@ -37,8 +37,7 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
             sb.Append(TypeScriptExpression.BlockBegin());
 
             var typeInfo = specificEnumType.GetTypeInfo();
-            
-            var body = typeInfo
+            typeInfo
                 .GetEnumValues()
                 .OfType<object>()
                 .Select(enumValue =>
@@ -47,8 +46,8 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
                     var memberValue = Convert.ChangeType(enumValue, typeInfo.GetEnumUnderlyingType());
                     return TypeScriptExpression.EnumMemberExpression(memberName, memberValue);
                 })
-                .Aggregate(TypeScriptExpression.CommaSeparatedLines);
-            sb.AppendLine(body);
+                .Aggregate(TypeScriptExpression.CommaSeparatedLines)
+                .UseAsArgFor(body => sb.Append(body));
 
             sb.Append(TypeScriptExpression.BlockEnd());
 
