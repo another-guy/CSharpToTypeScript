@@ -40,8 +40,10 @@ namespace TsModelGen.Core.TypeTranslationContext
             }
 
             {
+                // TODO Think if this code can be rewritten so that is does not rely on specific types
                 var baseType = TypeInfo.BaseType;
-                if (baseType != typeof(object) &&
+                if (baseType != null &&
+                    baseType != typeof(object) &&
                     baseType != typeof(ValueType) &&
                     baseType != typeof(Enum))
                 {

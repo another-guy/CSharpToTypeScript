@@ -38,7 +38,7 @@ namespace TsModelGen
             //    .Select(typeContext => typeContext.Process(typeContext.TypeInfo.AsType()).Definition)
             //    .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
             //    .Aggregate((accumulated, typeDefinition) => accumulated + "\n" + typeDefinition);
-            
+
             Console.WriteLine(generatedCode);
             Console.ReadKey();
         }
