@@ -36,9 +36,9 @@ namespace TsModelGen.Core
                 
                 // TODO Replace DummySpecialTranslationType with specific entity type translation object
                 new EnumTypeTranslationContext(), // Ok
-                new SpecialTypeTranslationContext(typeof(IDictionary), "any"), // Ok
+                new SpecialTypeTranslationContext(typeof(IDictionary), "{ [id: any]: any; }"), // TODO 1. Is it better than `any` ? 2. Or `{ [id: any]: any; }` ?
                 new SpecialTypeTranslationContext(typeof(IDictionary<,>), "any"), // Can be better, if we discover types
-                new SpecialTypeTranslationContext(typeof(IEnumerable), "any[]"), // Not ok, make strongly typed
+                new SpecialTypeTranslationContext(typeof(IEnumerable), "any[]"), // Ok
                 new SpecialTypeTranslationContext(typeof(IEnumerable<>), "any[]"), // Not ok, make strongly typed
                 new SpecialTypeTranslationContext(typeof(Nullable<>), "any") // Not ok, make strongly typed
             };
