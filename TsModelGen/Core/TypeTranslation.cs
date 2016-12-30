@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TsModelGen.Core.TypeTranslationContext;
 using TsModelGen.Core.TypeTranslationContext.Direct;
@@ -31,9 +32,7 @@ namespace TsModelGen.Core
                 new DirectTypeTranslationContext(typeof(bool), "boolean"),
                 new DirectTypeTranslationContext(typeof(string), "string"),
                 new DirectTypeTranslationContext(typeof(char), "string"),  // TODO consider better options if possible
-
-                // {TypeInfoOf<DateTime>(), "boolean"}
-                // { char -> ??? },
+                new DirectTypeTranslationContext(typeof(DateTime), "Date"),
                 // { TimeSpan -> ??? },
 
                 new EnumTypeTranslationContext(), // Ok
@@ -42,7 +41,7 @@ namespace TsModelGen.Core
                 new SpecialTypeTranslationContext(typeof(IDictionary), "{ [id: any]: any; }"),
                 // TODO 1. Is it better than `any` ? 2. Or `{ [id: any]: any; }` ?
                 new SpecialTypeTranslationContext(typeof(IDictionary<,>), "any"), // Can be better, if we discover types
-                new DirectTypeTranslationContext(typeof(IEnumerable), "any[]"), // Ok
+                new DirectTypeTranslationContext(typeof(IEnumerable), TypeScriptExpression.UntypedArray()), // Ok
                 new GenericEnumerableTypeTranslationContext(globalTranslationContext)  // Not ok, make strongly typed
             };
         }

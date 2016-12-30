@@ -35,10 +35,9 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
                 .Process(genericArgumentType)
                 .Symbol;
             
-            // TODO Use TypeScriptExpression
             return new TranslatedTypeMetadata
             {
-                Symbol = $"{genericArgumentTranslatesSymbol}[]"
+                Symbol = TypeScriptExpression.GenericArrayOf(genericArgumentTranslatesSymbol)
             };
         }
     }

@@ -41,5 +41,15 @@ namespace TsModelGen.Core
         public static readonly Func<string, string, string> CommaSeparatedLines =
             (allPreviousDeclarations, currentDeclaration) =>
                     $"{allPreviousDeclarations},\n{currentDeclaration}";
+
+        public static string UntypedArray()
+        {
+            return GenericArrayOf("any");
+        }
+
+        public static string GenericArrayOf(string genericArgumentTranslatesSymbol)
+        {
+            return $"{genericArgumentTranslatesSymbol}[]";
+        }
     }
 }
