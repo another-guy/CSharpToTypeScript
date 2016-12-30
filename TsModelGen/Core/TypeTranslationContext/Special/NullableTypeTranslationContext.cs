@@ -18,15 +18,7 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
         public void ResolveDependencies() { }
         public bool CanProcess(Type type)
         {
-            try
-            {
-                return type.IsChildTypeOfPossiblyOpenGeneric(typeof(Nullable<>));
-            }
-            catch (Exception e)
-            {
-                // TODO Uncomment and fix in Peppermint
-                return false;
-            }
+            return type.IsChildTypeOfPossiblyOpenGeneric(typeof(Nullable<>));
         }
         public bool IsProcessed => true;
 
