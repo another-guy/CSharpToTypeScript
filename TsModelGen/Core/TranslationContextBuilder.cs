@@ -11,9 +11,9 @@ namespace TsModelGen.Core
         private static readonly Func<ITypeTranslationContext, bool> WithUnresolvedDependencies =
             typeContext => typeContext.AreDependenciesResolved == false;
 
-        public TranslationContext Build(IEnumerable<TypeInfo> translationTargetTypes)
+        public TranslationContext Build(IEnumerable<TypeInfo> translationRootTargetTypes)
         {
-            var translationContext = CreateTranslationContext(translationTargetTypes);
+            var translationContext = CreateTranslationContext(translationRootTargetTypes);
 
             ITypeTranslationContext unprocessed;
             while ((unprocessed = translationContext.FirstOrDefault(WithUnresolvedDependencies)) != null)
@@ -22,10 +22,10 @@ namespace TsModelGen.Core
             return translationContext;
         }
 
-        private TranslationContext CreateTranslationContext(IEnumerable<TypeInfo> translationTargetTypes)
+        private TranslationContext CreateTranslationContext(IEnumerable<TypeInfo> translationRootTargetTypes)
         {
             var translationContext = new TranslationContext();
-            foreach (var sourceType in translationTargetTypes)
+            foreach (var sourceType in translationRootTargetTypes)
                 translationContext.AddTypeTranslationContextForType(sourceType);
             return translationContext;
         }

@@ -20,20 +20,23 @@ namespace TsModelGen
             
             var translationContext = new TranslationContextBuilder().Build(rootTranslationTargetTypes);
 
-            var generatedCode = rootTranslationTargetTypes
-                .Union(
-                    translationContext
-                        .OfType<RegularTypeTranslationContext>()
-                        .Select(typeTranslationContext => typeTranslationContext.TypeInfo)
-                )
-                .Select(targetType =>
-                        translationContext
-                            .First(typeTranslationContext => typeTranslationContext.CanProcess(targetType.AsType()))
-                            .Process(targetType.AsType())
-                            .Definition
-                )
-                .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
-                .Aggregate((accumulated, typeDefinition) => accumulated + "\n\n" + typeDefinition);
+            var generatedCode =
+                //rootTranslationTargetTypes
+                //.Union(
+                //    translationContext
+                //        .OfType<RegularTypeTranslationContext>()
+                //        .Select(typeTranslationContext => typeTranslationContext.TypeInfo)
+                //)
+                translationContext
+                    .OrderedTargetTypes
+                    .Select(targetType =>
+                            translationContext
+                                .First(typeTranslationContext => typeTranslationContext.CanProcess(targetType.AsType()))
+                                .Process(targetType.AsType())
+                                .Definition
+                    )
+                    .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
+                    .Aggregate((accumulated, typeDefinition) => accumulated + "\n\n" + typeDefinition);
 
             Console.WriteLine(generatedCode);
             Console.ReadKey();

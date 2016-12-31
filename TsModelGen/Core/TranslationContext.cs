@@ -7,8 +7,13 @@ using TsModelGen.Core.TypeTranslationContext;
 
 namespace TsModelGen.Core
 {
-    public sealed class TranslationContext : ITypeRegistry, ITypeTranslationEnumerable
+    public sealed class TranslationContext : ITypeTranslationEnumerable
     {
+        // TODO The right way of doing that is using a Graph data structure.
+        // Naive list consumption can't guarantee precedence of parent types.
+        public IList<TypeInfo> OrderedTargetTypes { get; } = // TODO Make it immutable for clients
+            new List<TypeInfo>();
+
         // TODO Make this dynamic -- let clients alter the chain to fit their need
         private IList<ITypeTranslationContext> TranslationChain { get; } =
             new List<ITypeTranslationContext>();
@@ -28,13 +33,12 @@ namespace TsModelGen.Core
 
         public void AddTypeTranslationContextForType(TypeInfo typeInfo)
         {
+            OrderedTargetTypes.Insert(0, typeInfo);
             AddTypeTranslationContext(new RegularTypeTranslationContext(this, typeInfo));
         }
 
-        public void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext)
+        private void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext)
         {
-            bool? debug = (typeTranslationContext as RegularTypeTranslationContext)?.TypeInfo.FullName.Contains("Array");
-
             TranslationChain.Add(typeTranslationContext);
         }
 
