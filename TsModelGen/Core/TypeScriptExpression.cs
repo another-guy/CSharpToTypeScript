@@ -25,7 +25,7 @@ namespace TsModelGen.Core
 
         public static string MemberDefinitionExpression(string memberName, string memberType, string sourceType)
         {
-            return $"  public {memberName}: {memberType}; // {sourceType}\n";
+            return $"{Tab()}public {memberName}: {memberType}; // {sourceType}\n";
         }
 
         public static string BlockEnd()
@@ -35,12 +35,8 @@ namespace TsModelGen.Core
 
         public static string EnumMemberExpression(string memberName, object memberValue)
         {
-            return $"  {memberName} = {memberValue}";
+            return $"{Tab()}{memberName} = {memberValue}";
         }
-
-        public static readonly Func<string, string, string> CommaSeparatedLines =
-            (allPreviousDeclarations, currentDeclaration) =>
-                    $"{allPreviousDeclarations},\n{currentDeclaration}";
 
         public static string UntypedArray()
         {
@@ -85,6 +81,16 @@ namespace TsModelGen.Core
         public static string Bool()
         {
             return "boolean";
+        }
+
+        public static string CommaSeparator()
+        {
+            return ",";
+        }
+
+        public static string Tab()
+        {
+            return "  ";
         }
     }
 }

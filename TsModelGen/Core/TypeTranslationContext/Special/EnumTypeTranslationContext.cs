@@ -40,7 +40,7 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
             sb.Append(TypeScriptExpression.BlockBegin());
 
             var typeInfo = specificEnumType.GetTypeInfo();
-            typeInfo
+            var declarationElements = typeInfo
                 .GetEnumValues()
                 .OfType<object>()
                 .Select(enumValue =>
@@ -49,8 +49,16 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
                     var memberValue = Convert.ChangeType(enumValue, typeInfo.GetEnumUnderlyingType());
                     return TypeScriptExpression.EnumMemberExpression(memberName, memberValue);
                 })
-                .Aggregate(TypeScriptExpression.CommaSeparatedLines)
-                .UseAsArgFor(body => sb.Append(body));
+                .ToArray();
+
+            for (var currentElementIndex = 0; currentElementIndex < declarationElements.Length; currentElementIndex++)
+            {
+                sb.Append(declarationElements[currentElementIndex]);
+                if (currentElementIndex != declarationElements.Length - 1)
+                    sb.AppendLine(TypeScriptExpression.CommaSeparator());
+                else
+                    sb.AppendLine();
+            }
 
             sb.Append(TypeScriptExpression.BlockEnd());
 
