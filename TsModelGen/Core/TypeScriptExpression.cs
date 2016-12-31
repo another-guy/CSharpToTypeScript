@@ -44,7 +44,7 @@ namespace TsModelGen.Core
 
         public static string UntypedArray()
         {
-            return GenericArrayOf("any");
+            return GenericArrayOf(Any());
         }
 
         public static string GenericArrayOf(string genericArgumentTranslatesSymbol)
@@ -54,12 +54,37 @@ namespace TsModelGen.Core
 
         public static string UntypedDictionary()
         {
-            return GenericDictionaryOf("any", "any");
+            return GenericDictionaryOf(String(), Any());
         }
 
         public static string GenericDictionaryOf(string translatedKeySymbol, string translatedValueSymbol)
         {
             return $"{{ [id: {translatedKeySymbol}]: {translatedValueSymbol}; }}";
+        }
+
+        public static string Any()
+        {
+            return "any";
+        }
+
+        public static string String()
+        {
+            return "string";
+        }
+
+        public static string Date()
+        {
+            return "Date";
+        }
+
+        public static string Number()
+        {
+            return "number";
+        }
+
+        public static string Bool()
+        {
+            return "boolean";
         }
     }
 }

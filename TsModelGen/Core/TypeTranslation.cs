@@ -17,32 +17,33 @@ namespace TsModelGen.Core
             // * primitive types to their TS direct translations
             return new ITypeTranslationContext[]
             {
-                new DirectTypeTranslationContext(typeof(object), "any"),
-                new DirectTypeTranslationContext(typeof(short), "number"),
-                new DirectTypeTranslationContext(typeof(int), "number"),
-                new DirectTypeTranslationContext(typeof(long), "number"),
-                new DirectTypeTranslationContext(typeof(ushort), "number"),
-                new DirectTypeTranslationContext(typeof(uint), "number"),
-                new DirectTypeTranslationContext(typeof(ulong), "number"),
-                new DirectTypeTranslationContext(typeof(byte), "number"),
-                new DirectTypeTranslationContext(typeof(sbyte), "number"),
-                new DirectTypeTranslationContext(typeof(float), "number"),
-                new DirectTypeTranslationContext(typeof(double), "number"),
-                new DirectTypeTranslationContext(typeof(decimal), "number"),
-                new DirectTypeTranslationContext(typeof(bool), "boolean"),
-                new DirectTypeTranslationContext(typeof(string), "string"),
-                new DirectTypeTranslationContext(typeof(char), "string"),  // TODO consider better options if possible
-                new DirectTypeTranslationContext(typeof(DateTime), "Date"),
+                new DirectTypeTranslationContext(typeof(object), TypeScriptExpression.Any()),
+                new DirectTypeTranslationContext(typeof(short), TypeScriptExpression.Number()),
+                new DirectTypeTranslationContext(typeof(int), TypeScriptExpression.Number()),
+                new DirectTypeTranslationContext(typeof(long), TypeScriptExpression.Number()),
+                new DirectTypeTranslationContext(typeof(ushort), TypeScriptExpression.Number()),
+                new DirectTypeTranslationContext(typeof(uint), TypeScriptExpression.Number()),
+                new DirectTypeTranslationContext(typeof(ulong), TypeScriptExpression.Number()),
+                new DirectTypeTranslationContext(typeof(byte), TypeScriptExpression.Number()),
+                new DirectTypeTranslationContext(typeof(sbyte), TypeScriptExpression.Number()),
+                new DirectTypeTranslationContext(typeof(float), TypeScriptExpression.Number()),
+                new DirectTypeTranslationContext(typeof(double), TypeScriptExpression.Number()),
+                new DirectTypeTranslationContext(typeof(decimal), TypeScriptExpression.Number()),
+                new DirectTypeTranslationContext(typeof(bool), TypeScriptExpression.Bool()),
+                new DirectTypeTranslationContext(typeof(string), TypeScriptExpression.String()),
+                new DirectTypeTranslationContext(typeof(char), TypeScriptExpression.String()),  // TODO consider better options if possible
+                new DirectTypeTranslationContext(typeof(DateTime), TypeScriptExpression.Date()),
                 // { TimeSpan -> ??? },
 
                 new EnumTypeTranslationContext(), // Ok
-                // TODO Replace DummySpecialTranslationType with specific entity type translation object
                 new NullableTypeTranslationContext(globalTranslationContext), // Ok
-                new SpecialTypeTranslationContext(typeof(IDictionary), TypeScriptExpression.UntypedDictionary()),
-                // TODO 1. Is it better than `any` ? 2. Or `{ [id: any]: any; }` ?
+                
                 new GenericDictionaryTypeTranslationContext(globalTranslationContext), // Can be better, if we discover types
-                new DirectTypeTranslationContext(typeof(IEnumerable), TypeScriptExpression.UntypedArray()), // Ok
-                new GenericEnumerableTypeTranslationContext(globalTranslationContext)  // Not ok, make strongly typed
+                new SpecialTypeTranslationContext(typeof(IDictionary), TypeScriptExpression.UntypedDictionary()),
+
+                new ArrayTypeTranslationContext(globalTranslationContext), // Ok
+                new GenericEnumerableTypeTranslationContext(globalTranslationContext), // Not ok, make strongly typed
+                new SpecialTypeTranslationContext(typeof(IEnumerable), TypeScriptExpression.UntypedArray()) // Ok
             };
         }
     }

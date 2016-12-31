@@ -33,6 +33,8 @@ namespace TsModelGen.Core
 
         public void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext)
         {
+            bool? debug = (typeTranslationContext as RegularTypeTranslationContext)?.TypeInfo.FullName.Contains("Array");
+
             TranslationChain.Add(typeTranslationContext);
         }
 

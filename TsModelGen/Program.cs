@@ -16,14 +16,28 @@ namespace TsModelGen
             var targetNameSpace = "TsModelGen.TargetNamespace";
             
             var targetNamespaces = new[] { targetNameSpace }; // TODO Make a parameter
-            var translationTargetTypes = RootTargetTypes.LocateFrom(targetNamespaces).ToList();
+            var rootTranslationTargetTypes = RootTargetTypes.LocateFrom(targetNamespaces).ToList();
             
-            var translationContext = new TranslationContextBuilder().Build(translationTargetTypes);
+            var translationContext = new TranslationContextBuilder().Build(rootTranslationTargetTypes);
 
-            // TODO Target types to use for iteration instead of RegularTypeTranslationContext
+            // TODO Remove this dictionary
+            var dictionary = rootTranslationTargetTypes
+                .Union(
+                    translationContext
+                        .OfType<RegularTypeTranslationContext>()
+                        .Select(typeTranslationContext => typeTranslationContext.TypeInfo)
+                )
+                .ToDictionary(
+                    targetType => targetType.FullName,
+                    targetType => translationContext
+                            .First(typeTranslationContext => typeTranslationContext.CanProcess(targetType.AsType())));
 
-            string generatedCode;
-            generatedCode = translationTargetTypes
+            var generatedCode = rootTranslationTargetTypes
+                .Union(
+                    translationContext
+                        .OfType<RegularTypeTranslationContext>()
+                        .Select(typeTranslationContext => typeTranslationContext.TypeInfo)
+                )
                 .Select(targetType =>
                         translationContext
                             .First(typeTranslationContext => typeTranslationContext.CanProcess(targetType.AsType()))
@@ -31,13 +45,7 @@ namespace TsModelGen
                             .Definition
                 )
                 .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
-                .Aggregate((accumulated, typeDefinition) => accumulated + "\n" + typeDefinition);
-
-            //generatedCode = translationContext
-            //    .OfType<RegularTypeTranslationContext>()
-            //    .Select(typeContext => typeContext.Process(typeContext.TypeInfo.AsType()).Definition)
-            //    .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
-            //    .Aggregate((accumulated, typeDefinition) => accumulated + "\n" + typeDefinition);
+                .Aggregate((accumulated, typeDefinition) => accumulated + "\n\n" + typeDefinition);
 
             Console.WriteLine(generatedCode);
             Console.ReadKey();
