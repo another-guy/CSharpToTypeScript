@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TsModelGen.Core
+﻿namespace TsModelGen.Core
 {
     public static class TypeScriptExpression
     {

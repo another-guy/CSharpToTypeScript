@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using TsModelGen.Core.TypeTranslationContext;
 using TsModelGen.Core.TypeTranslationContext.Direct;
 using TsModelGen.Core.TypeTranslationContext.Special;

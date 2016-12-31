@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using TsModelGen.Core;
-using TsModelGen.Core.TypeTranslationContext;
 
 namespace TsModelGen
 {
