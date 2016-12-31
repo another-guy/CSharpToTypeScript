@@ -1,19 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace TsModelGen.Core
 {
     public sealed class SourceTypeMetadata
     {
-        private IDictionary<string, SourceMemberInfo> MembersSourceInfo { get; } =
-            new Dictionary<string, SourceMemberInfo>();
+        private IDictionary<string, MemberInfo> MembersSourceInfo { get; } =
+            new Dictionary<string, MemberInfo>();
 
-        public SourceParentInfo BaseType { get; set; }
+        public TypeInfo BaseType { get; set; }
 
         // TODO INTERFACES ???
 
         public IEnumerable<string> Members => MembersSourceInfo.Keys;
 
-        public SourceMemberInfo this[string memberName]
+        public MemberInfo this[string memberName]
         {
             get { return MembersSourceInfo[memberName]; }
             set { MembersSourceInfo[memberName] = value; }

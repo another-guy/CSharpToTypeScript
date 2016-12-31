@@ -30,13 +30,13 @@ namespace TsModelGen.Core.TypeTranslationContext
             const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
             foreach (var propertyInfo in TypeInfo.GetProperties(flags))
             {
-                SourceTypeMetadata[propertyInfo.Name] = new SourceMemberInfo(propertyInfo);
+                SourceTypeMetadata[propertyInfo.Name] = propertyInfo;
                 EnsureTypeWillBeResolved(propertyInfo.PropertyType.GetTypeInfo());
             }
 
             foreach (var fieldInfo in TypeInfo.GetFields(flags))
             {
-                SourceTypeMetadata[fieldInfo.Name] = new SourceMemberInfo(fieldInfo);
+                SourceTypeMetadata[fieldInfo.Name] = fieldInfo;
                 EnsureTypeWillBeResolved(fieldInfo.FieldType.GetTypeInfo());
             }
 
@@ -49,7 +49,7 @@ namespace TsModelGen.Core.TypeTranslationContext
                     baseType != typeof(Enum))
                 {
                     var parentTypeInfo = baseType.GetTypeInfo();
-                    SourceTypeMetadata.BaseType = new SourceParentInfo(parentTypeInfo);
+                    SourceTypeMetadata.BaseType = parentTypeInfo;
                     EnsureTypeWillBeResolved(parentTypeInfo);
                 }
             }
@@ -85,7 +85,7 @@ namespace TsModelGen.Core.TypeTranslationContext
             sb.Append(TypeScriptExpression.ClassNameExpression(_translatedTypeMetadata.Symbol));
             if (SourceTypeMetadata.BaseType != null)
             {
-                var baseTypeType = SourceTypeMetadata.BaseType.ParentInfo.AsType();
+                var baseTypeType = SourceTypeMetadata.BaseType.AsType();
 
                 var typeTranslationContext = GlobalContext.GetByType(baseTypeType);
                 var translatedBaseTypeMetadata = typeTranslationContext.Process(baseTypeType);
@@ -102,10 +102,10 @@ namespace TsModelGen.Core.TypeTranslationContext
                 
                 // TODO only process serializable members unless explicitly requested oterwise
 
-                var name = sourceMemberInfo.MemberInfo.Name;
+                var name = sourceMemberInfo.Name;
 
-                var type = ((sourceMemberInfo.MemberInfo as PropertyInfo)?.PropertyType)
-                    .NullTo((sourceMemberInfo.MemberInfo as FieldInfo)?.FieldType)
+                var type = ((sourceMemberInfo as PropertyInfo)?.PropertyType)
+                    .NullTo((sourceMemberInfo as FieldInfo)?.FieldType)
                     .NullToException(new InvalidOperationException("Oooops!!!"));
 
                 var memberTypeTranslationContext = GlobalContext.GetByType(type);
