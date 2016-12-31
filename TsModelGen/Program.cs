@@ -20,18 +20,6 @@ namespace TsModelGen
             
             var translationContext = new TranslationContextBuilder().Build(rootTranslationTargetTypes);
 
-            // TODO Remove this dictionary
-            var dictionary = rootTranslationTargetTypes
-                .Union(
-                    translationContext
-                        .OfType<RegularTypeTranslationContext>()
-                        .Select(typeTranslationContext => typeTranslationContext.TypeInfo)
-                )
-                .ToDictionary(
-                    targetType => targetType.FullName,
-                    targetType => translationContext
-                            .First(typeTranslationContext => typeTranslationContext.CanProcess(targetType.AsType())));
-
             var generatedCode = rootTranslationTargetTypes
                 .Union(
                     translationContext
