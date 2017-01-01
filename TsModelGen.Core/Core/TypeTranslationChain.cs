@@ -6,14 +6,10 @@ using TsModelGen.Core.TypeTranslationContext.Special;
 
 namespace TsModelGen.Core
 {
-    public static class TypeTranslation
+    public static class TypeTranslationChain
     {
-        // TODO Clean this up
-        public static ITypeTranslationContext[] CreateContextChain(TranslationContext globalTranslationContext)
+        public static ITypeTranslationContext[] BuildDefault(TranslationContext globalTranslationContext)
         {
-            // Simple cases:
-            // * object -> any
-            // * primitive types to their TS direct translations
             return new ITypeTranslationContext[]
             {
                 new DirectTypeTranslationContext(typeof(object), TypeScriptExpression.Any()),
@@ -30,19 +26,17 @@ namespace TsModelGen.Core
                 new DirectTypeTranslationContext(typeof(decimal), TypeScriptExpression.Number()),
                 new DirectTypeTranslationContext(typeof(bool), TypeScriptExpression.Bool()),
                 new DirectTypeTranslationContext(typeof(string), TypeScriptExpression.String()),
-                new DirectTypeTranslationContext(typeof(char), TypeScriptExpression.String()),  // TODO consider better options if possible
+                // TODO consider better options if possible
+                new DirectTypeTranslationContext(typeof(char), TypeScriptExpression.String()),
                 new DirectTypeTranslationContext(typeof(DateTime), TypeScriptExpression.Date()),
-                // { TimeSpan -> ??? },
-
-                new EnumTypeTranslationContext(), // Ok
-                new NullableTypeTranslationContext(globalTranslationContext), // Ok
-                
-                new GenericDictionaryTypeTranslationContext(globalTranslationContext), // Can be better, if we discover types
+                // TODO TimeSpan -> ???
+                new EnumTypeTranslationContext(),
+                new NullableTypeTranslationContext(globalTranslationContext),
+                new GenericDictionaryTypeTranslationContext(globalTranslationContext),
                 new SpecialTypeTranslationContext(typeof(IDictionary), TypeScriptExpression.UntypedDictionary()),
-
-                new ArrayTypeTranslationContext(globalTranslationContext), // Ok
-                new GenericEnumerableTypeTranslationContext(globalTranslationContext), // Not ok, make strongly typed
-                new SpecialTypeTranslationContext(typeof(IEnumerable), TypeScriptExpression.UntypedArray()) // Ok
+                new ArrayTypeTranslationContext(globalTranslationContext),
+                new GenericEnumerableTypeTranslationContext(globalTranslationContext),
+                new SpecialTypeTranslationContext(typeof(IEnumerable), TypeScriptExpression.UntypedArray())
             };
         }
     }

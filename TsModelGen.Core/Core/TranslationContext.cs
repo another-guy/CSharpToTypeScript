@@ -20,8 +20,8 @@ namespace TsModelGen.Core
 
         public TranslationContext()
         {
-            TypeTranslation
-                .CreateContextChain(this)
+            TypeTranslationChain
+                .BuildDefault(this)
                 .ForEach(AddTypeTranslationContext);
         }
 
