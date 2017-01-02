@@ -9,6 +9,21 @@ namespace TsModelGen.Core
 {
     public sealed class TranslationContext : ITypeTranslationEnumerable
     {
+        public static TranslationContext BuildFor(IEnumerable<TypeInfo> translationRootTargetTypes)
+        {
+            var translationContext = new TranslationContext();
+            foreach (var sourceType in translationRootTargetTypes)
+                translationContext.AddTypeTranslationContextForType(sourceType);
+
+            ITypeTranslationContext unprocessed;
+            Func<ITypeTranslationContext, bool> withUnresolvedDependencies =
+                typeContext => typeContext.AreDependenciesResolved == false;
+            while ((unprocessed = translationContext.FirstOrDefault(withUnresolvedDependencies)) != null)
+                unprocessed.ResolveDependencies();
+
+            return translationContext;
+        }
+
         // TODO The right way of doing that is using a Graph data structure.
         // Naive list consumption can't guarantee precedence of parent types.
         public IList<TypeInfo> OrderedTargetTypes { get; } = // TODO Make it immutable for clients
@@ -55,6 +70,16 @@ namespace TsModelGen.Core
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public IEnumerable<string> TranslateTargets()
+        {
+            return OrderedTargetTypes
+                .Select(targetType =>
+                        this.First(typeTranslationContext => typeTranslationContext.CanProcess(targetType.AsType()))
+                            .Process(targetType.AsType())
+                            .Definition
+                );
         }
     }
 }
