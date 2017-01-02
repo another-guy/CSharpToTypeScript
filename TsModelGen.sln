@@ -11,6 +11,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TsModelGen.Tests", "TsModel
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TsModelGen.Core", "TsModelGen.Core\TsModelGen.Core.xproj", "{81ABD0CE-0B94-4212-BF6D-55403A59D9D4}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TsModelGen.DemoTargetAssembly", "TsModelGen.DemoTargetAssembly\TsModelGen.DemoTargetAssembly.xproj", "{F9B5FB3C-9400-475F-BE12-8CB21C97C6EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{81ABD0CE-0B94-4212-BF6D-55403A59D9D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81ABD0CE-0B94-4212-BF6D-55403A59D9D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81ABD0CE-0B94-4212-BF6D-55403A59D9D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9B5FB3C-9400-475F-BE12-8CB21C97C6EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9B5FB3C-9400-475F-BE12-8CB21C97C6EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9B5FB3C-9400-475F-BE12-8CB21C97C6EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9B5FB3C-9400-475F-BE12-8CB21C97C6EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

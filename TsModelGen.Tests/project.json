@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "testRunner": "xunit",
   "dependencies": {
-    "TsModelGen": "0.0.1",
+    "TsModelGen.Core": "0.0.1",
     "xunit": "2.1.0",
     "NSubstitute": "2.0.0-alpha003",
     "dotnet-test-xunit": "1.0.0-rc2-build10025",
