@@ -2,7 +2,7 @@
   "profiles": {
     "TsModelGen": {
       "commandName": "Project",
-      "commandLineArgs": "-c ./myCfg.json"
+      "commandLineArgs": "-c ../TsModelGen.Tests/SampleFiles/sample.cfg.json"
     }
   }
 }

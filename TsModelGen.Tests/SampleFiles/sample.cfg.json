@@ -1,0 +1,21 @@
+﻿{
+  "source": {
+    "assemblies": [ "test.dll" ], // TODO
+    "types": [], // TODO "TODO-set-of-regexs"
+    "ignoreTypeWithAttribute": [], // TODO <attributeClassName>
+    "ignoreMemberWithAttribute": [] // TODO "<attributeClassName>"
+  },
+
+  "output": {
+    "filesGenerated": "singleFile", // "singleFile" | "flatDirectory" | "namespaceHierarchy",
+    "location": "./ts-generated"
+  },
+
+  "translation": {
+    "generatedSybmol": {
+      "prefix": "TS_",
+      "suffix": "Generated"
+    }
+  }
+
+}

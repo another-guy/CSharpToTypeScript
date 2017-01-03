@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using clipr;
 using clipr.Usage;
 
@@ -17,19 +14,14 @@ namespace TsModelGen
             try
             {
                 parser.Parse(rawArgs);
+                return args;
             }
             catch (Exception caught)
             {
-                var originalFgColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.WriteLine(caught);
-                Console.ForegroundColor = originalFgColor;
-
-                Console.WriteLine(help.GetHelp(parser.Config));
-
+                ConsoleW.WriteColor(caught.ToString(), ConsoleColor.Magenta);
+                ConsoleW.WriteColor(help.GetHelp(parser.Config), ConsoleColor.Yellow);
                 return null;
             }
-            return args;
         }
     }
 }
