@@ -18,8 +18,8 @@ namespace TsModelGen
             }
             catch (Exception caught)
             {
-                ConsoleW.WriteColor(caught.ToString(), ConsoleColor.Magenta);
-                ConsoleW.WriteColor(help.GetHelp(parser.Config), ConsoleColor.Yellow);
+                Cli.Write(caught.ToString(), ConsoleColor.Magenta);
+                Cli.Write(help.GetHelp(parser.Config), ConsoleColor.Yellow);
                 return null;
             }
         }
