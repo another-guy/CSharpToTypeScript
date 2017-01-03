@@ -6,6 +6,7 @@
   },
 
   "dependencies": {
+    "clipr": "1.6.0",
     "TsModelGen.Core": "0.0.1-*",
     "Microsoft.NETCore.App": {
       "type": "platform",

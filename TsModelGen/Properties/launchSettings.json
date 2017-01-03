@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TsModelGen": {
+      "commandName": "Project",
+      "commandLineArgs": "-c ./myCfg.json"
+    }
+  }
+}
