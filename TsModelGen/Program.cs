@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using clipr;
-using clipr.Usage;
 using TsModelGen.Core;
 
 namespace TsModelGen
@@ -10,7 +8,7 @@ namespace TsModelGen
     {
         public static void Main(string[] rawArgs)
         {
-            var args = ParseArguments(rawArgs);
+            var args = ArgumentParser.ParseArguments(rawArgs);
             if (args == null) return;
 
             // TODO Move this to input parameters
@@ -28,29 +26,6 @@ namespace TsModelGen
 
             Console.WriteLine(generatedCode);
             Console.ReadKey();
-        }
-
-        private static Arguments ParseArguments(string[] rawArgs)
-        {
-            var args = new Arguments();
-            var parser = new CliParser<Arguments>(args);
-            var help = new AutomaticHelpGenerator<Arguments>();
-            try
-            {
-                parser.Parse(rawArgs);
-            }
-            catch (Exception caught)
-            {
-                var originalFgColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.WriteLine(caught);
-                Console.ForegroundColor = originalFgColor;
-
-                Console.WriteLine(help.GetHelp(parser.Config));
-
-                return null;
-            }
-            return args;
         }
     }
 }
