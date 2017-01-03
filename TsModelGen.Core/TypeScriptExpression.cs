@@ -6,6 +6,7 @@
         {
             return $"export class {generatedTypeName} ";
         }
+
         public static string EnumNameExpression(string generatedTypeName)
         {
             return $"export enum {generatedTypeName} ";
@@ -18,22 +19,22 @@
 
         public static string BlockBegin()
         {
-            return "{\n";
+            return NewLine("{");
         }
 
         public static string MemberDefinitionExpression(string memberName, string memberType, string sourceType)
         {
-            return $"{Tab()}public {memberName}: {memberType}; // {sourceType}\n";
+            return NewLine(Tab($"public {memberName}: {memberType}; {SingleLineComment(sourceType)}"));
         }
 
         public static string BlockEnd()
         {
-            return "}";
+            return NewLine("}");
         }
 
         public static string EnumMemberExpression(string memberName, object memberValue)
         {
-            return $"{Tab()}{memberName} = {memberValue}";
+            return Tab($"{memberName} = {memberValue}");
         }
 
         public static string UntypedArray()
@@ -86,9 +87,19 @@
             return ",";
         }
 
-        public static string Tab()
+        public static string Tab(string text)
         {
-            return "  ";
+            return $"  {text}";
+        }
+
+        public static string NewLine(string text = "")
+        {
+            return $"{text}\n";
+        }
+
+        public static string SingleLineComment(string text)
+        {
+            return $"//{text}";
         }
     }
 }

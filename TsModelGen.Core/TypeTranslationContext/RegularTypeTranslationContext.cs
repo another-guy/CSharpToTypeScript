@@ -82,6 +82,8 @@ namespace TsModelGen.Core.TypeTranslationContext
             var sb = new StringBuilder();
 
             // TODO Class case only now, think of interfaces
+            sb.Append(TypeScriptExpression.SingleLineComment(TypeInfo.FullName));
+            sb.Append(TypeScriptExpression.NewLine());
             sb.Append(TypeScriptExpression.ClassNameExpression(_translatedTypeMetadata.Symbol));
             if (SourceTypeMetadata.BaseType != null)
             {

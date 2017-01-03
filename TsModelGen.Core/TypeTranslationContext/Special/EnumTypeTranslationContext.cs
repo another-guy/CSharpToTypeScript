@@ -36,6 +36,8 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
         {
             var sb = new StringBuilder();
 
+            sb.Append(TypeScriptExpression.SingleLineComment(specificEnumType.FullName));
+            sb.Append(TypeScriptExpression.NewLine());
             sb.Append(TypeScriptExpression.EnumNameExpression(symbol));
             sb.Append(TypeScriptExpression.BlockBegin());
 
