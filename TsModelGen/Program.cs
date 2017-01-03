@@ -13,7 +13,7 @@ namespace TsModelGen
             if (args == null) return;
 
             var path = Path.GetFullPath(args.ConfigLocation);
-            ConsoleW.WriteColor($"Using configuration file from: {path}", ConsoleColor.Green);
+            Cli.WriteLine($"Using configuration file from: {path}", ConsoleColor.Green);
 
             // TODO Move this to input parameters
             // TODO Translate into a list of namespaces, types, rules on types (such as 
@@ -28,7 +28,7 @@ namespace TsModelGen
                 .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
                 .Aggregate((accumulated, typeDefinition) => accumulated + "\n\n" + typeDefinition);
 
-            Console.WriteLine(generatedCode);
+            Cli.WriteLine(generatedCode, ConsoleColor.Blue);
             Console.ReadKey();
         }
     }
