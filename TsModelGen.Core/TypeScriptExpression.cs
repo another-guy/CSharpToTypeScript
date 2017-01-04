@@ -99,7 +99,7 @@
 
         public static string SingleLineComment(string text)
         {
-            return $"//{text}";
+            return $"// {text}";
         }
     }
 }

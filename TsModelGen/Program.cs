@@ -26,7 +26,7 @@ namespace TsModelGen
                 .ToList();
 
             var generatedDefinitions = TranslationContext
-                .BuildFor(rootTargetTypes)
+                .BuildFor(rootTargetTypes, configuration.Output, configuration.Translation)
                 .TranslateTargets();
 
             var generatedCode = generatedDefinitions

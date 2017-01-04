@@ -8,6 +8,13 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
 {
     public class EnumTypeTranslationContext : ITypeTranslationContext
     {
+        private TranslationContext GlobalContext { get; }
+
+        public EnumTypeTranslationContext(TranslationContext translationContext)
+        {
+            GlobalContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
+        }
+
         public bool AreDependenciesResolved => true;
 
         public void ResolveDependencies() { }
@@ -21,7 +28,7 @@ namespace TsModelGen.Core.TypeTranslationContext.Special
         {
             Debug.Assert(CanProcess(specificEnumType));
 
-            var symbol = $"{specificEnumType.Name}Generated"; // TODO Replace with symbol generation rule (from global context)
+            var symbol = GlobalContext.SymbolFor(specificEnumType.Name);
 
             var definition = GetDefinitionForEnum(symbol, specificEnumType);
 

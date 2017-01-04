@@ -11,12 +11,12 @@ namespace TsModelGen.Core
 {
     public static class RootTargetTypes
     {
-        public static IEnumerable<TypeInfo> LocateUsingInputConfiguration(InputConfiguration input)
+        public static IEnumerable<TypeInfo> LocateUsingInputConfiguration(InputConfiguration inputConfiguration)
         {
-            var includeRegexes = CreateRegexesFor(input.IncludeTypes);
-            var excludeRegexes = CreateRegexesFor(input.ExcludeTypes);
+            var includeRegexes = CreateRegexesFor(inputConfiguration.IncludeTypes);
+            var excludeRegexes = CreateRegexesFor(inputConfiguration.ExcludeTypes);
 
-            return input
+            return inputConfiguration
                 .Assemblies
                 .Select(assemblyPath => TargetTypesBasedOnIncludeExcludeRegexes(assemblyPath, includeRegexes, excludeRegexes))
                 .Aggregate(new List<Type>(), (result, newTypes) => result.Concat(newTypes).ToList())

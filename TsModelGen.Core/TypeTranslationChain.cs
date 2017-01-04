@@ -30,7 +30,7 @@ namespace TsModelGen.Core
                 new DirectTypeTranslationContext(typeof(char), TypeScriptExpression.String()),
                 new DirectTypeTranslationContext(typeof(DateTime), TypeScriptExpression.Date()),
                 // TODO TimeSpan -> ???
-                new EnumTypeTranslationContext(),
+                new EnumTypeTranslationContext(globalTranslationContext),
                 new NullableTypeTranslationContext(globalTranslationContext),
                 new GenericDictionaryTypeTranslationContext(globalTranslationContext),
                 new SpecialTypeTranslationContext(typeof(IDictionary), TypeScriptExpression.UntypedDictionary()),

@@ -77,7 +77,7 @@ namespace TsModelGen.Core.TypeTranslationContext
 
             IsProcessed = true;
 
-            _translatedTypeMetadata.Symbol = $"{TypeInfo.Name}Generated"; // TODO Replace with symbol generation rule (from global context)
+            _translatedTypeMetadata.Symbol = GlobalContext.SymbolFor(TypeInfo.Name);
 
             var sb = new StringBuilder();
 

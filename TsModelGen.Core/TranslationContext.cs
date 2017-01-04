@@ -3,15 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using TsModelGen.Core.Configuration;
 using TsModelGen.Core.TypeTranslationContext;
 
 namespace TsModelGen.Core
 {
     public sealed class TranslationContext : ITypeTranslationEnumerable
     {
-        public static TranslationContext BuildFor(IEnumerable<TypeInfo> translationRootTargetTypes)
+        public static TranslationContext BuildFor(
+            IEnumerable<TypeInfo> translationRootTargetTypes,
+            OutputConfiguration outputConfiguration,
+            TranslationConfiguration translationConfiguration)
         {
-            var translationContext = new TranslationContext();
+            var translationContext = new TranslationContext(outputConfiguration, translationConfiguration);
             foreach (var sourceType in translationRootTargetTypes)
                 translationContext.AddTypeTranslationContextForType(sourceType);
 
@@ -24,6 +28,9 @@ namespace TsModelGen.Core
             return translationContext;
         }
 
+        private readonly OutputConfiguration _outputConfiguration;
+        private readonly TranslationConfiguration _translationConfiguration;
+
         // TODO The right way of doing that is using a Graph data structure.
         // Naive list consumption can't guarantee precedence of parent types.
         public IList<TypeInfo> OrderedTargetTypes { get; } = // TODO Make it immutable for clients
@@ -33,8 +40,11 @@ namespace TsModelGen.Core
         private IList<ITypeTranslationContext> TranslationChain { get; } =
             new List<ITypeTranslationContext>();
 
-        public TranslationContext()
+        private TranslationContext(OutputConfiguration outputConfiguration, TranslationConfiguration translationConfiguration)
         {
+            _outputConfiguration = outputConfiguration;
+            _translationConfiguration = translationConfiguration;
+
             TypeTranslationChain
                 .BuildDefault(this)
                 .ForEach(AddTypeTranslationContext);
@@ -80,6 +90,12 @@ namespace TsModelGen.Core
                             .Process(targetType.AsType())
                             .Definition
                 );
+        }
+
+        public string SymbolFor(string symbolBase)
+        {
+            var symbolRule = _translationConfiguration.GeneratedSymbols;
+            return $"{symbolRule.Prefix}{symbolBase}{symbolRule.Suffix}";
         }
     }
 }
