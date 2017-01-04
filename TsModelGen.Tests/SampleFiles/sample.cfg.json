@@ -1,21 +1,21 @@
 ﻿{
-  "source": {
-    "assemblies": [ "test.dll" ], // TODO
-    "types": [], // TODO "TODO-set-of-regexs"
-    "ignoreTypeWithAttribute": [], // TODO <attributeClassName>
-    "ignoreMemberWithAttribute": [] // TODO "<attributeClassName>"
+  "Input": {
+    "Assemblies": [ "../TsModelGen.DemoTargetAssembly/bin/Debug/netstandard1.6/TsModelGen.DemoTargetAssembly.dll" ],
+    "IncludeTypes": [ "TsModelGen.TargetNamespace" ],
+    "ExcludeTypes": [], // ["..."]
+    "ExcludeTypesWithAttribute": [], // ["..."]
+    "ExcludeMembersWithAttribute": [] // ["..."]
   },
 
-  "output": {
-    "filesGenerated": "singleFile", // "singleFile" | "flatDirectory" | "namespaceHierarchy",
-    "location": "./ts-generated"
+  "Output": {
+    "Location": "location",
+    "Mode": "NamespaceHierarchyDirecory"
   },
 
-  "translation": {
-    "generatedSybmol": {
-      "prefix": "TS_",
-      "suffix": "Generated"
+  "Translation": {
+    "GeneratedSymbols": {
+      "Prefix": "Ts",
+      "Suffix": "Generated"
     }
   }
-
 }

@@ -5,7 +5,7 @@ namespace TsModelGen
     [ApplicationInfo(
          Description =
              "TsModelGen is a tool " +
-             "that translates target C# model (data transfer) classes, structs, and enums " +
+             "that translates target CompleteConfiguration# model (data transfer) classes, structs, and enums " +
              "into compatible TypeScript definitions."
      )]
     public class Arguments

@@ -1,29 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
+using System.Text.RegularExpressions;
+using TsModelGen.Core.Configuration;
 
 namespace TsModelGen.Core
 {
     public static class RootTargetTypes
     {
-        public static IEnumerable<TypeInfo> LocateFrom(IEnumerable<string> namespaces)
+        public static IEnumerable<TypeInfo> LocateUsingInputConfiguration(InputConfiguration input)
         {
-            return RootTypesFromAllAssemblies()
-                .Where(TypeIsFromTargetNamespace(namespaces));
+            var includeRegexes = CreateRegexesFor(input.IncludeTypes);
+            var excludeRegexes = CreateRegexesFor(input.ExcludeTypes);
+
+            return input
+                .Assemblies
+                .Select(assemblyPath => TargetTypesBasedOnIncludeExcludeRegexes(assemblyPath, includeRegexes, excludeRegexes))
+                .Aggregate(new List<Type>(), (result, newTypes) => result.Concat(newTypes).ToList())
+                .Select(type => type.GetTypeInfo());
         }
 
-        private static IEnumerable<TypeInfo> RootTypesFromAllAssemblies()
+        private static List<Regex> CreateRegexesFor(IEnumerable<string> patterns)
         {
-            var emptyResult = (IEnumerable<TypeInfo>)new List<TypeInfo>();
-            return new[] {Assembly.GetEntryAssembly().DefinedTypes} // TODO More assemblies to load here
-                .Aggregate(emptyResult, (result, types) => result.Concat(types));
+            return patterns
+                .Select(pattern => new Regex(pattern))
+                .ToList();
         }
 
-        private static Func<TypeInfo, bool> TypeIsFromTargetNamespace(IEnumerable<string> namespaces)
+        private static IEnumerable<Type> TargetTypesBasedOnIncludeExcludeRegexes(
+            string assemblyPath,
+            IReadOnlyCollection<Regex> includeRegexes,
+            IReadOnlyCollection<Regex> excludeRegexes)
         {
-            return typeInfo =>
-                    namespaces.Any(n => typeInfo.Namespace.StartsWith(n));
+            var absoluteAssemblyPath = Path.GetFullPath(assemblyPath);
+            return AssemblyLoadContext
+                .Default
+                .LoadFromAssemblyPath(absoluteAssemblyPath)
+                .GetTypes()
+                .Where(type => IsTargetType(type, includeRegexes, excludeRegexes));
+        }
+
+        private static bool IsTargetType(
+            Type type,
+            IEnumerable<Regex> includeRegexes,
+            IEnumerable<Regex> excludeRegexes)
+        {
+            var inInclude = RegexTargetsType(includeRegexes, type);
+            var notInExclude = RegexTargetsType(excludeRegexes, type) == false;
+            return inInclude && notInExclude;
+        }
+
+        private static bool RegexTargetsType(IEnumerable<Regex> regexes, Type type)
+        {
+            return regexes.Any(regex => regex.IsMatch(type.FullName));
         }
     }
 }

@@ -7,7 +7,9 @@
 
   "dependencies": {
     "Peppermint": "1.2.2",
-    "NETStandard.Library": "1.6.0"
+    "NETStandard.Library": "1.6.0",
+    "System.Runtime.Loader": "4.3.0",
+    "Newtonsoft.Json": "9.0.1"
   },
 
   "frameworks": {

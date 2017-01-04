@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using TsModelGen.Core;
+using TsModelGen.Core.Configuration;
 
 namespace TsModelGen
 {
@@ -15,18 +17,21 @@ namespace TsModelGen
             var path = Path.GetFullPath(args.ConfigLocation);
             Cli.WriteLine($"Using configuration file from: {path}", ConsoleColor.Green);
 
-            // TODO Move this to input parameters
-            // TODO Translate into a list of namespaces, types, rules on types (such as 
-            var targetNameSpace = "TsModelGen.TargetNamespace";
+            var configuration = File
+                .ReadAllText(path)
+                .UseAsArgFor(JsonConvert.DeserializeObject<CompleteConfiguration>);
 
-            var targetNamespaces = new[] {targetNameSpace}; // TODO Make a parameter
-            var rootTargetTypes = RootTargetTypes.LocateFrom(targetNamespaces).ToList();
+            var rootTargetTypes = RootTargetTypes
+                .LocateUsingInputConfiguration(configuration.Input)
+                .ToList();
 
-            var generatedDefinitions = TranslationContext.BuildFor(rootTargetTypes).TranslateTargets();
+            var generatedDefinitions = TranslationContext
+                .BuildFor(rootTargetTypes)
+                .TranslateTargets();
 
             var generatedCode = generatedDefinitions
                 .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
-                .Aggregate((accumulated, typeDefinition) => accumulated + "\n\n" + typeDefinition);
+                .Aggregate((accumulated, typeDefinition) => accumulated + "\n" + typeDefinition);
 
             Cli.WriteLine(generatedCode, ConsoleColor.Blue);
             Console.ReadKey();
