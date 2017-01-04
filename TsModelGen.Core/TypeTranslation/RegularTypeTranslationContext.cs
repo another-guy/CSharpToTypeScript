@@ -15,7 +15,6 @@ namespace TsModelGen.Core.TypeTranslation
 
         public TypeInfo TypeInfo { get; }
         private TranslationContext GlobalContext { get; }
-        public string Id => TypeInfo.AssemblyQualifiedName;
         private SourceTypeMetadata SourceTypeMetadata { get; } = new SourceTypeMetadata();
 
         private readonly TranslatedTypeMetadata _translatedTypeMetadata = new TranslatedTypeMetadata();
@@ -82,7 +81,7 @@ namespace TsModelGen.Core.TypeTranslation
             var sb = new StringBuilder();
 
             // TODO Class case only now, think of interfaces
-            sb.Append(TypeScriptExpression.SingleLineComment(TypeInfo.FullName));
+            sb.Append(GlobalContext.TypeCommentFor(TypeInfo));
             sb.Append(TypeScriptExpression.NewLine());
             sb.Append(TypeScriptExpression.ClassNameExpression(_translatedTypeMetadata.Symbol));
             if (SourceTypeMetadata.BaseType != null)
@@ -103,17 +102,17 @@ namespace TsModelGen.Core.TypeTranslation
                 var sourceMemberInfo = SourceTypeMetadata[memberName];
                 
                 // TODO only process serializable members unless explicitly requested oterwise
-
                 var name = sourceMemberInfo.Name;
 
                 var type = ((sourceMemberInfo as PropertyInfo)?.PropertyType)
-                    .NullTo((sourceMemberInfo as FieldInfo)?.FieldType)
-                    .NullToException(new InvalidOperationException("Oooops!!!"));
+                    .NullTo((sourceMemberInfo as FieldInfo)?.FieldType);
+                Debug.Assert(type != null, $"sourceMemberInfo is supposed to be either a PropertyInfo or FieldInfo but was {sourceMemberInfo.GetType()}");
 
                 var memberTypeTranslationContext = GlobalContext.GetByType(type);
                 var translatedMemberTypeMetadata = memberTypeTranslationContext.Process(type); // TODO Process is not needed as a part of Interface!!!
 
-                sb.Append(TypeScriptExpression.MemberDefinitionExpression(name, translatedMemberTypeMetadata.Symbol, type.FullName)); // TODO Addembly qualified name?
+                var sourceTypeComment = GlobalContext.TypeCommentFor(type.GetTypeInfo());
+                sb.Append(TypeScriptExpression.MemberDefinitionExpression(name, translatedMemberTypeMetadata.Symbol, sourceTypeComment));
             }
 
             sb.Append(TypeScriptExpression.BlockEnd());

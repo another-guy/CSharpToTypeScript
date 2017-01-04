@@ -22,9 +22,10 @@
             return NewLine("{");
         }
 
-        public static string MemberDefinitionExpression(string memberName, string memberType, string sourceType)
+        public static string MemberDefinitionExpression(string memberName, string memberType, string sourceTypeComment)
         {
-            return NewLine(Tab($"public {memberName}: {memberType}; {SingleLineComment(sourceType)}"));
+            var commentSuffix = string.IsNullOrWhiteSpace(sourceTypeComment) ? "" : $" {sourceTypeComment}";
+            return NewLine(Tab($"public {memberName}: {memberType};{commentSuffix}"));
         }
 
         public static string BlockEnd()

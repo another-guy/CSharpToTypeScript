@@ -42,8 +42,8 @@ namespace TsModelGen.Core.TypeTranslation.Special
         private string GetDefinitionForEnum(string symbol, Type specificEnumType)
         {
             var sb = new StringBuilder();
-
-            sb.Append(TypeScriptExpression.SingleLineComment(specificEnumType.FullName));
+            
+            sb.Append(GlobalContext.TypeCommentFor(specificEnumType.GetTypeInfo()));
             sb.Append(TypeScriptExpression.NewLine());
             sb.Append(TypeScriptExpression.EnumNameExpression(symbol));
             sb.Append(TypeScriptExpression.BlockBegin());

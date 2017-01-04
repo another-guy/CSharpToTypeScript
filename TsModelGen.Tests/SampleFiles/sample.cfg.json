@@ -16,6 +16,8 @@
     "GeneratedSymbols": {
       "Prefix": "Ts",
       "Suffix": "Generated"
-    }
+    },
+
+    "SourceTypeReferenceKind": "FullName" 
   }
 }

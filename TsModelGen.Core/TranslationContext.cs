@@ -97,5 +97,26 @@ namespace TsModelGen.Core
             var symbolRule = _translationConfiguration.GeneratedSymbols;
             return $"{symbolRule.Prefix}{symbolBase}{symbolRule.Suffix}";
         }
+
+        public string TypeCommentFor(TypeInfo typeInfo)
+        {
+            string typeRef;
+            switch (_translationConfiguration.SourceTypeReferenceKind)
+            {
+                case SourceTypeReferenceKind.AssemblyQualifiedName:
+                    typeRef = typeInfo.AssemblyQualifiedName;
+                    break;
+                case SourceTypeReferenceKind.FullName:
+                    typeRef = typeInfo.FullName;
+                    break;
+                case SourceTypeReferenceKind.Name:
+                    typeRef = typeInfo.Name;
+                    break;
+                case SourceTypeReferenceKind.None:
+                default:
+                    return "";
+            }
+            return TypeScriptExpression.SingleLineComment(typeRef);
+        }
     }
 }
