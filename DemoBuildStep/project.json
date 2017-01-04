@@ -3,7 +3,7 @@
 
   "dependencies": {
     "NETStandard.Library": "1.6.1",
-    "TsModelGen": "1.0.0-*"
+    "CSharpToTypeScript": "1.0.0-*"
   },
 
   "frameworks": {

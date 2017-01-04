@@ -1,5 +1,6 @@
-## TsModelGen
-POC for TsModelGeneration
+## CSharpToTypeScript
+
+Translated CSharp DTOs into compatible 
 
 ## Dashboard
 
@@ -7,11 +8,11 @@ TODO Add AppVeyor widgets
 
 **[Milestones](https://github.com/another-guy/TsModelGen/milestones?direction=desc&sort=count&state=open)**
 
-## Launch TsModelGen from console
+## Launch CSharpToTypeScript from console
 
 ```
-# from ./TsModelGen execute
+# from ./CSharpToTypeScript execute
 dotnet restore
 dotnet build
-dotnet run -- -c ../TsModelGen.Tests/SampleFiles/sample.cfg.json
+dotnet run -- -c ../CSharpToTypeScript.Tests/SampleFiles/sample.cfg.json
 ```

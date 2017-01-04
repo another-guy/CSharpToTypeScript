@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CSharpToTypeScript": {
+      "commandName": "Project",
+      "commandLineArgs": "-c ../CSharpToTypeScript.Tests/SampleFiles/sample.cfg.json"
+    }
+  }
+}
