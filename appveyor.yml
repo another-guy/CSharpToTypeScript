@@ -1,0 +1,29 @@
+version: '{build}'
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+  - master
+nuget:
+  disable_publish_on_pr: true
+build_script:
+- ps: .\Build.ps1
+test: off
+artifacts:
+- path: .\artifacts\**\*.nupkg
+  name: NuGet
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/another-guy/api/v2/package
+  api_key:
+    secure: KOAA+SpIO/XZyQZ2Fkitz6mWWWWf4eFX+kqxzsHq/E9//h/o07MkdB3XhoIInJF6
+  skip_symbols: true
+  on:
+    branch: master
+- provider: NuGet
+  name: production
+  api_key:
+    secure: O40j/Pdb5Tw3LGduh9X++gU/fVBanydt/MAZtNbwIeQT9L2nbadqFNOku9p2wty4
+  on:
+    branch: master
+    appveyor_repo_tag: true
