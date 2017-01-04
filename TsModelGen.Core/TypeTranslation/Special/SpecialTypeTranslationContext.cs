@@ -2,11 +2,11 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace TsModelGen.Core.TypeTranslationContext.Direct
+namespace TsModelGen.Core.TypeTranslation.Special
 {
-    public sealed class DirectTypeTranslationContext : ITypeTranslationContext
+    public sealed class SpecialTypeTranslationContext : ITypeTranslationContext
     {
-        public DirectTypeTranslationContext(Type type, string symbol)
+        public SpecialTypeTranslationContext(Type type, string symbol)
         {
             Type = type.NullToException(new ArgumentNullException(nameof(type))).GetTypeInfo();
             Symbol = symbol.NullToException(new ArgumentNullException(nameof(symbol)));
@@ -16,17 +16,17 @@ namespace TsModelGen.Core.TypeTranslationContext.Direct
         private string Symbol { get; }
 
         public bool AreDependenciesResolved => true;
-        public void ResolveDependencies() { }
 
+        public void ResolveDependencies() { }
         public bool CanProcess(Type type)
         {
-            return Type.AsType() == type;
+            return type.IsChildTypeOfPossiblyOpenGeneric(Type.AsType());
         }
         public bool IsProcessed => true;
 
-        public TranslatedTypeMetadata Process(Type specificTargetType)
+        public TranslatedTypeMetadata Process(Type specificTragetType)
         {
-            Debug.Assert(CanProcess(specificTargetType));
+            Debug.Assert(CanProcess(specificTragetType));
             return new TranslatedTypeMetadata { Symbol = Symbol };
         }
     }

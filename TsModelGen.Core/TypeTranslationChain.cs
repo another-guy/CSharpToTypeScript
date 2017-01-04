@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
-using TsModelGen.Core.TypeTranslationContext;
-using TsModelGen.Core.TypeTranslationContext.Direct;
-using TsModelGen.Core.TypeTranslationContext.Special;
+using TsModelGen.Core.TypeTranslation;
+using TsModelGen.Core.TypeTranslation.Direct;
+using TsModelGen.Core.TypeTranslation.Special;
 
 namespace TsModelGen.Core
 {

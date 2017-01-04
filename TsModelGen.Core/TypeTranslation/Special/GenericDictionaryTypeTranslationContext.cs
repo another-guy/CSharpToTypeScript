@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace TsModelGen.Core.TypeTranslationContext.Special
+namespace TsModelGen.Core.TypeTranslation.Special
 {
     public class GenericDictionaryTypeTranslationContext : ITypeTranslationContext
     {

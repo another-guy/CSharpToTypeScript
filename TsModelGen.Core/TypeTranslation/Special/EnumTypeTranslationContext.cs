@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Linq;
 using System.Text;
 
-namespace TsModelGen.Core.TypeTranslationContext.Special
+namespace TsModelGen.Core.TypeTranslation.Special
 {
     public class EnumTypeTranslationContext : ITypeTranslationContext
     {

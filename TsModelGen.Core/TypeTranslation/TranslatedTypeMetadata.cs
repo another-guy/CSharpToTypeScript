@@ -1,4 +1,4 @@
-﻿namespace TsModelGen.Core.TypeTranslationContext
+﻿namespace TsModelGen.Core.TypeTranslation
 {
     public sealed class TranslatedTypeMetadata
     {

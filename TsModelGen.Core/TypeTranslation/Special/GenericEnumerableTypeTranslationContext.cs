@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace TsModelGen.Core.TypeTranslationContext.Special
+namespace TsModelGen.Core.TypeTranslation.Special
 {
     public class GenericEnumerableTypeTranslationContext : ITypeTranslationContext
     {

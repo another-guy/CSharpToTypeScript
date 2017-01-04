@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace TsModelGen.Core.TypeTranslationContext.Special
+namespace TsModelGen.Core.TypeTranslation.Special
 {
     public class ArrayTypeTranslationContext : ITypeTranslationContext
     {

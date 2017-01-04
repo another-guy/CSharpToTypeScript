@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using TsModelGen.Core.TypeTranslationContext;
+using TsModelGen.Core.TypeTranslation;
 
 namespace TsModelGen.Core
 {

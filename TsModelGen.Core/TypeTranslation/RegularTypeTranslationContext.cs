@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
-namespace TsModelGen.Core.TypeTranslationContext
+namespace TsModelGen.Core.TypeTranslation
 {
     public sealed class RegularTypeTranslationContext : ITypeTranslationContext
     {
