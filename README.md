@@ -10,7 +10,12 @@ Translated CSharp DTOs into compatible
 [![GitHub issues](https://img.shields.io/github/issues/another-guy/csharptotypescript.svg?maxAge=2592000)](https://github.com/another-guy/CSharpToTypeScript/issues)
 [![license](https://img.shields.io/github/license/another-guy/CSharpToTypeScript.svg)](https://github.com/another-guy/CSharpToTypeScript/blob/master/LICENSE)
 
-**[Milestones](https://github.com/another-guy/TsModelGen/milestones?direction=desc&sort=count&state=open)**
+**[Milestones](https://github.com/another-guy/TsModelGen/milestones?direction=desc&sort=count&state=open):**
+
+* [v0.0.1 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/1)
+* [v0.0.2 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/3)
+* [v0.0.3 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/2)
+* [v1.0.0 (release)](https://github.com/another-guy/CSharpToTypeScript/milestone/4)
 
 ## Launch CSharpToTypeScript from console
 
