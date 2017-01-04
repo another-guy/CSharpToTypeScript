@@ -11,8 +11,13 @@ TODO Add AppVeyor widgets
 ## Launch CSharpToTypeScript from console
 
 ```
-# from ./CSharpToTypeScript execute
+# from repo root
 dotnet restore
+
+# from ./CSharpToTypeScript.DemoTargetAssembly execute
+dotnet build
+
+# from ./CSharpToTypeScript execute
 dotnet build
 dotnet run -- -c ../CSharpToTypeScript.Tests/SampleFiles/sample.cfg.json
 ```
