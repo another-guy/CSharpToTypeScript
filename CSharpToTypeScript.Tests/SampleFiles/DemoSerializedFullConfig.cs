@@ -15,8 +15,8 @@ namespace CSharpToTypeScript.Tests.SampleFiles
                     Assemblies = new List<string> { "a", "b" },
                     IncludeTypes = new List<string> { "a", "b" },
                     ExcludeTypes = new List<string> { "a", "b" },
-                    ExcludeTypesWithAttribute = new List<string> { "a", "b" },
-                    ExcludeMembersWithAttribute = new List<string> { "a", "b" }
+                    SkipTypesWithAttribute = new List<string> { "a", "b" },
+                    SkipMembersWithAttribute = new List<string> { "a", "b" }
                 },
                 Output = new OutputConfiguration
                 {

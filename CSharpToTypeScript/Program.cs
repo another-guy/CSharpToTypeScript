@@ -22,11 +22,11 @@ namespace CSharpToTypeScript
                 .UseAsArgFor(JsonConvert.DeserializeObject<CompleteConfiguration>);
 
             var rootTargetTypes = RootTargetTypes
-                .LocateUsingInputConfiguration(configuration.Input)
+                .LocateUsingInputConfiguration(configuration)
                 .ToList();
 
             var generatedDefinitions = TranslationContext
-                .BuildFor(rootTargetTypes, configuration.Output, configuration.Translation)
+                .BuildFor(rootTargetTypes, configuration)
                 .TranslateTargets();
 
             var generatedCode = generatedDefinitions

@@ -97,13 +97,13 @@ namespace CSharpToTypeScript.Core.TypeTranslation
 
             sb.Append(TypeScriptExpression.BlockBegin());
 
+            var skipRule = new SkipRule(GlobalContext.InputConfiguration.SkipMembersWithAttribute);
             foreach (var memberName in SourceTypeMetadata.Members)
             {
                 var sourceMemberInfo = SourceTypeMetadata[memberName];
+                if (skipRule.AppliesTo(sourceMemberInfo))
+                    continue;
                 
-                // TODO only process serializable members unless explicitly requested oterwise
-                var name = sourceMemberInfo.Name;
-
                 var type = ((sourceMemberInfo as PropertyInfo)?.PropertyType)
                     .NullTo((sourceMemberInfo as FieldInfo)?.FieldType);
                 Debug.Assert(type != null, $"sourceMemberInfo is supposed to be either a PropertyInfo or FieldInfo but was {sourceMemberInfo.GetType()}");
@@ -112,7 +112,7 @@ namespace CSharpToTypeScript.Core.TypeTranslation
                 var translatedMemberTypeMetadata = memberTypeTranslationContext.Process(type); // TODO Process is not needed as a part of Interface!!!
 
                 var sourceTypeComment = GlobalContext.TypeCommentFor(type.GetTypeInfo());
-                sb.Append(TypeScriptExpression.MemberDefinitionExpression(name, translatedMemberTypeMetadata.Symbol, sourceTypeComment));
+                sb.Append(TypeScriptExpression.MemberDefinitionExpression(sourceMemberInfo.Name, translatedMemberTypeMetadata.Symbol, sourceTypeComment));
             }
 
             sb.Append(TypeScriptExpression.BlockEnd());

@@ -11,12 +11,13 @@ namespace CSharpToTypeScript.Core
 {
     public static class RootTargetTypes
     {
-        public static IEnumerable<TypeInfo> LocateUsingInputConfiguration(InputConfiguration inputConfiguration)
+        public static IEnumerable<TypeInfo> LocateUsingInputConfiguration(CompleteConfiguration configuration)
         {
-            var includeRegexes = CreateRegexesFor(inputConfiguration.IncludeTypes);
-            var excludeRegexes = CreateRegexesFor(inputConfiguration.ExcludeTypes);
+            var includeRegexes = CreateRegexesFor(configuration.Input.IncludeTypes);
+            var excludeRegexes = CreateRegexesFor(configuration.Input.ExcludeTypes);
 
-            return inputConfiguration
+            return configuration
+                .Input
                 .Assemblies
                 .Select(assemblyPath => TargetTypesBasedOnIncludeExcludeRegexes(assemblyPath, includeRegexes, excludeRegexes))
                 .Aggregate(new List<Type>(), (result, newTypes) => result.Concat(newTypes).ToList())

@@ -1,10 +1,12 @@
 ﻿{
   "Input": {
     "Assemblies": [ "../CSharpToTypeScript.DemoTargetAssembly/bin/Debug/netstandard1.6/CSharpToTypeScript.DemoTargetAssembly.dll" ],
+
     "IncludeTypes": [ "CSharpToTypeScript.TargetNamespace" ],
-    "ExcludeTypes": [], // ["..."]
-    "ExcludeTypesWithAttribute": [], // ["..."]
-    "ExcludeMembersWithAttribute": [] // ["..."]
+    "ExcludeTypes": [], // <- This is not covered in "test" case
+
+    "SkipTypesWithAttribute": [ "System.ObsoleteAttribute" ],
+    "SkipMembersWithAttribute": [ "System.ObsoleteAttribute" ]
   },
 
   "Output": {

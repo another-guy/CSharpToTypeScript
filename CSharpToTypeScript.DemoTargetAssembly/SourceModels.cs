@@ -61,4 +61,16 @@ namespace CSharpToTypeScript.TargetNamespace
         Domestic,
         International
     }
+
+    [Obsolete]
+    public class KnownButIgnored
+    {
+        public string NoNoNo { get; set; }
+    }
+
+    public class OkayishClassWithBadProperty
+    {
+        [Obsolete]
+        public string DontUseIt { get; set; }
+    }
 }

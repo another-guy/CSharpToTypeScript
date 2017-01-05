@@ -12,12 +12,13 @@ namespace CSharpToTypeScript.Core
     {
         public static TranslationContext BuildFor(
             IEnumerable<TypeInfo> translationRootTargetTypes,
-            OutputConfiguration outputConfiguration,
-            TranslationConfiguration translationConfiguration)
+            CompleteConfiguration configuration)
         {
-            var translationContext = new TranslationContext(outputConfiguration, translationConfiguration);
+            var skipRule = new SkipRule(configuration.Input.SkipTypesWithAttribute);
+            var translationContext = new TranslationContext(configuration);
             foreach (var sourceType in translationRootTargetTypes)
-                translationContext.AddTypeTranslationContextForType(sourceType);
+                if (skipRule.AppliesTo(sourceType) == false)
+                    translationContext.AddTypeTranslationContextForType(sourceType);
 
             ITypeTranslationContext unprocessed;
             Func<ITypeTranslationContext, bool> withUnresolvedDependencies =
@@ -28,8 +29,9 @@ namespace CSharpToTypeScript.Core
             return translationContext;
         }
 
-        private readonly OutputConfiguration _outputConfiguration;
-        private readonly TranslationConfiguration _translationConfiguration;
+        public InputConfiguration InputConfiguration { get; }
+        public OutputConfiguration OutputConfiguration { get; }
+        public TranslationConfiguration TranslationConfiguration { get; }
 
         // TODO The right way of doing that is using a Graph data structure.
         // Naive list consumption can't guarantee precedence of parent types.
@@ -40,10 +42,12 @@ namespace CSharpToTypeScript.Core
         private IList<ITypeTranslationContext> TranslationChain { get; } =
             new List<ITypeTranslationContext>();
 
-        private TranslationContext(OutputConfiguration outputConfiguration, TranslationConfiguration translationConfiguration)
+        private TranslationContext(CompleteConfiguration configuration)
         {
-            _outputConfiguration = outputConfiguration;
-            _translationConfiguration = translationConfiguration;
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            InputConfiguration = configuration.Input;
+            OutputConfiguration = configuration.Output;
+            TranslationConfiguration = configuration.Translation;
 
             TypeTranslationChain
                 .BuildDefault(this)
@@ -94,14 +98,14 @@ namespace CSharpToTypeScript.Core
 
         public string SymbolFor(string symbolBase)
         {
-            var symbolRule = _translationConfiguration.GeneratedSymbols;
+            var symbolRule = TranslationConfiguration.GeneratedSymbols;
             return $"{symbolRule.Prefix}{symbolBase}{symbolRule.Suffix}";
         }
 
         public string TypeCommentFor(TypeInfo typeInfo)
         {
             string typeRef;
-            switch (_translationConfiguration.SourceTypeReferenceKind)
+            switch (TranslationConfiguration.SourceTypeReferenceKind)
             {
                 case SourceTypeReferenceKind.AssemblyQualifiedName:
                     typeRef = typeInfo.AssemblyQualifiedName;
