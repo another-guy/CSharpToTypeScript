@@ -2,8 +2,9 @@
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-using CSharpToTypeScript.Core;
 using CSharpToTypeScript.Core.Configuration;
+using CSharpToTypeScript.Core.Input;
+using CSharpToTypeScript.Core.Translation;
 
 namespace CSharpToTypeScript
 {

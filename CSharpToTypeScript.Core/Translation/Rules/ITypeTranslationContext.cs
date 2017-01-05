@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CSharpToTypeScript.Core.TypeTranslation
+namespace CSharpToTypeScript.Core.Translation
 {
     public interface ITypeTranslationContext
     {

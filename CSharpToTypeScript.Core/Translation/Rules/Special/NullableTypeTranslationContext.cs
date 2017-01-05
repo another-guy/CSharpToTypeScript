@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace CSharpToTypeScript.Core.TypeTranslation.Special
+namespace CSharpToTypeScript.Core.Translation.Special
 {
     public class NullableTypeTranslationContext : ITypeTranslationContext
     {

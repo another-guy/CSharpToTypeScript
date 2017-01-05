@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Linq;
 using System.Text;
 
-namespace CSharpToTypeScript.Core.TypeTranslation.Special
+namespace CSharpToTypeScript.Core.Translation.Special
 {
     public class EnumTypeTranslationContext : ITypeTranslationContext
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace CSharpToTypeScript.Core
+namespace CSharpToTypeScript.Core.Translation
 {
     public sealed class SourceTypeMetadata
     {

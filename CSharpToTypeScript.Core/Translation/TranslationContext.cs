@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CSharpToTypeScript.Core.Configuration;
-using CSharpToTypeScript.Core.TypeTranslation;
 
-namespace CSharpToTypeScript.Core
+namespace CSharpToTypeScript.Core.Translation
 {
-    public sealed class TranslationContext : ITypeTranslationEnumerable
+    public sealed class TranslationContext : IEnumerable<ITypeTranslationContext>
     {
         public static TranslationContext BuildFor(
             IEnumerable<TypeInfo> translationRootTargetTypes,

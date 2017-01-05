@@ -7,7 +7,7 @@ using System.Runtime.Loader;
 using System.Text.RegularExpressions;
 using CSharpToTypeScript.Core.Configuration;
 
-namespace CSharpToTypeScript.Core
+namespace CSharpToTypeScript.Core.Input
 {
     public static class RootTargetTypes
     {

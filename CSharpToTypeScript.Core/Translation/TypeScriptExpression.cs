@@ -1,4 +1,4 @@
-﻿namespace CSharpToTypeScript.Core
+﻿namespace CSharpToTypeScript.Core.Translation
 {
     public static class TypeScriptExpression
     {

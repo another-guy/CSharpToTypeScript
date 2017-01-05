@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
-using CSharpToTypeScript.Core.TypeTranslation;
-using CSharpToTypeScript.Core.TypeTranslation.Direct;
-using CSharpToTypeScript.Core.TypeTranslation.Special;
+using CSharpToTypeScript.Core.Translation.Direct;
+using CSharpToTypeScript.Core.Translation.Special;
 
-namespace CSharpToTypeScript.Core
+namespace CSharpToTypeScript.Core.Translation
 {
     public static class TypeTranslationChain
     {

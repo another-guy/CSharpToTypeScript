@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace CSharpToTypeScript.Core.TypeTranslation.Special
+namespace CSharpToTypeScript.Core.Translation.Special
 {
     public class ArrayTypeTranslationContext : ITypeTranslationContext
     {

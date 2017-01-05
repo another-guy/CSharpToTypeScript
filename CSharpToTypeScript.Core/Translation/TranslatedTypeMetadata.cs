@@ -1,4 +1,4 @@
-﻿namespace CSharpToTypeScript.Core.TypeTranslation
+﻿namespace CSharpToTypeScript.Core.Translation
 {
     public sealed class TranslatedTypeMetadata
     {
