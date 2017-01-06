@@ -1,6 +1,6 @@
 ## CSharpToTypeScript
 
-Translated CSharp DTOs into compatible
+Translates C# DTOs into compatible TypeScript classes
 
 ## Dashboard
 
