@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
+using CaseExtensions;
 using CSharpToTypeScript.Core.Configuration;
 
 namespace CSharpToTypeScript.Core.Output
@@ -33,8 +33,7 @@ namespace CSharpToTypeScript.Core.Output
 
             foreach (var result in translationResults)
             {
-                var kebabStyleTypeName = NaiveNaming.PascalToKebab(result.TranslatedType.Name);
-                var fileName = $"{kebabStyleTypeName}.ts";
+                var fileName = $"{result.TranslatedType.Name.ToKebabCase()}.ts";
                 var path = Path.Combine(absoluteLocation, fileName);
 
                 using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
