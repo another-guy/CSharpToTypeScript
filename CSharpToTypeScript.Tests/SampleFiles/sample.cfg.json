@@ -10,7 +10,7 @@
   },
 
   "Output": {
-    "Location": "location",
+    "Location": "./Generated",
     "Mode": "NamespaceHierarchyDirecory"
   },
 

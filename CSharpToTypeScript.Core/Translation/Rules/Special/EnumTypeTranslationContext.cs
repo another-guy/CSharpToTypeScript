@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
-namespace CSharpToTypeScript.Core.Translation.Special
+namespace CSharpToTypeScript.Core.Translation.Rules.Special
 {
     public class EnumTypeTranslationContext : ITypeTranslationContext
     {

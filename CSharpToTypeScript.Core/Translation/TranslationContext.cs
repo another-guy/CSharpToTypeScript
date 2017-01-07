@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CSharpToTypeScript.Core.Configuration;
+using CSharpToTypeScript.Core.Translation.Rules;
+using CSharpToTypeScript.Core.Translation.Rules.Regular;
 
 namespace CSharpToTypeScript.Core.Translation
 {
@@ -85,14 +87,17 @@ namespace CSharpToTypeScript.Core.Translation
             return GetEnumerator();
         }
 
-        public IEnumerable<string> TranslateTargets()
+        public IEnumerable<TranslationResult> TranslateTargets()
         {
             return OrderedTargetTypes
                 .Select(targetType =>
+                {
+                    var definition =
                         this.First(typeTranslationContext => typeTranslationContext.CanProcess(targetType.AsType()))
                             .Process(targetType.AsType())
-                            .Definition
-                );
+                            .Definition;
+                    return new TranslationResult(targetType, definition);
+                });
         }
 
         public string SymbolFor(string symbolBase)

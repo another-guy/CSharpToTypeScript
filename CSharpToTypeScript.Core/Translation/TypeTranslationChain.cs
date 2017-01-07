@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections;
-using CSharpToTypeScript.Core.Translation.Direct;
-using CSharpToTypeScript.Core.Translation.Special;
+using CSharpToTypeScript.Core.Translation.Rules;
+using CSharpToTypeScript.Core.Translation.Rules.Direct;
+using CSharpToTypeScript.Core.Translation.Rules.Special;
 
 namespace CSharpToTypeScript.Core.Translation
 {

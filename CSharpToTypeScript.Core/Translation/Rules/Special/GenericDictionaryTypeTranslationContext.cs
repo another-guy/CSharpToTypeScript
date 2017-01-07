@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace CSharpToTypeScript.Core.Translation.Special
+namespace CSharpToTypeScript.Core.Translation.Rules.Special
 {
     public class GenericDictionaryTypeTranslationContext : ITypeTranslationContext
     {

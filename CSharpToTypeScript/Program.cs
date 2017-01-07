@@ -23,18 +23,14 @@ namespace CSharpToTypeScript
                 .UseAsArgFor(JsonConvert.DeserializeObject<CompleteConfiguration>);
 
             var rootTargetTypes = RootTargetTypes
-                .LocateUsingInputConfiguration(configuration)
-                .ToList();
+                .LocateUsingInputConfiguration(configuration);
 
-            var generatedDefinitions = TranslationContext
+            var nonemptyGenerationResults = TranslationContext
                 .BuildFor(rootTargetTypes, configuration)
-                .TranslateTargets();
+                .TranslateTargets()
+                .Where(translationResult => string.IsNullOrWhiteSpace(translationResult.Definition) == false);
 
-            var generatedCode = generatedDefinitions
-                .Where(definition => string.IsNullOrWhiteSpace(definition) == false)
-                .Aggregate((accumulated, typeDefinition) => accumulated + "\n" + typeDefinition);
-
-            Cli.WriteLine(generatedCode, ConsoleColor.Blue);
+            Cli.WriteLine($"Writing results to {configuration.Output.Location}", ConsoleColor.Green);
             Console.ReadKey();
         }
     }

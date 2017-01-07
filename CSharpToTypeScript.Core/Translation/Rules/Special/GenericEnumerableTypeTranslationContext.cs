@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace CSharpToTypeScript.Core.Translation.Special
+namespace CSharpToTypeScript.Core.Translation.Rules.Special
 {
     public class GenericEnumerableTypeTranslationContext : ITypeTranslationContext
     {

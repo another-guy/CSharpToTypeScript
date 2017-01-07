@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace CSharpToTypeScript.Core.Translation.Direct
+namespace CSharpToTypeScript.Core.Translation.Rules.Direct
 {
     public sealed class DirectTypeTranslationContext : ITypeTranslationContext
     {

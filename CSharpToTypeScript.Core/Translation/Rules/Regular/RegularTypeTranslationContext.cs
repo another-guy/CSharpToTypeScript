@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
-namespace CSharpToTypeScript.Core.Translation
+namespace CSharpToTypeScript.Core.Translation.Rules.Regular
 {
     public sealed class RegularTypeTranslationContext : ITypeTranslationContext
     {
