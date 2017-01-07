@@ -11,8 +11,8 @@
 
   "Output": {
     //"Location": "./Generated/singleFile.ts",
-    "Location": "C:/new/new/test.txt",
-    "Mode": "SingleFile"
+    "Location": "C:/new",
+    "Mode": "FlatDirectory"
   },
 
   "Translation": {

@@ -10,9 +10,20 @@ namespace CSharpToTypeScript.Core.Output
         private static readonly IDictionary<OutputMode, Func<OutputConfiguration, ITranslationResultWriter>> Registry =
             new Dictionary<OutputMode, Func<OutputConfiguration, ITranslationResultWriter>>
             {
-                { OutputMode.SingleFile, outputConfiguration => new SingleFileResultWriter(outputConfiguration) },
-                { OutputMode.FlatDirectory, outputConfiguration => new SingleFileResultWriter(outputConfiguration) },
-                { OutputMode.NamespaceHierarchyDirecory, outputConfiguration => new NamespaceHierarchyDirecoryResultWriter(outputConfiguration) }
+                {
+                    OutputMode.SingleFile,
+                    outputConfiguration => new SingleFileResultWriter(outputConfiguration)
+                },
+
+                {
+                    OutputMode.FlatDirectory,
+                    outputConfiguration => new FlatDirectoryResultWriter(outputConfiguration)
+                },
+
+                {
+                    OutputMode.NamespaceHierarchyDirecory,
+                    outputConfiguration => new NamespaceHierarchyDirecoryResultWriter(outputConfiguration)
+                }
             };
 
         public static ITranslationResultWriter GetFor(OutputConfiguration configurationOutput)
