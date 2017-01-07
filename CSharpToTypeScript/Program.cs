@@ -13,7 +13,6 @@ namespace CSharpToTypeScript
         public static void Main(string[] rawArgs)
         {
             var args = ArgumentParser.ParseArguments(rawArgs);
-            if (args == null) return;
 
             var path = Path.GetFullPath(args.ConfigLocation);
             Cli.WriteLine($"Using configuration file from: {path}", ConsoleColor.Green);

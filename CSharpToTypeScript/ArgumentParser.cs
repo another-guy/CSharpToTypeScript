@@ -16,11 +16,10 @@ namespace CSharpToTypeScript
                 parser.Parse(rawArgs);
                 return args;
             }
-            catch (Exception caught)
+            catch (Exception)
             {
-                Cli.Write(caught.ToString(), ConsoleColor.Magenta);
                 Cli.Write(help.GetHelp(parser.Config), ConsoleColor.Yellow);
-                return null;
+                throw;
             }
         }
     }
