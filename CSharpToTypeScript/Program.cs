@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using CSharpToTypeScript.Core.Configuration;
 using CSharpToTypeScript.Core.Input;
+using CSharpToTypeScript.Core.Output;
 using CSharpToTypeScript.Core.Translation;
 
 namespace CSharpToTypeScript
@@ -30,7 +31,9 @@ namespace CSharpToTypeScript
                 .Where(translationResult => string.IsNullOrWhiteSpace(translationResult.Definition) == false);
 
             Cli.WriteLine($"Writing results to {configuration.Output.Location}", ConsoleColor.Green);
-            Console.ReadKey();
+            Writers
+                .GetFor(configuration.Output)
+                .Write(nonemptyGenerationResults);
         }
     }
 }

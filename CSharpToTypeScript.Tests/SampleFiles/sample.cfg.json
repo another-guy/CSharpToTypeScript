@@ -10,8 +10,9 @@
   },
 
   "Output": {
-    "Location": "./Generated",
-    "Mode": "NamespaceHierarchyDirecory"
+    //"Location": "./Generated/singleFile.ts",
+    "Location": "C:/new/new/test.txt",
+    "Mode": "SingleFile"
   },
 
   "Translation": {
