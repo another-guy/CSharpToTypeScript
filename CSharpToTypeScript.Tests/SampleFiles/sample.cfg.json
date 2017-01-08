@@ -12,7 +12,7 @@
   "Output": {
     //"Location": "./Generated/singleFile.ts",
     "Location": "C:/new",
-    "Mode": "FlatDirectory"
+    "Mode": "NamespaceHierarchyDirecory"
   },
 
   "Translation": {

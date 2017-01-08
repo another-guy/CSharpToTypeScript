@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using CSharpToTypeScript.NonTargetNamespace;
-using CSharpToTypeScript.TargetNamespace;
 
 namespace CSharpToTypeScript.NonTargetNamespace
 {
+    using TargetNamespace;
+
     public class Person
     {
+
         public string FirstName { get; set; }
         public int Age;
         public IList Addresses1 { get; set; }
@@ -28,6 +29,9 @@ namespace CSharpToTypeScript.NonTargetNamespace
 
 namespace CSharpToTypeScript.TargetNamespace
 {
+    using NonTargetNamespace;
+    using NonTargetNamespace.Nested;
+
     public class Employee : Person
     {
         public bool IsSubscribedToNews;
@@ -56,12 +60,6 @@ namespace CSharpToTypeScript.TargetNamespace
         public string Street { get; set; }
     }
 
-    public enum Kind
-    {
-        Domestic,
-        International
-    }
-
     [Obsolete]
     public class KnownButIgnored
     {
@@ -72,5 +70,14 @@ namespace CSharpToTypeScript.TargetNamespace
     {
         [Obsolete]
         public string DontUseIt { get; set; }
+    }
+}
+
+namespace CSharpToTypeScript.NonTargetNamespace.Nested
+{
+    public enum Kind
+    {
+        Domestic,
+        International
     }
 }
