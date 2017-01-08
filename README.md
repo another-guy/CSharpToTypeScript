@@ -14,10 +14,11 @@ Translates C# DTOs into compatible TypeScript classes
 
 **[Milestones](https://github.com/another-guy/CSharpToTypeScript/milestones?direction=desc&sort=count&state=open):**
 
-* [v0.0.1 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/1) -- **Milestone 1 (Current)**
-* [v0.0.2 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/3) -- Milestone 2
-* [v0.0.3 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/2) -- Milestone 3
-* [v1.0.0 (release)](https://github.com/another-guy/CSharpToTypeScript/milestone/4) -- Milestone 4
+* [v0.0.1 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/1) **(Current)**
+* [v0.0.2 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/3)
+* [v0.0.3 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/2)
+* [v0.0.4 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/5)
+* [v1.0.0 (release)](https://github.com/another-guy/CSharpToTypeScript/milestone/4)
 
 ## Launch CSharpToTypeScript from console
 
