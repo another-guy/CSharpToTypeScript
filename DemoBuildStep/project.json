@@ -1,9 +1,9 @@
 ﻿{
-  "version": "1.0.0-*",
+  "version": "0.0.1-*",
 
   "dependencies": {
     "NETStandard.Library": "1.6.1",
-    "CSharpToTypeScript": "1.0.0-*"
+    "CSharpToTypeScript": "0.0.1-*"
   },
 
   "frameworks": {
@@ -13,7 +13,6 @@
   },
 
   "scripts": {
-    "precompile": "echo PRECOMPILE",
-    "postcompile": "echo POSTCOMPILE"
+    "precompile": "dotnet run -p ../CSharpToTypeScript/project.json -- -c ../CSharpToTypeScript.Tests/SampleFiles/sample.cfg.json"
   }
 }
