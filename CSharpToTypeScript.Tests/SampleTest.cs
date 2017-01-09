@@ -5,9 +5,9 @@ namespace CSharpToTypeScript.Tests
     public class SampleTest
     {
         [Fact]
-        public void TestThatIsSupposedToFail()
+        public void TestThatIsSupposedToPass()
         {
-            Assert.True(false, "TEST FAILS AS EXPECTED");
+            Assert.True(true, "TEST DOES NOT FAIL, AS EXPECTED");
         }
     }
 }
