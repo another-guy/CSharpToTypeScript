@@ -27,7 +27,7 @@ echo "============================ RESTORE DEPENDENCIES ========================
 exec { & dotnet restore }
 
 echo "========================== BUILD TO RUN UNIT TESTS =========================="
-<# exec { & dotnet test .\CSharpToTypeScript.Tests -c Release } #>
+exec { & dotnet test .\CSharpToTypeScript.Tests -c Release }
 
 echo "============================= BUILD NUGET PACKAGE ==========================="
 $tagOfHead = iex 'git tag -l --contains HEAD'
