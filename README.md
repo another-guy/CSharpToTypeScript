@@ -12,6 +12,8 @@ Translates C# DTOs into compatible TypeScript classes
 [![GitHub issues](https://img.shields.io/github/issues/another-guy/csharptotypescript.svg?maxAge=2592000)](https://github.com/another-guy/CSharpToTypeScript/issues)
 [![license](https://img.shields.io/github/license/another-guy/CSharpToTypeScript.svg)](https://github.com/another-guy/CSharpToTypeScript/blob/master/LICENSE)
 
+### Please notice that while this project acknowledges the idea of [Semantic Versioning](http://semver.org/), it is not really followed until `v1.0.0` is released. In other words, as of now *the API is a subject to change without any prior notice*. Stable API is a part of `v1.0.0` requirements, and when it is release, any new releases with breaking changes will affect the major version of the package.
+
 **[Milestones](https://github.com/another-guy/CSharpToTypeScript/milestones?direction=desc&sort=count&state=open):**
 
 * <del>[v0.0.1 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/1)</del> **Released**
