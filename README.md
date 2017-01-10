@@ -25,15 +25,14 @@ Translates C# DTOs into compatible TypeScript classes
 ## Launch CSharpToTypeScript from console
 
 ```
-# from repo root
+# from <repoRoot>
 dotnet restore
 
-# from ./CSharpToTypeScript.DemoTargetAssembly execute
+# from <repoRoot> execute
 dotnet build
 
-# from ./CSharpToTypeScript execute
-dotnet build
-dotnet run -- -c ../CSharpToTypeScript.Tests/SampleFiles/sample.cfg.json
+# from <repoRoot> execute
+dotnet run -p CSharpToTypeScript -- -c CSharpToTypeScript.Tests/SampleFiles/sample.cfg.json
 ```
 
 ## Code Example
