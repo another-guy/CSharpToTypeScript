@@ -3,20 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CSharpToTypeScript.Core.Common;
 using CSharpToTypeScript.Core.Configuration;
 using CSharpToTypeScript.Core.Translation.Rules;
 using CSharpToTypeScript.Core.Translation.Rules.Regular;
 
 namespace CSharpToTypeScript.Core.Translation
 {
-    public sealed class TranslationContext : IEnumerable<ITypeTranslationContext>
+    public sealed class TranslationContext : ITranslationContext
     {
-        public static TranslationContext BuildFor(
+        public static ITranslationContext BuildFor(
+            ITypeScriptExpression expression,
             IEnumerable<TypeInfo> translationRootTargetTypes,
             CompleteConfiguration configuration)
         {
             var skipRule = new SkipRule(configuration.Input.SkipTypesWithAttribute);
-            var translationContext = new TranslationContext(configuration);
+            var translationContext = new TranslationContext(expression, configuration);
             foreach (var sourceType in translationRootTargetTypes)
                 if (skipRule.AppliesTo(sourceType) == false)
                     translationContext.AddTypeTranslationContextForType(sourceType);
@@ -30,6 +32,7 @@ namespace CSharpToTypeScript.Core.Translation
             return translationContext;
         }
 
+        private ITypeScriptExpression Expression { get; }
         public InputConfiguration InputConfiguration { get; }
         public OutputConfiguration OutputConfiguration { get; }
         public TranslationConfiguration TranslationConfiguration { get; }
@@ -39,19 +42,23 @@ namespace CSharpToTypeScript.Core.Translation
         public IList<TypeInfo> OrderedTargetTypes { get; } = // TODO Make it immutable for clients
             new List<TypeInfo>();
 
-        // TODO Make this dynamic -- let clients alter the chain to fit their need
-        private IList<ITypeTranslationContext> TranslationChain { get; } =
+        // TODO EXPOSE TO CLIENTS AS AN OBJECT -- Make this dynamic -- let clients alter the chain to fit their need
+        public IList<ITypeTranslationContext> TranslationChain { get; } =
             new List<ITypeTranslationContext>();
 
-        private TranslationContext(CompleteConfiguration configuration)
+        private TranslationContext(
+            ITypeScriptExpression expression,
+            CompleteConfiguration configuration)
         {
+            Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
+
             if (configuration == null) throw new ArgumentNullException(nameof(configuration));
             InputConfiguration = configuration.Input;
             OutputConfiguration = configuration.Output;
             TranslationConfiguration = configuration.Translation;
 
             TypeTranslationChain
-                .BuildDefault(this)
+                .BuildDefault(Expression, this)
                 .ForEach(AddTypeTranslationContext);
         }
 
@@ -64,7 +71,7 @@ namespace CSharpToTypeScript.Core.Translation
         public void AddTypeTranslationContextForType(TypeInfo typeInfo)
         {
             OrderedTargetTypes.Insert(0, typeInfo);
-            AddTypeTranslationContext(new RegularTypeTranslationContext(this, typeInfo));
+            AddTypeTranslationContext(new RegularTypeTranslationContext(Expression, this, typeInfo));
         }
 
         private void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext)
@@ -87,7 +94,7 @@ namespace CSharpToTypeScript.Core.Translation
             return GetEnumerator();
         }
 
-        public IEnumerable<TranslationResult> TranslateTargets()
+        public IEnumerable<ITranslationResult> TranslateTargets()
         {
             return OrderedTargetTypes
                 .Select(targetType =>
@@ -124,7 +131,7 @@ namespace CSharpToTypeScript.Core.Translation
                 default:
                     return "";
             }
-            return TypeScriptExpression.SingleLineComment(typeRef);
+            return Expression.SingleLineComment(typeRef);
         }
     }
 }

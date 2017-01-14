@@ -7,11 +7,15 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
 {
     public class GenericDictionaryTypeTranslationContext : ITypeTranslationContext
     {
-        private readonly TranslationContext _translationContext;
+        private ITypeScriptExpression Expression { get; }
+        private ITranslationContext TranslationContext { get; }
 
-        public GenericDictionaryTypeTranslationContext(TranslationContext translationContext)
+        public GenericDictionaryTypeTranslationContext(
+            ITypeScriptExpression expression,
+            ITranslationContext translationContext)
         {
-            _translationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
+            Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
+            TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
         }
 
         public bool AreDependenciesResolved { get; } = true;
@@ -25,7 +29,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
 
         public bool IsProcessed { get; } = true;
 
-        public TranslatedTypeMetadata Process(Type specificTargetType)
+        public ITranslatedTypeMetadata Process(Type specificTargetType)
         {
             Debug.Assert(CanProcess(specificTargetType));
             var genericArgumentTypes = specificTargetType.GetGenericArguments();
@@ -34,19 +38,18 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
             var keyType = genericArgumentTypes[0];
             var valueType = genericArgumentTypes[1];
 
-            var translatedKeySymbol = _translationContext
+            var translatedKeySymbol = TranslationContext
                 .GetByType(keyType)
                 .Process(keyType)
                 .Symbol;
-            var translatedValueSymbol = _translationContext
+            var translatedValueSymbol = TranslationContext
                 .GetByType(valueType)
                 .Process(valueType)
                 .Symbol;
 
             return new TranslatedTypeMetadata
             {
-                Symbol =
-                    TypeScriptExpression.GenericDictionaryOf(translatedKeySymbol, translatedValueSymbol)
+                Symbol = Expression.GenericDictionaryOf(translatedKeySymbol, translatedValueSymbol)
             };
         }
     }

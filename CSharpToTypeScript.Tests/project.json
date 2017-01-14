@@ -9,8 +9,8 @@
     "System.Diagnostics.TraceSource": "4.0.0-rc2-24027",
     "CSharpToTypeScript": "0.0.1",
     "CSharpToTypeScript.Core": "0.0.1",
-    "CSharpToTypeScript.DemoTargetAssembly": "0.0.1",
-    "Peppermint": "1.5.0"
+    "Peppermint": "1.5.0",
+    "CSharpToTypeScript.DemoTargetAssembly": "0.0.1-*"
   },
   "frameworks": {
     "netcoreapp1.0": {
@@ -27,6 +27,9 @@
     }
   },
   "buildOptions": {
-    "copyToOutput": [ "appsettings*.json" ]
+    "copyToOutput": {
+      "include": [ "appsettings*.json", "**/*.cfg.json" ]
+    },
+    "embed" : { }
   }
 }

@@ -1,4 +1,4 @@
-{
+﻿{
   "version": "0.0.1-*",
 
   "buildOptions": {
@@ -6,11 +6,7 @@
   },
 
   "dependencies": {
-    "CSharpToTypeScript.Interfaces": "0.0.1",
-    "Peppermint": "1.5.0",
-    "NETStandard.Library": "1.6.1",
-    "CaseExtensions": "1.0.3",
-    "System.Runtime.Loader": "4.3.0",
+    "NETStandard.Library": "1.6.0",
     "Newtonsoft.Json": "9.0.1"
   },
 

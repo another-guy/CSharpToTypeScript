@@ -31,8 +31,9 @@ dotnet restore
 # from <repoRoot> execute
 dotnet build
 
-# from <repoRoot> execute
-dotnet run -p CSharpToTypeScript -- -c CSharpToTypeScript.Tests/SampleFiles/sample.cfg.json
+# from ./CSharpToTypeScript execute
+dotnet build
+dotnet run -- -c ../CSharpToTypeScript.Tests/SampleFiles/sample.debug.cfg.json
 ```
 
 ## Code Example

@@ -2,22 +2,28 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using CSharpToTypeScript.Core.Common;
 
 namespace CSharpToTypeScript.Core.Translation.Rules.Regular
 {
     public sealed class RegularTypeTranslationContext : ITypeTranslationContext
     {
-        public RegularTypeTranslationContext(TranslationContext translationContext, TypeInfo typeInfo)
+        public RegularTypeTranslationContext(
+            ITypeScriptExpression expression,
+            ITranslationContext translationContext,
+            TypeInfo typeInfo)
         {
+            Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
             GlobalContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
             TypeInfo = typeInfo.NullToException(new ArgumentNullException(nameof(typeInfo)));
         }
 
         public TypeInfo TypeInfo { get; }
-        private TranslationContext GlobalContext { get; }
-        private SourceTypeMetadata SourceTypeMetadata { get; } = new SourceTypeMetadata();
+        private ITypeScriptExpression Expression { get; }
+        private ITranslationContext GlobalContext { get; }
+        private ISourceTypeMetadata SourceTypeMetadata { get; } = new SourceTypeMetadata();
 
-        private readonly TranslatedTypeMetadata _translatedTypeMetadata = new TranslatedTypeMetadata();
+        private ITranslatedTypeMetadata TranslatedTypeMetadata { get; } = new TranslatedTypeMetadata();
 
 
         public bool AreDependenciesResolved { get; private set; } = false;
@@ -68,22 +74,22 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
 
         public bool IsProcessed { get; private set; } = false;
 
-        public TranslatedTypeMetadata Process(Type specificTargetType)
+        public ITranslatedTypeMetadata Process(Type specificTargetType)
         {
             Debug.Assert(CanProcess(specificTargetType));
             if (IsProcessed) // Prevent from reevaluation on reentry in case of circular type references.
-                return _translatedTypeMetadata;
+                return TranslatedTypeMetadata;
 
             IsProcessed = true;
 
-            _translatedTypeMetadata.Symbol = GlobalContext.SymbolFor(TypeInfo.Name);
+            TranslatedTypeMetadata.Symbol = GlobalContext.SymbolFor(TypeInfo.Name);
 
             var sb = new StringBuilder();
 
             // TODO Class case only now, think of interfaces
             sb.Append(GlobalContext.TypeCommentFor(TypeInfo));
-            sb.Append(TypeScriptExpression.NewLine());
-            sb.Append(TypeScriptExpression.ClassNameExpression(_translatedTypeMetadata.Symbol));
+            sb.Append(Expression.NewLine());
+            sb.Append(Expression.ClassNameExpression(TranslatedTypeMetadata.Symbol));
             if (SourceTypeMetadata.BaseType != null)
             {
                 var baseTypeType = SourceTypeMetadata.BaseType.AsType();
@@ -92,10 +98,10 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
                 var translatedBaseTypeMetadata = typeTranslationContext.Process(baseTypeType);
 
                 var baseTypeSymbol = translatedBaseTypeMetadata.Symbol;
-                sb.Append(TypeScriptExpression.InheritedClassExpression(baseTypeSymbol));
+                sb.Append(Expression.InheritedClassExpression(baseTypeSymbol));
             }
 
-            sb.Append(TypeScriptExpression.BlockBegin());
+            sb.Append(Expression.BlockBegin());
 
             var skipRule = new SkipRule(GlobalContext.InputConfiguration.SkipMembersWithAttribute);
             foreach (var memberName in SourceTypeMetadata.Members)
@@ -112,14 +118,14 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
                 var translatedMemberTypeMetadata = memberTypeTranslationContext.Process(type); // TODO Process is not needed as a part of Interface!!!
 
                 var sourceTypeComment = GlobalContext.TypeCommentFor(type.GetTypeInfo());
-                sb.Append(TypeScriptExpression.MemberDefinitionExpression(sourceMemberInfo.Name, translatedMemberTypeMetadata.Symbol, sourceTypeComment));
+                sb.Append(Expression.MemberDefinitionExpression(sourceMemberInfo.Name, translatedMemberTypeMetadata.Symbol, sourceTypeComment));
             }
 
-            sb.Append(TypeScriptExpression.BlockEnd());
+            sb.Append(Expression.BlockEnd());
 
-            _translatedTypeMetadata.Definition = sb.ToString();
+            TranslatedTypeMetadata.Definition = sb.ToString();
 
-            return _translatedTypeMetadata;
+            return TranslatedTypeMetadata;
         }
     }
 }

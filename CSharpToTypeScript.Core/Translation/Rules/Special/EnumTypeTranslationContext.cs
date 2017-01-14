@@ -8,10 +8,14 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
 {
     public class EnumTypeTranslationContext : ITypeTranslationContext
     {
-        private TranslationContext GlobalContext { get; }
+        private ITypeScriptExpression Expression { get; }
+        private ITranslationContext GlobalContext { get; }
 
-        public EnumTypeTranslationContext(TranslationContext translationContext)
+        public EnumTypeTranslationContext(
+            ITypeScriptExpression expression,
+            ITranslationContext translationContext)
         {
+            Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
             GlobalContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
         }
 
@@ -24,7 +28,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
         }
         public bool IsProcessed => true;
 
-        public TranslatedTypeMetadata Process(Type specificEnumType)
+        public ITranslatedTypeMetadata Process(Type specificEnumType)
         {
             Debug.Assert(CanProcess(specificEnumType));
 
@@ -44,9 +48,9 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
             var sb = new StringBuilder();
             
             sb.Append(GlobalContext.TypeCommentFor(specificEnumType.GetTypeInfo()));
-            sb.Append(TypeScriptExpression.NewLine());
-            sb.Append(TypeScriptExpression.EnumNameExpression(symbol));
-            sb.Append(TypeScriptExpression.BlockBegin());
+            sb.Append(Expression.NewLine());
+            sb.Append(Expression.EnumNameExpression(symbol));
+            sb.Append(Expression.BlockBegin());
 
             var typeInfo = specificEnumType.GetTypeInfo();
             var declarationElements = typeInfo
@@ -56,7 +60,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
                 {
                     var memberName = typeInfo.GetEnumName(enumValue);
                     var memberValue = Convert.ChangeType(enumValue, typeInfo.GetEnumUnderlyingType());
-                    return TypeScriptExpression.EnumMemberExpression(memberName, memberValue);
+                    return Expression.EnumMemberExpression(memberName, memberValue);
                 })
                 .ToArray();
 
@@ -64,12 +68,12 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
             {
                 sb.Append(declarationElements[currentElementIndex]);
                 if (currentElementIndex != declarationElements.Length - 1)
-                    sb.AppendLine(TypeScriptExpression.CommaSeparator());
+                    sb.AppendLine(Expression.CommaSeparator());
                 else
                     sb.AppendLine();
             }
 
-            sb.Append(TypeScriptExpression.BlockEnd());
+            sb.Append(Expression.BlockEnd());
 
             return sb.ToString();
         }

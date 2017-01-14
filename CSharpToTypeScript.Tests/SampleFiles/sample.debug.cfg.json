@@ -1,6 +1,6 @@
 ﻿{
   "Input": {
-    "Assemblies": [ "../CSharpToTypeScript.DemoTargetAssembly/bin/Debug/netstandard1.6/CSharpToTypeScript.DemoTargetAssembly.dll" ],
+    "Assemblies": [ "../../CSharpToTypeScript.DemoTargetAssembly/bin/Debug/netstandard1.6/CSharpToTypeScript.DemoTargetAssembly.dll" ],
 
     "IncludeTypes": [ "CSharpToTypeScript.TargetNamespace" ],
     "ExcludeTypes": [], // <- This is not covered in "test" case

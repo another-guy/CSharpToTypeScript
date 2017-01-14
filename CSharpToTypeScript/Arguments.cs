@@ -5,7 +5,7 @@ namespace CSharpToTypeScript
     [ApplicationInfo(
          Description =
              "CSharpToTypeScript is a tool " +
-             "that translates target CompleteConfiguration# model (data transfer) classes, structs, and enums " +
+             "that translates target Configuration# model (data transfer) classes, structs, and enums " +
              "into compatible TypeScript definitions."
      )]
     public class Arguments

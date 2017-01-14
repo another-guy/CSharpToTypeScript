@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CaseExtensions;
+using CSharpToTypeScript.Core.Common;
 using CSharpToTypeScript.Core.Configuration;
 
 namespace CSharpToTypeScript.Core.Output
@@ -12,16 +13,16 @@ namespace CSharpToTypeScript.Core.Output
 
     public sealed class NamespaceHierarchyDirecoryResultWriter : ITranslationResultWriter
     {
-        private readonly OutputConfiguration _outputConfiguration;
+        private OutputConfiguration OutputConfiguration { get; }
 
         public NamespaceHierarchyDirecoryResultWriter(OutputConfiguration outputConfiguration)
         {
-            _outputConfiguration = outputConfiguration.NullToException(new ArgumentNullException(nameof(outputConfiguration)));
+            OutputConfiguration = outputConfiguration.NullToException(new ArgumentNullException(nameof(outputConfiguration)));
         }
 
-        public void Write(IEnumerable<TranslationResult> translationResultsEnumerable)
+        public void Write(IEnumerable<ITranslationResult> translationResultsEnumerable)
         {
-            var baseLocation = _outputConfiguration.Location;
+            var baseLocation = OutputConfiguration.Location;
             var baseAbsoluteLocation = Path.GetFullPath(baseLocation);
 
             // TODO Test location is directory

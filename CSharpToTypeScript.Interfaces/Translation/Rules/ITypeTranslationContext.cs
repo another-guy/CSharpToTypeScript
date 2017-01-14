@@ -9,6 +9,6 @@ namespace CSharpToTypeScript.Core.Translation.Rules
 
         bool CanProcess(Type type);
         bool IsProcessed { get; }
-        TranslatedTypeMetadata Process(Type specificTargetType);
+        ITranslatedTypeMetadata Process(Type specificTargetType);
     }
 }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace CSharpToTypeScript.Core
+namespace CSharpToTypeScript.Core.Common
 {
-    public class SkipRule
+    public sealed class SkipRule
     {
         private readonly List<string> _skipTypeAttributeNames;
 

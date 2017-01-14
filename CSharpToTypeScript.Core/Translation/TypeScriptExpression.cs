@@ -1,104 +1,104 @@
 ﻿namespace CSharpToTypeScript.Core.Translation
 {
-    public static class TypeScriptExpression
+    public sealed class TypeScriptExpression : ITypeScriptExpression
     {
-        public static string ClassNameExpression(string generatedTypeName)
+        public string ClassNameExpression(string generatedTypeName)
         {
             return $"export class {generatedTypeName} ";
         }
 
-        public static string EnumNameExpression(string generatedTypeName)
+        public string EnumNameExpression(string generatedTypeName)
         {
             return $"export enum {generatedTypeName} ";
         }
 
-        public static string InheritedClassExpression(string parentClassName)
+        public string InheritedClassExpression(string parentClassName)
         {
             return $"extends {parentClassName} ";
         }
 
-        public static string BlockBegin()
+        public string BlockBegin()
         {
             return NewLine("{");
         }
 
-        public static string MemberDefinitionExpression(string memberName, string memberType, string sourceTypeComment)
+        public string MemberDefinitionExpression(string memberName, string memberType, string sourceTypeComment)
         {
             var commentSuffix = string.IsNullOrWhiteSpace(sourceTypeComment) ? "" : $" {sourceTypeComment}";
             return NewLine(Tab($"public {memberName}: {memberType};{commentSuffix}"));
         }
 
-        public static string BlockEnd()
+        public string BlockEnd()
         {
             return NewLine("}");
         }
 
-        public static string EnumMemberExpression(string memberName, object memberValue)
+        public string EnumMemberExpression(string memberName, object memberValue)
         {
             return Tab($"{memberName} = {memberValue}");
         }
 
-        public static string UntypedArray()
+        public string UntypedArray()
         {
             return GenericArrayOf(Any());
         }
 
-        public static string GenericArrayOf(string genericArgumentTranslatesSymbol)
+        public string GenericArrayOf(string genericArgumentTranslatesSymbol)
         {
             return $"{genericArgumentTranslatesSymbol}[]";
         }
 
-        public static string UntypedDictionary()
+        public string UntypedDictionary()
         {
             return GenericDictionaryOf(String(), Any());
         }
 
-        public static string GenericDictionaryOf(string translatedKeySymbol, string translatedValueSymbol)
+        public string GenericDictionaryOf(string translatedKeySymbol, string translatedValueSymbol)
         {
             return $"{{ [id: {translatedKeySymbol}]: {translatedValueSymbol}; }}";
         }
 
-        public static string Any()
+        public string Any()
         {
             return "any";
         }
 
-        public static string String()
+        public string String()
         {
             return "string";
         }
 
-        public static string Date()
+        public string Date()
         {
             return "Date";
         }
 
-        public static string Number()
+        public string Number()
         {
             return "number";
         }
 
-        public static string Bool()
+        public string Bool()
         {
             return "boolean";
         }
 
-        public static string CommaSeparator()
+        public string CommaSeparator()
         {
             return ",";
         }
 
-        public static string Tab(string text)
+        public string Tab(string text)
         {
             return $"  {text}";
         }
 
-        public static string NewLine(string text = "")
+        public string NewLine(string text = "")
         {
             return $"{text}\n";
         }
 
-        public static string SingleLineComment(string text)
+        public string SingleLineComment(string text)
         {
             return $"// {text}";
         }

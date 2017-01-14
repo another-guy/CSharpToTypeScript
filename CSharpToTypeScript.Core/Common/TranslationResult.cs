@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 
-namespace CSharpToTypeScript.Core
+namespace CSharpToTypeScript.Core.Common
 {
-    public sealed class TranslationResult
+    public sealed class TranslationResult : ITranslationResult
     {
         public string Definition { get; }
         public TypeInfo TranslatedType { get; }

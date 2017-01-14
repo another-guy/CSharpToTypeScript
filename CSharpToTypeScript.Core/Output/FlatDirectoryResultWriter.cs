@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using CaseExtensions;
+using CSharpToTypeScript.Core.Common;
 using CSharpToTypeScript.Core.Configuration;
 
 namespace CSharpToTypeScript.Core.Output
 {
     public sealed class FlatDirectoryResultWriter : ITranslationResultWriter
     {
-        private readonly OutputConfiguration _outputConfiguration;
+        private OutputConfiguration OutputConfiguration { get; }
 
         public FlatDirectoryResultWriter(OutputConfiguration outputConfiguration)
         {
-            _outputConfiguration = outputConfiguration.NullToException(new ArgumentNullException(nameof(outputConfiguration)));
+            OutputConfiguration = outputConfiguration.NullToException(new ArgumentNullException(nameof(outputConfiguration)));
         }
 
-        public void Write(IEnumerable<TranslationResult> translationResults)
+        public void Write(IEnumerable<ITranslationResult> translationResults)
         {
-            var location = _outputConfiguration.Location;
+            var location = OutputConfiguration.Location;
             var absoluteLocation = Path.GetFullPath(location);
             var directoryInfo = new DirectoryInfo(absoluteLocation);
             var looksLikeDirectory = directoryInfo

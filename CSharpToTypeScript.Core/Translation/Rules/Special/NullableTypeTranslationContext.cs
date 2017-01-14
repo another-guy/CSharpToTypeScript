@@ -7,11 +7,11 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
 {
     public class NullableTypeTranslationContext : ITypeTranslationContext
     {
-        private readonly TranslationContext _translationContext;
+        private ITranslationContext TranslationContext { get; }
 
         public NullableTypeTranslationContext(TranslationContext translationContext)
         {
-            _translationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
+            TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
         }
 
         public bool AreDependenciesResolved => true;
@@ -23,7 +23,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
         }
         public bool IsProcessed => true;
 
-        public TranslatedTypeMetadata Process(Type specificEnumType)
+        public ITranslatedTypeMetadata Process(Type specificEnumType)
         {
             Debug.Assert(CanProcess(specificEnumType));
             return new TranslatedTypeMetadata
@@ -31,7 +31,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
                 Symbol = specificEnumType
                     .GetGenericArguments()
                     .Single()
-                    .UseAsArgFor(argumentType => _translationContext.GetByType(argumentType).Process(argumentType))
+                    .UseAsArgFor(argumentType => TranslationContext.GetByType(argumentType).Process(argumentType))
                     .Symbol
             };
         }

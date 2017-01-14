@@ -24,7 +24,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Direct
         }
         public bool IsProcessed => true;
 
-        public TranslatedTypeMetadata Process(Type specificTargetType)
+        public ITranslatedTypeMetadata Process(Type specificTargetType)
         {
             Debug.Assert(CanProcess(specificTargetType));
             return new TranslatedTypeMetadata { Symbol = Symbol };

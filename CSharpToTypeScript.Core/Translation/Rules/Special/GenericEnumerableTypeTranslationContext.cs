@@ -8,11 +8,15 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
 {
     public class GenericEnumerableTypeTranslationContext : ITypeTranslationContext
     {
-        private readonly TranslationContext _translationContext;
+        private ITypeScriptExpression Expression { get; }
+        private ITranslationContext TranslationContext { get; }
 
-        public GenericEnumerableTypeTranslationContext(TranslationContext translationContext)
+        public GenericEnumerableTypeTranslationContext(
+            ITypeScriptExpression expression,
+            ITranslationContext translationContext)
         {
-            _translationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
+            Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
+            TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
         }
 
         public bool AreDependenciesResolved { get; } = true;
@@ -26,20 +30,20 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
 
         public bool IsProcessed { get; } = true;
 
-        public TranslatedTypeMetadata Process(Type specificTargetType)
+        public ITranslatedTypeMetadata Process(Type specificTargetType)
         {
             var genericArguments = specificTargetType.GetGenericArguments();
             Debug.Assert(genericArguments.Length == 1);
 
             var genericArgumentType = genericArguments.Single();
-            var genericArgumentTranslatesSymbol = _translationContext
+            var genericArgumentTranslatesSymbol = TranslationContext
                 .GetByType(genericArgumentType)
                 .Process(genericArgumentType)
                 .Symbol;
             
             return new TranslatedTypeMetadata
             {
-                Symbol = TypeScriptExpression.GenericArrayOf(genericArgumentTranslatesSymbol)
+                Symbol = Expression.GenericArrayOf(genericArgumentTranslatesSymbol)
             };
         }
     }

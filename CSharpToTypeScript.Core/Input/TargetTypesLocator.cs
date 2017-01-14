@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,17 +10,19 @@ using CSharpToTypeScript.Core.Configuration;
 
 namespace CSharpToTypeScript.Core.Input
 {
-    public static class RootTargetTypes
+    public class TargetTypesLocator : ITargetTypesLocator
     {
-        public static IEnumerable<TypeInfo> LocateUsingInputConfiguration(CompleteConfiguration configuration)
+        [Pure]
+        public IEnumerable<TypeInfo> LocateRootTargetsUsing(InputConfiguration configuration)
         {
-            var includeRegexes = CreateRegexesFor(configuration.Input.IncludeTypes);
-            var excludeRegexes = CreateRegexesFor(configuration.Input.ExcludeTypes);
-
             return configuration
-                .Input
                 .Assemblies
-                .Select(assemblyPath => TargetTypesBasedOnIncludeExcludeRegexes(assemblyPath, includeRegexes, excludeRegexes))
+                .Select(assemblyPath =>
+                    TargetTypesBasedOnIncludeExcludeRegexes(
+                        assemblyPath,
+                        CreateRegexesFor(configuration.IncludeTypes),
+                        CreateRegexesFor(configuration.ExcludeTypes))
+                )
                 .Aggregate(new List<Type>(), (result, newTypes) => result.Concat(newTypes).ToList())
                 .Select(type => type.GetTypeInfo());
         }
@@ -31,15 +34,14 @@ namespace CSharpToTypeScript.Core.Input
                 .ToList();
         }
 
-        private static IEnumerable<Type> TargetTypesBasedOnIncludeExcludeRegexes(
+        private IEnumerable<Type> TargetTypesBasedOnIncludeExcludeRegexes(
             string assemblyPath,
             IReadOnlyCollection<Regex> includeRegexes,
             IReadOnlyCollection<Regex> excludeRegexes)
         {
-            var absoluteAssemblyPath = Path.GetFullPath(assemblyPath);
             return AssemblyLoadContext
                 .Default
-                .LoadFromAssemblyPath(absoluteAssemblyPath)
+                .LoadFromAssemblyPath(Path.GetFullPath(assemblyPath))
                 .GetTypes()
                 .Where(type => IsTargetType(type, includeRegexes, excludeRegexes));
         }

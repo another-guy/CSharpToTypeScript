@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace CSharpToTypeScript.Core.Translation
 {
-    public sealed class SourceTypeMetadata
+    public sealed class SourceTypeMetadata : ISourceTypeMetadata
     {
         private IDictionary<string, MemberInfo> MembersSourceInfo { get; } =
             new Dictionary<string, MemberInfo>();
