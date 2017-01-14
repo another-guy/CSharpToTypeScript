@@ -12,8 +12,8 @@ namespace CSharpToTypeScript.Tests
 {
     public class TargetTypesLocatorTest
     {
-        private TargetTypesLocator TargetTypesLocator { get; } = new TargetTypesLocator();
         private InputConfiguration Configuration { get; }
+        private TargetTypesLocator TargetTypesLocator { get; }
 
         public TargetTypesLocatorTest(ITestOutputHelper testOutputHelper)
         {
@@ -35,6 +35,7 @@ namespace CSharpToTypeScript.Tests
                 .WithAllPathsRelativeToFile(configurationPath, s => s.Replace("Debug", GetRunningConfigurationBasedOnAssemblyPath(assemblyLocation)));
 
             Configuration = completeConfiguration.Input;
+            TargetTypesLocator = new TargetTypesLocator(Configuration);
         }
 
         private static string GetRunningConfigurationBasedOnAssemblyPath(string assemblyLocation)
@@ -50,7 +51,7 @@ namespace CSharpToTypeScript.Tests
             // Arrange
             // Act
             var rootTargets = TargetTypesLocator
-                .LocateRootTargetsUsing(Configuration)
+                .LocateRootTargets()
                 .ToList();
 
             // Assert
@@ -73,7 +74,7 @@ namespace CSharpToTypeScript.Tests
 
             // Act
             var rootTargets = TargetTypesLocator
-                .LocateRootTargetsUsing(Configuration)
+                .LocateRootTargets()
                 .ToList();
 
             // Assert

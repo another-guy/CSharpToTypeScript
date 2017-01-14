@@ -10,13 +10,16 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
     {
         private ITypeScriptExpression Expression { get; }
         private ITranslationContext TranslationContext { get; }
+        private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
 
         public GenericEnumerableTypeTranslationContext(
             ITypeScriptExpression expression,
-            ITranslationContext translationContext)
+            ITranslationContext translationContext,
+            ITranslatedTypeMetadata translatedTypeMetadata)
         {
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
             TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
+            TranslatedTypeMetadata = translatedTypeMetadata.NullToException(new ArgumentNullException(nameof(translatedTypeMetadata)));
         }
 
         public bool AreDependenciesResolved { get; } = true;
@@ -40,11 +43,9 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
                 .GetByType(genericArgumentType)
                 .Process(genericArgumentType)
                 .Symbol;
-            
-            return new TranslatedTypeMetadata
-            {
-                Symbol = Expression.GenericArrayOf(genericArgumentTranslatesSymbol)
-            };
+
+            TranslatedTypeMetadata.Symbol = Expression.GenericArrayOf(genericArgumentTranslatesSymbol);
+            return TranslatedTypeMetadata;
         }
     }
 }

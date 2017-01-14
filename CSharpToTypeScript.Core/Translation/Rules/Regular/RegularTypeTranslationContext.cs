@@ -11,20 +11,27 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
         public RegularTypeTranslationContext(
             ITypeScriptExpression expression,
             ITranslationContext translationContext,
-            TypeInfo typeInfo)
+            TypeInfo typeInfo,
+            SkipRule skipRule, // TODO IoC -- use interface
+            ISourceTypeMetadata sourceTypeMetadata,
+            ITranslatedTypeMetadata translatedTypeMetadata
+            )
         {
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
             GlobalContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
             TypeInfo = typeInfo.NullToException(new ArgumentNullException(nameof(typeInfo)));
+            SkipRule = skipRule.NullToException(new ArgumentNullException(nameof(skipRule)));
+            SourceTypeMetadata = sourceTypeMetadata.NullToException(new ArgumentNullException(nameof(sourceTypeMetadata)));
+            TranslatedTypeMetadata = translatedTypeMetadata.NullToException(new ArgumentNullException(nameof(translatedTypeMetadata)));
         }
 
         public TypeInfo TypeInfo { get; }
         private ITypeScriptExpression Expression { get; }
         private ITranslationContext GlobalContext { get; }
-        private ISourceTypeMetadata SourceTypeMetadata { get; } = new SourceTypeMetadata();
+        private ISourceTypeMetadata SourceTypeMetadata { get; }
 
-        private ITranslatedTypeMetadata TranslatedTypeMetadata { get; } = new TranslatedTypeMetadata();
-
+        private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
+        private SkipRule SkipRule { get; }
 
         public bool AreDependenciesResolved { get; private set; } = false;
 
@@ -103,11 +110,10 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
 
             sb.Append(Expression.BlockBegin());
 
-            var skipRule = new SkipRule(GlobalContext.InputConfiguration.SkipMembersWithAttribute);
             foreach (var memberName in SourceTypeMetadata.Members)
             {
                 var sourceMemberInfo = SourceTypeMetadata[memberName];
-                if (skipRule.AppliesTo(sourceMemberInfo))
+                if (SkipRule.AppliesTo(sourceMemberInfo))
                     continue;
                 
                 var type = ((sourceMemberInfo as PropertyInfo)?.PropertyType)

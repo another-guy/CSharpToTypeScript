@@ -12,30 +12,11 @@ namespace CSharpToTypeScript.Core.Translation
 {
     public sealed class TranslationContext : ITranslationContext
     {
-        public static ITranslationContext BuildFor(
-            ITypeScriptExpression expression,
-            IEnumerable<TypeInfo> translationRootTargetTypes,
-            CompleteConfiguration configuration)
-        {
-            var skipRule = new SkipRule(configuration.Input.SkipTypesWithAttribute);
-            var translationContext = new TranslationContext(expression, configuration);
-            foreach (var sourceType in translationRootTargetTypes)
-                if (skipRule.AppliesTo(sourceType) == false)
-                    translationContext.AddTypeTranslationContextForType(sourceType);
-
-            ITypeTranslationContext unprocessed;
-            Func<ITypeTranslationContext, bool> withUnresolvedDependencies =
-                typeContext => typeContext.AreDependenciesResolved == false;
-            while ((unprocessed = translationContext.FirstOrDefault(withUnresolvedDependencies)) != null)
-                unprocessed.ResolveDependencies();
-
-            return translationContext;
-        }
-
         private ITypeScriptExpression Expression { get; }
         public InputConfiguration InputConfiguration { get; }
         public OutputConfiguration OutputConfiguration { get; }
         public TranslationConfiguration TranslationConfiguration { get; }
+        public RegularTypeTranslationContextFactory RegularTypeTranslationContextFactory { get; }
 
         // TODO The right way of doing that is using a Graph data structure.
         // Naive list consumption can't guarantee precedence of parent types.
@@ -45,10 +26,13 @@ namespace CSharpToTypeScript.Core.Translation
         // TODO EXPOSE TO CLIENTS AS AN OBJECT -- Make this dynamic -- let clients alter the chain to fit their need
         public IList<ITypeTranslationContext> TranslationChain { get; } =
             new List<ITypeTranslationContext>();
-
-        private TranslationContext(
+        
+        public TranslationContext(
             ITypeScriptExpression expression,
-            CompleteConfiguration configuration)
+            CompleteConfiguration configuration,
+            RegularTypeTranslationContextFactory regularTypeTranslationContextFactory, // TODO NullRef?
+            TypeTranslationChain typeTranslationChain // TODO IoC -- interface?
+            )
         {
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
 
@@ -57,7 +41,10 @@ namespace CSharpToTypeScript.Core.Translation
             OutputConfiguration = configuration.Output;
             TranslationConfiguration = configuration.Translation;
 
-            TypeTranslationChain
+            RegularTypeTranslationContextFactory = regularTypeTranslationContextFactory
+                .NullToException(new ArgumentNullException(nameof(regularTypeTranslationContextFactory)));
+
+            typeTranslationChain
                 .BuildDefault(Expression, this)
                 .ForEach(AddTypeTranslationContext);
         }
@@ -71,7 +58,7 @@ namespace CSharpToTypeScript.Core.Translation
         public void AddTypeTranslationContextForType(TypeInfo typeInfo)
         {
             OrderedTargetTypes.Insert(0, typeInfo);
-            AddTypeTranslationContext(new RegularTypeTranslationContext(Expression, this, typeInfo));
+            AddTypeTranslationContext(RegularTypeTranslationContextFactory.NewFor(typeInfo, this));
         }
 
         private void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext)
@@ -132,6 +119,28 @@ namespace CSharpToTypeScript.Core.Translation
                     return "";
             }
             return Expression.SingleLineComment(typeRef);
+        }
+    }
+
+    // TODO IoC -- move to correct location
+    public sealed class RegularTypeTranslationContextFactory
+    {
+        private Func<TypeInfo, ITranslationContext, RegularTypeTranslationContext> FactoryFunction { get; }
+
+        public RegularTypeTranslationContextFactory(
+            ITypeScriptExpression expression,
+            SkipRule skipRule,
+            ISourceTypeMetadata sourceTypeMetadata,
+            ITranslatedTypeMetadata translatedTypeMetadata)
+        {
+            FactoryFunction =
+                (typeInfo, translationContext) =>
+                    new RegularTypeTranslationContext(expression, translationContext, typeInfo, skipRule, sourceTypeMetadata, translatedTypeMetadata);
+        }
+
+        public ITypeTranslationContext NewFor(TypeInfo typeInfo, ITranslationContext translationContext)
+        {
+            return FactoryFunction(typeInfo, translationContext);
         }
     }
 }

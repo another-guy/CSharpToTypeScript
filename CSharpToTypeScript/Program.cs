@@ -1,11 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using CSharpToTypeScript.Core.Common;
 using Newtonsoft.Json;
 using CSharpToTypeScript.Core.Configuration;
 using CSharpToTypeScript.Core.Input;
 using CSharpToTypeScript.Core.Output;
 using CSharpToTypeScript.Core.Translation;
+using CSharpToTypeScript.Core.Translation.Rules;
+using SimpleInjector;
 
 namespace CSharpToTypeScript
 {
@@ -21,20 +24,70 @@ namespace CSharpToTypeScript
             var configuration = File
                 .ReadAllText(configurationPath)
                 .UseAsArgFor(JsonConvert.DeserializeObject<CompleteConfiguration>)
-                .WithAllPathsRelativeToFile(configurationPath, untouched => untouched);
+                .WithAllPathsRelativeToFile(configurationPath);
 
-            var rootTargetTypes = new TargetTypesLocator()
-                .LocateRootTargetsUsing(configuration.Input);
+            using (var container = CreateIocContainer(configuration))
+            {
+                var translationRootTargetTypes = container
+                    .GetInstance<ITargetTypesLocator>()
+                    .LocateRootTargets()
+                    .ToList();
 
-            var nonemptyGenerationResults = TranslationContext
-                .BuildFor(new TypeScriptExpression(), rootTargetTypes, configuration)
-                .TranslateTargets()
-                .Where(translationResult => string.IsNullOrWhiteSpace(translationResult.Definition) == false);
+                var translationContext = container.GetInstance<ITranslationContext>();
 
-            Cli.WriteLine($"Writing results to {configuration.Output.Location}", ConsoleColor.Green);
-            Writers
-                .GetFor(configuration.Output)
-                .Write(nonemptyGenerationResults);
+                var skipRule = container.GetInstance<SkipRule>();
+
+
+                // IoC vvvvvvvvvvvvvvvvvvvvvv
+                foreach (var sourceType in translationRootTargetTypes)
+                    if (skipRule.AppliesTo(sourceType) == false)
+                        translationContext.AddTypeTranslationContextForType(sourceType);
+                ITypeTranslationContext unprocessed;
+                Func<ITypeTranslationContext, bool> withUnresolvedDependencies =
+                    typeContext => typeContext.AreDependenciesResolved == false;
+                while ((unprocessed = translationContext.FirstOrDefault(withUnresolvedDependencies)) != null)
+                    unprocessed.ResolveDependencies();
+                // IoC ^^^^^^^^^^^^^^^^^^^^^^^
+
+
+
+                var nonemptyGenerationResults = translationContext
+                    .TranslateTargets()
+                    .Where(translationResult => string.IsNullOrWhiteSpace(translationResult.Definition) == false);
+
+                Cli.WriteLine($"Writing results to {configuration.Output.Location}", ConsoleColor.Green);
+                Writers
+                    .GetFor(configuration.Output)
+                    .Write(nonemptyGenerationResults);
+            }
+        }
+
+        private static Container CreateIocContainer(CompleteConfiguration configuration)
+        {
+            var container = new Container();
+
+            container.RegisterSingleton<ITypeScriptExpression, TypeScriptExpression>();
+            container.RegisterSingleton(configuration);
+            container.RegisterSingleton(() => configuration.Input);
+            container.RegisterSingleton(() => configuration.Translation);
+            container.RegisterSingleton(() => configuration.Output);
+            container.RegisterSingleton<SkipRule>(); // TODO IoC -- interface?
+            container.Register<TypeTranslationChain>(); // TODO IoC -- interface? Singletone (when factory)
+
+            container.Register<ITargetTypesLocator, TargetTypesLocator>();
+
+            container.Register<ITranslationContext, TranslationContext>();
+
+            container.Register<RegularTypeTranslationContextFactory>();
+
+
+
+            container.Register<ISourceTypeMetadata, SourceTypeMetadata>();
+            container.Register<ITranslatedTypeMetadata, TranslatedTypeMetadata>();
+
+
+            container.Verify();
+            return container;
         }
     }
 }

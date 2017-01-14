@@ -10,13 +10,16 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
     {
         private ITypeScriptExpression Expression { get; }
         private ITranslationContext GlobalContext { get; }
+        private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
 
         public EnumTypeTranslationContext(
             ITypeScriptExpression expression,
-            ITranslationContext translationContext)
+            ITranslationContext translationContext,
+            ITranslatedTypeMetadata translatedTypeMetadata)
         {
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
             GlobalContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
+            TranslatedTypeMetadata = translatedTypeMetadata.NullToException(new ArgumentNullException(nameof(translatedTypeMetadata)));
         }
 
         public bool AreDependenciesResolved => true;
@@ -36,11 +39,9 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
 
             var definition = GetDefinitionForEnum(symbol, specificEnumType);
 
-            return new TranslatedTypeMetadata
-            {
-                Symbol = symbol,
-                Definition = definition
-            };
+            TranslatedTypeMetadata.Symbol = symbol;
+            TranslatedTypeMetadata.Definition = definition;
+            return TranslatedTypeMetadata;
         }
 
         private string GetDefinitionForEnum(string symbol, Type specificEnumType)

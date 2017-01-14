@@ -8,10 +8,14 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
     public class NullableTypeTranslationContext : ITypeTranslationContext
     {
         private ITranslationContext TranslationContext { get; }
+        private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
 
-        public NullableTypeTranslationContext(TranslationContext translationContext)
+        public NullableTypeTranslationContext(
+            ITranslationContext translationContext,
+            ITranslatedTypeMetadata translatedTypeMetadata)
         {
             TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
+            TranslatedTypeMetadata = translatedTypeMetadata.NullToException(new ArgumentNullException(nameof(translatedTypeMetadata)));
         }
 
         public bool AreDependenciesResolved => true;
@@ -26,14 +30,12 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
         public ITranslatedTypeMetadata Process(Type specificEnumType)
         {
             Debug.Assert(CanProcess(specificEnumType));
-            return new TranslatedTypeMetadata
-            {
-                Symbol = specificEnumType
-                    .GetGenericArguments()
-                    .Single()
-                    .UseAsArgFor(argumentType => TranslationContext.GetByType(argumentType).Process(argumentType))
-                    .Symbol
-            };
+            TranslatedTypeMetadata.Symbol = specificEnumType
+                .GetGenericArguments()
+                .Single()
+                .UseAsArgFor(argumentType => TranslationContext.GetByType(argumentType).Process(argumentType))
+                .Symbol;
+            return TranslatedTypeMetadata;
         }
     }
 }

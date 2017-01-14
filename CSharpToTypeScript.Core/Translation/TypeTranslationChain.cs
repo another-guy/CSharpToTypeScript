@@ -6,39 +6,53 @@ using CSharpToTypeScript.Core.Translation.Rules.Special;
 
 namespace CSharpToTypeScript.Core.Translation
 {
-    public static class TypeTranslationChain
+    // TODO IoC -- interface?
+    // TODO IoC -- factory with static instance
+    public sealed class TypeTranslationChain
     {
-        public static ITypeTranslationContext[] BuildDefault(
+        private ITypeScriptExpression Expression { get; }
+        private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
+
+        public TypeTranslationChain(
+            ITypeScriptExpression expression,
+            ITranslatedTypeMetadata translatedTypeMetadata)
+        {
+            Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
+            TranslatedTypeMetadata = translatedTypeMetadata.NullToException(new ArgumentNullException(nameof(translatedTypeMetadata)));
+        }
+
+        public ITypeTranslationContext[] BuildDefault(
             ITypeScriptExpression expression,
             TranslationContext globalTranslationContext)
         {
+            // TODO Ioc -- Fix direct binding...
             return new ITypeTranslationContext[]
             {
-                new DirectTypeTranslationContext(typeof(object), expression.Any()),
-                new DirectTypeTranslationContext(typeof(short), expression.Number()),
-                new DirectTypeTranslationContext(typeof(int), expression.Number()),
-                new DirectTypeTranslationContext(typeof(long), expression.Number()),
-                new DirectTypeTranslationContext(typeof(ushort), expression.Number()),
-                new DirectTypeTranslationContext(typeof(uint), expression.Number()),
-                new DirectTypeTranslationContext(typeof(ulong), expression.Number()),
-                new DirectTypeTranslationContext(typeof(byte), expression.Number()),
-                new DirectTypeTranslationContext(typeof(sbyte), expression.Number()),
-                new DirectTypeTranslationContext(typeof(float), expression.Number()),
-                new DirectTypeTranslationContext(typeof(double), expression.Number()),
-                new DirectTypeTranslationContext(typeof(decimal), expression.Number()),
-                new DirectTypeTranslationContext(typeof(bool), expression.Bool()),
-                new DirectTypeTranslationContext(typeof(string), expression.String()),
+                new DirectTypeTranslationContext(typeof(object), Expression.Any(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(short), Expression.Number(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(int), Expression.Number(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(long), Expression.Number(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(ushort), Expression.Number(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(uint), Expression.Number(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(ulong), Expression.Number(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(byte), Expression.Number(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(sbyte), Expression.Number(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(float), Expression.Number(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(double), Expression.Number(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(decimal), Expression.Number(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(bool), Expression.Bool(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(string), Expression.String(), TranslatedTypeMetadata),
                 // TODO consider better options if possible
-                new DirectTypeTranslationContext(typeof(char), expression.String()),
-                new DirectTypeTranslationContext(typeof(DateTime), expression.Date()),
+                new DirectTypeTranslationContext(typeof(char), Expression.String(), TranslatedTypeMetadata),
+                new DirectTypeTranslationContext(typeof(DateTime), Expression.Date(), TranslatedTypeMetadata),
                 // TODO TimeSpan -> ???
-                new EnumTypeTranslationContext(expression, globalTranslationContext),
-                new NullableTypeTranslationContext(globalTranslationContext),
-                new GenericDictionaryTypeTranslationContext(expression, globalTranslationContext),
-                new SpecialTypeTranslationContext(typeof(IDictionary), expression.UntypedDictionary()),
-                new ArrayTypeTranslationContext(expression, globalTranslationContext),
-                new GenericEnumerableTypeTranslationContext(expression, globalTranslationContext),
-                new SpecialTypeTranslationContext(typeof(IEnumerable), expression.UntypedArray())
+                new EnumTypeTranslationContext(expression, globalTranslationContext, TranslatedTypeMetadata),
+                new NullableTypeTranslationContext(globalTranslationContext, TranslatedTypeMetadata),
+                new GenericDictionaryTypeTranslationContext(expression, globalTranslationContext, TranslatedTypeMetadata),
+                new SpecialTypeTranslationContext(typeof(IDictionary), Expression.UntypedDictionary(), TranslatedTypeMetadata),
+                new ArrayTypeTranslationContext(expression, globalTranslationContext, TranslatedTypeMetadata),
+                new GenericEnumerableTypeTranslationContext(expression, globalTranslationContext, TranslatedTypeMetadata),
+                new SpecialTypeTranslationContext(typeof(IEnumerable), Expression.UntypedArray(), TranslatedTypeMetadata)
             };
         }
     }

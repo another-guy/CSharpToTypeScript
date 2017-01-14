@@ -12,16 +12,23 @@ namespace CSharpToTypeScript.Core.Input
 {
     public class TargetTypesLocator : ITargetTypesLocator
     {
-        [Pure]
-        public IEnumerable<TypeInfo> LocateRootTargetsUsing(InputConfiguration configuration)
+        private InputConfiguration InputConfiguration { get; }
+
+        public TargetTypesLocator(InputConfiguration inputConfiguration)
         {
-            return configuration
+            InputConfiguration = inputConfiguration.NullToException(new ArgumentNullException(nameof(inputConfiguration)));
+        }
+
+        [Pure]
+        public IEnumerable<TypeInfo> LocateRootTargets()
+        {
+            return InputConfiguration
                 .Assemblies
                 .Select(assemblyPath =>
                     TargetTypesBasedOnIncludeExcludeRegexes(
                         assemblyPath,
-                        CreateRegexesFor(configuration.IncludeTypes),
-                        CreateRegexesFor(configuration.ExcludeTypes))
+                        CreateRegexesFor(InputConfiguration.IncludeTypes),
+                        CreateRegexesFor(InputConfiguration.ExcludeTypes))
                 )
                 .Aggregate(new List<Type>(), (result, newTypes) => result.Concat(newTypes).ToList())
                 .Select(type => type.GetTypeInfo());
