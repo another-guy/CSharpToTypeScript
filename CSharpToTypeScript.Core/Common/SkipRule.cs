@@ -2,16 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CSharpToTypeScript.Core.Configuration;
 
 namespace CSharpToTypeScript.Core.Common
 {
-    public sealed class SkipRule
+    // TODO IoC -- move to new location
+    public interface ISkipRule
+    {
+        bool AppliesTo(MemberInfo sourceType);
+    }
+
+    public sealed class SkipRule : ISkipRule
     {
         private readonly List<string> _skipTypeAttributeNames;
 
-        public SkipRule(List<string> skipTypeAttributeNames)
+        public SkipRule(InputConfiguration inputConfiguration)
         {
-            _skipTypeAttributeNames = skipTypeAttributeNames.NullToException(new ArgumentNullException(nameof(skipTypeAttributeNames)));
+            _skipTypeAttributeNames = inputConfiguration.SkipTypesWithAttribute.NullToException(new ArgumentNullException(nameof(inputConfiguration.SkipTypesWithAttribute)));
         }
 
         public bool AppliesTo(MemberInfo sourceType)

@@ -71,7 +71,7 @@ namespace CSharpToTypeScript
             container.RegisterSingleton(() => configuration.Input);
             container.RegisterSingleton(() => configuration.Translation);
             container.RegisterSingleton(() => configuration.Output);
-            container.RegisterSingleton<SkipRule>(); // TODO IoC -- interface?
+            container.Register<ISkipRule, SkipRule>();
             container.Register<TypeTranslationChain>(); // TODO IoC -- interface? Singletone (when factory)
 
             container.Register<ITargetTypesLocator, TargetTypesLocator>();
