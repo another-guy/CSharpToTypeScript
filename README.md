@@ -28,8 +28,9 @@ Translates C# DTOs into compatible TypeScript classes
 # from <repoRoot>
 dotnet restore
 
-# from <repoRoot> execute
+# from ./CSharpToTypeScript.Tests execute
 dotnet build
+dotnet test
 
 # from ./CSharpToTypeScript execute
 dotnet build
