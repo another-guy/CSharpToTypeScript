@@ -9,7 +9,7 @@ using CSharpToTypeScript.Core.Translation.Rules;
 using CSharpToTypeScript.SimpleInjector;
 using Xunit;
 
-namespace CSharpToTypeScript.Tests
+namespace CSharpToTypeScript.Tests.Integration
 {
     public sealed class EndToEndTranslationTest
     {

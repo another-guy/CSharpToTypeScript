@@ -3,7 +3,7 @@ using CSharpToTypeScript.Core.Configuration;
 using CSharpToTypeScript.Core.Input;
 using Xunit;
 
-namespace CSharpToTypeScript.Tests
+namespace CSharpToTypeScript.Tests.Integration
 {
     public sealed class TargetTypesLocatorTest
     {
