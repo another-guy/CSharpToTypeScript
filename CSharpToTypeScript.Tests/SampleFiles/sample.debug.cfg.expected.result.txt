@@ -1,0 +1,50 @@
+﻿// CSharpToTypeScript.NonTargetNamespace.Person
+export class TsPersonGenerated {
+  public FirstName: string; // System.String
+  public Addresses1: any[]; // System.Collections.IList
+  public Addresses2: any[]; // System.Collections.IEnumerable
+  public Addresses3: TsAddressGenerated[]; // System.Collections.Generic.List`1[[CSharpToTypeScript.TargetNamespace.Address, CSharpToTypeScript.DemoTargetAssembly, Version=0.0.1.0, Culture=neutral, PublicKeyToken=null]]
+  public Addresses4: TsAddressGenerated[]; // CSharpToTypeScript.TargetNamespace.Address[]
+  public SomeArray: any[]; // System.Array
+  public Addresses5: TsAddressGenerated[]; // System.Collections.Generic.ISet`1[[CSharpToTypeScript.TargetNamespace.Address, CSharpToTypeScript.DemoTargetAssembly, Version=0.0.1.0, Culture=neutral, PublicKeyToken=null]]
+  public Addresses6: TsAddressGenerated[]; // System.Collections.Generic.IList`1[[CSharpToTypeScript.TargetNamespace.Address, CSharpToTypeScript.DemoTargetAssembly, Version=0.0.1.0, Culture=neutral, PublicKeyToken=null]]
+  public Addresses7: TsAddressGenerated[]; // System.Collections.Generic.IEnumerable`1[[CSharpToTypeScript.TargetNamespace.Address, CSharpToTypeScript.DemoTargetAssembly, Version=0.0.1.0, Culture=neutral, PublicKeyToken=null]]
+  public Age: number; // System.Int32
+  public DefaultAddress: TsAddressGenerated; // CSharpToTypeScript.TargetNamespace.Address
+  public SomeDictionary: { [id: string]: any; }; // System.Collections.IDictionary
+  public NullableInt: number; // System.Nullable`1[[System.Int32, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]
+  public NullableBool: boolean; // System.Nullable`1[[System.Boolean, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]
+}
+
+// CSharpToTypeScript.TargetNamespace.OkayishClassWithBadProperty
+export class TsOkayishClassWithBadPropertyGenerated {
+}
+
+// CSharpToTypeScript.TargetNamespace.Address
+export class TsAddressGenerated {
+  public Kind: TsKindGenerated; // CSharpToTypeScript.NonTargetNamespace.Nested.Kind
+  public Street: string; // System.String
+}
+
+// CSharpToTypeScript.TargetNamespace.Currency
+export class TsCurrencyGenerated {
+  public Name: string; // System.String
+  public CharSymbol: string; // System.Nullable`1[[System.Char, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]
+}
+
+// CSharpToTypeScript.TargetNamespace.Money
+export class TsMoneyGenerated {
+  public Amount: number; // System.Decimal
+  public Currency: TsCurrencyGenerated; // CSharpToTypeScript.TargetNamespace.Currency
+}
+
+// CSharpToTypeScript.TargetNamespace.Employee
+export class TsEmployeeGenerated extends TsPersonGenerated {
+  public Salary: number; // System.Decimal
+  public SpecialAddresses: { [id: string]: TsAddressGenerated; }; // System.Collections.Generic.IDictionary`2[[System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpToTypeScript.TargetNamespace.Address, CSharpToTypeScript.DemoTargetAssembly, Version=0.0.1.0, Culture=neutral, PublicKeyToken=null]]
+  public IsSubscribedToNews: boolean; // System.Boolean
+  public Enumerable: any[]; // System.Collections.IEnumerable
+  public EnumerableOfInt: number[]; // System.Collections.Generic.IEnumerable`1[[System.Int32, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]
+  public EnumerableOfMoney: TsMoneyGenerated[]; // System.Collections.Generic.IEnumerable`1[[CSharpToTypeScript.TargetNamespace.Money, CSharpToTypeScript.DemoTargetAssembly, Version=0.0.1.0, Culture=neutral, PublicKeyToken=null]]
+}
+
