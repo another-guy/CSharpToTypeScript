@@ -17,12 +17,9 @@ namespace CSharpToTypeScript.Core.Common
 
         public bool AppliesTo(MemberInfo sourceType)
         {
-            var assignedCustomAttributes = sourceType
+            return sourceType
                 .GetCustomAttributes()
                 .Select(attribute => attribute.GetType().FullName)
-                .ToList();
-
-            return assignedCustomAttributes
                 .Intersect(_skipTypeAttributeNames)
                 .Any();
         }
