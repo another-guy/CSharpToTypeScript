@@ -7,11 +7,15 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Direct
     public sealed class DirectTypeTranslationContext : ITypeTranslationContext
     {
         // TODO IoC -- factory instead?
-        public DirectTypeTranslationContext(Type type, string symbol, ITranslatedTypeMetadata translatedTypeMetadata)
+        public DirectTypeTranslationContext(Type type, string symbol, ITranslatedTypeMetadataFactory translatedTypeMetadataFactory)
         {
             Type = type.NullToException(new ArgumentNullException(nameof(type))).GetTypeInfo();
+
             Symbol = symbol.NullToException(new ArgumentNullException(nameof(symbol)));
-            TranslatedTypeMetadata = translatedTypeMetadata.NullToException(new ArgumentNullException(nameof(translatedTypeMetadata)));
+
+            TranslatedTypeMetadata = translatedTypeMetadataFactory
+                .NullToException(new ArgumentNullException(nameof(translatedTypeMetadataFactory)))
+                .CreateNew();
         }
 
         public TypeInfo Type { get; }

@@ -21,24 +21,29 @@ namespace CSharpToTypeScript.SimpleInjector
         {
             Configuration = configuration;
 
-            Container.RegisterSingleton<ITypeScriptExpression, TypeScriptExpression>();
+            // Common
+            Container.RegisterSingleton<ISkipTypeRule, SkipTypeRule>();
+
+            // Configuration
             Container.RegisterSingleton(configuration);
             Container.RegisterSingleton(() => configuration.Input);
             Container.RegisterSingleton(() => configuration.Translation);
             Container.RegisterSingleton(() => configuration.Output);
-            Container.Register<ISkipTypeRule, SkipTypeRule>();
+
+            // Input
+            Container.RegisterSingleton<ITargetTypesLocator, TargetTypesLocator>();
+
+            // Translation
+            Container.RegisterSingleton<ITypeScriptExpression, TypeScriptExpression>();
+            Container.RegisterSingleton<ISourceTypeMetadataFactory, SourceTypeMetadataFactory>();
+            Container.RegisterSingleton<ITranslatedTypeMetadataFactory, TranslatedTypeMetadataFactory>();
+            Container.Register<ITranslationContext, TranslationContext>();
+            Container.RegisterSingleton<ITypeTranslationContextFactory, TypeTranslationContextFactory>();
+            Container.RegisterSingleton<RegularTypeTranslationContextFactory>(); // TODO IoC revisit this one
             Container.Register<TypeTranslationChain>(); // TODO IoC -- interface? Singletone (when factory)
 
-            Container.Register<ITargetTypesLocator, TargetTypesLocator>();
-
-            Container.Register<ITranslationContext, TranslationContext>();
-
-            Container.Register<RegularTypeTranslationContextFactory>();
-
-            Container.Register<ISourceTypeMetadataFactory, SourceTypeMetadataFactory>();
-            Container.Register<ITranslatedTypeMetadataFactory, TranslatedTypeMetadataFactory>();
-
-            Container.Register<ITranslationResultWriterFactory, TranslationResultWriterFactory>();
+            // Output
+            Container.RegisterSingleton<ITranslationResultWriterFactory, TranslationResultWriterFactory>();
 
             return this;
         }
