@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CSharpToTypeScript.Core.Common;
-using CSharpToTypeScript.Core.Configuration;
 using CSharpToTypeScript.Core.Translation.Rules;
 using CSharpToTypeScript.Core.Translation.Rules.Regular;
 
@@ -12,12 +11,6 @@ namespace CSharpToTypeScript.Core.Translation
 {
     public sealed class TranslationContext : ITranslationContext
     {
-        private ITypeScriptExpression Expression { get; }
-        private CompleteConfiguration Configuration { get; }
-        public InputConfiguration InputConfiguration => Configuration.Input;
-        public OutputConfiguration OutputConfiguration => Configuration.Output;
-        public TranslationConfiguration TranslationConfiguration => Configuration.Translation;
-
         // TODO The right way of doing that is using a Graph data structure.
         // Naive list consumption can't guarantee precedence of parent types.
         public IList<TypeInfo> OrderedTargetTypes { get; } = // TODO Make it immutable for clients
@@ -25,12 +18,6 @@ namespace CSharpToTypeScript.Core.Translation
 
         // TODO EXPOSE TO CLIENTS AS AN OBJECT -- Make this dynamic -- let clients alter the chain to fit their need
         public IList<ITypeTranslationContext> TranslationChain { get; } = new List<ITypeTranslationContext>();
-        
-        public TranslationContext(ITypeScriptExpression expression, CompleteConfiguration configuration)
-        {
-            Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
-            Configuration = configuration.NullToException(new ArgumentNullException(nameof(configuration)));
-        }
 
         public bool CanProcess(TypeInfo typeInfo)
         {

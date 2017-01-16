@@ -16,10 +16,7 @@ namespace CSharpToTypeScript.Core.Translation
         bool CanProcess(TypeInfo typeInfo);
         ITypeTranslationContext GetByType(Type type);
 
-
-        InputConfiguration InputConfiguration { get; }
-        OutputConfiguration OutputConfiguration { get; }
-        TranslationConfiguration TranslationConfiguration { get; }
+        
 
         IEnumerable<ITranslationResult> TranslateTargets();
 
