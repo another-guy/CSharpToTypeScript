@@ -129,7 +129,7 @@ namespace CSharpToTypeScript.Core.Translation
 
         public RegularTypeTranslationContextFactory(
             ITypeScriptExpression expression,
-            SkipRule skipRule,
+            ISkipTypeRule skipRule,
             ISourceTypeMetadataFactory sourceTypeMetadataFactory,
             ITranslatedTypeMetadataFactory translatedTypeMetadataFactory)
         {

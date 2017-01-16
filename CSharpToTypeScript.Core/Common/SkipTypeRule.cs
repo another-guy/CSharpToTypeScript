@@ -6,17 +6,11 @@ using CSharpToTypeScript.Core.Configuration;
 
 namespace CSharpToTypeScript.Core.Common
 {
-    // TODO IoC -- move to new location
-    public interface ISkipRule
-    {
-        bool AppliesTo(MemberInfo sourceType);
-    }
-
-    public sealed class SkipRule : ISkipRule
+    public sealed class SkipTypeRule : ISkipTypeRule
     {
         private readonly List<string> _skipTypeAttributeNames;
 
-        public SkipRule(InputConfiguration inputConfiguration)
+        public SkipTypeRule(InputConfiguration inputConfiguration)
         {
             _skipTypeAttributeNames = inputConfiguration.SkipTypesWithAttribute.NullToException(new ArgumentNullException(nameof(inputConfiguration.SkipTypesWithAttribute)));
         }

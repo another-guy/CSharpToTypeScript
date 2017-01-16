@@ -25,7 +25,7 @@ namespace CSharpToTypeScript.SimpleInjector
             Container.RegisterSingleton(() => configuration.Input);
             Container.RegisterSingleton(() => configuration.Translation);
             Container.RegisterSingleton(() => configuration.Output);
-            Container.Register<ISkipRule, SkipRule>();
+            Container.Register<ISkipTypeRule, SkipTypeRule>();
             Container.Register<TypeTranslationChain>(); // TODO IoC -- interface? Singletone (when factory)
 
             Container.Register<ITargetTypesLocator, TargetTypesLocator>();

@@ -35,7 +35,7 @@ namespace CSharpToTypeScript
 
                 var translationContext = container.GetInstance<ITranslationContext>();
 
-                var skipRule = container.GetInstance<ISkipRule>();
+                var skipRule = container.GetInstance<ISkipTypeRule>();
 
                 // IoC vvvvvvvvvvvvvvvvvvvvvv
                 foreach (var sourceType in translationRootTargetTypes)

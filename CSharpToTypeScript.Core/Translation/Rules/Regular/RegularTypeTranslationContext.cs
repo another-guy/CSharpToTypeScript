@@ -12,7 +12,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
             ITypeScriptExpression expression,
             ITranslationContext translationContext,
             TypeInfo typeInfo,
-            SkipRule skipRule, // TODO IoC -- use interface
+            ISkipTypeRule skipRule,
             ISourceTypeMetadata sourceTypeMetadata,
             ITranslatedTypeMetadata translatedTypeMetadata
             )
@@ -31,7 +31,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
         private ISourceTypeMetadata SourceTypeMetadata { get; }
 
         private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
-        private SkipRule SkipRule { get; }
+        private ISkipTypeRule SkipRule { get; }
 
         public bool AreDependenciesResolved { get; private set; } = false;
 
