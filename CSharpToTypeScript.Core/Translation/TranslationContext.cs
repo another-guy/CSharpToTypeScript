@@ -74,12 +74,6 @@ namespace CSharpToTypeScript.Core.Translation
                 });
         }
 
-        public string SymbolFor(string symbolBase)
-        {
-            var symbolRule = TranslationConfiguration.GeneratedSymbols;
-            return $"{symbolRule.Prefix}{symbolBase}{symbolRule.Suffix}";
-        }
-
         public string TypeCommentFor(TypeInfo typeInfo)
         {
             string typeRef;

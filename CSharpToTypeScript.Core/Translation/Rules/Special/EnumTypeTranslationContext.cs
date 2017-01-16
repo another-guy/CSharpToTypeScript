@@ -11,11 +11,13 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
         private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
         private ITranslationContext TranslationContext { get; }
         private ITypeScriptExpression Expression { get; }
+        private ISymbolNamer SymbolNamer { get; }
 
         public EnumTypeTranslationContext(
             ITranslatedTypeMetadataFactory translatedTypeMetadataFactory,
             ITranslationContext translationContext,
-            ITypeScriptExpression expression)
+            ITypeScriptExpression expression,
+            ISymbolNamer symbolNamer)
         {
             TranslatedTypeMetadata =
                 translatedTypeMetadataFactory
@@ -25,6 +27,8 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
             TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
 
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
+
+            SymbolNamer = symbolNamer.NullToException(new ArgumentNullException(nameof(symbolNamer)));
         }
 
         public bool AreDependenciesResolved => true;
@@ -40,7 +44,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
         {
             Debug.Assert(CanProcess(specificEnumType));
 
-            var symbol = TranslationContext.SymbolFor(specificEnumType.Name);
+            var symbol = SymbolNamer.GetNameFor(specificEnumType.Name);
 
             var definition = GetDefinitionForEnum(symbol, specificEnumType);
 

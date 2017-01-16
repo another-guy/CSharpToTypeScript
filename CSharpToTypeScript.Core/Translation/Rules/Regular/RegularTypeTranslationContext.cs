@@ -15,6 +15,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
         private ITranslationContext TranslationContext { get; }
         private ISkipTypeRule SkipTypeRule { get; }
         private ITypeScriptExpression Expression { get; }
+        private ISymbolNamer SymbolNamer { get; }
         public TypeInfo TypeInfo { get; }
 
         public RegularTypeTranslationContext(
@@ -23,6 +24,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
             ITranslationContext translationContext,
             ISkipTypeRule skipTypeRule,
             ITypeScriptExpression expression,
+            ISymbolNamer symbolNamer,
             TypeInfo typeInfo)
         {
             TranslatedTypeMetadataFactory = translatedTypeMetadataFactory;
@@ -42,6 +44,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
             TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
             SkipTypeRule = skipTypeRule.NullToException(new ArgumentNullException(nameof(skipTypeRule)));
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
+            SymbolNamer = symbolNamer.NullToException(new ArgumentNullException(nameof(symbolNamer)));
             TypeInfo = typeInfo.NullToException(new ArgumentNullException(nameof(typeInfo)));
         }
         
@@ -85,7 +88,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
             if (noTypeTranslationContextRegistered)
             {
                 var regularTypeTranslationContext =
-                    new RegularTypeTranslationContext(TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, typeInfo);
+                    new RegularTypeTranslationContext(TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, typeInfo);
                 TranslationContext.AddTypeTranslationContext(regularTypeTranslationContext, true);
             }
         }
@@ -105,7 +108,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
 
             IsProcessed = true;
 
-            TranslatedTypeMetadata.Symbol = TranslationContext.SymbolFor(TypeInfo.Name); // TODO IoC symbol name generator to be extracted
+            TranslatedTypeMetadata.Symbol = SymbolNamer.GetNameFor(TypeInfo.Name); // TODO IoC symbol name generator to be extracted
 
             var sb = new StringBuilder();
 

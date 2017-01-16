@@ -14,19 +14,22 @@ namespace CSharpToTypeScript.Core.Translation.Rules
         private ITranslatedTypeMetadataFactory TranslatedTypeMetadataFactory { get; }
         private ISourceTypeMetadataFactory SourceTypeMetadataFactory { get; }
         private ISkipTypeRule SkipTypeRule { get; }
+        private ISymbolNamer SymbolNamer { get; }
 
         public TypeTranslationContextFactory(
             ITypeScriptExpression expression,
             ITranslationContext translationContext,
             ITranslatedTypeMetadataFactory translatedTypeMetadataFactory,
             ISourceTypeMetadataFactory sourceTypeMetadataFactory,
-            ISkipTypeRule skipTypeRule)
+            ISkipTypeRule skipTypeRule,
+            ISymbolNamer symbolNamer)
         {
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
             TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
             TranslatedTypeMetadataFactory = translatedTypeMetadataFactory.NullToException(new ArgumentNullException(nameof(translatedTypeMetadataFactory)));
             SourceTypeMetadataFactory = sourceTypeMetadataFactory.NullToException(new ArgumentNullException(nameof(sourceTypeMetadataFactory)));
             SkipTypeRule = skipTypeRule.NullToException(new ArgumentNullException(nameof(skipTypeRule)));
+            SymbolNamer = symbolNamer.NullToException(new ArgumentNullException(nameof(symbolNamer)));
         }
 
         public ITypeTranslationContext Direct(Type type, string symbol)
@@ -36,7 +39,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules
 
         public ITypeTranslationContext Enum()
         {
-            return new EnumTypeTranslationContext(TranslatedTypeMetadataFactory, TranslationContext, Expression);
+            return new EnumTypeTranslationContext(TranslatedTypeMetadataFactory, TranslationContext, Expression, SymbolNamer);
         }
 
         public ITypeTranslationContext Nullable()
@@ -66,7 +69,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules
 
         public ITypeTranslationContext Regular(TypeInfo typeInfo)
         {
-            return new RegularTypeTranslationContext(TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, typeInfo);
+            return new RegularTypeTranslationContext(TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, typeInfo);
         }
     }
 }

@@ -11,7 +11,6 @@ namespace CSharpToTypeScript.Core.Translation
     public interface ITranslationContext : IEnumerable<ITypeTranslationContext>
     {
         // TODO mark here AND in implementations [Pure]
-        string SymbolFor(string symbolBase);
         string TypeCommentFor(TypeInfo typeInfo);
         
         void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext, bool inOrdered);
