@@ -1,6 +1,7 @@
 ﻿using CSharpToTypeScript.Core.Common;
 using CSharpToTypeScript.Core.Configuration;
 using CSharpToTypeScript.Core.Input;
+using CSharpToTypeScript.Core.Output;
 using CSharpToTypeScript.Core.Translation;
 using SimpleInjector;
 
@@ -36,6 +37,8 @@ namespace CSharpToTypeScript.SimpleInjector
 
             Container.Register<ISourceTypeMetadataFactory, SourceTypeMetadataFactory>();
             Container.Register<ITranslatedTypeMetadataFactory, TranslatedTypeMetadataFactory>();
+
+            Container.Register<ITranslationResultWriterFactory, TranslationResultWriterFactory>();
 
             return this;
         }

@@ -53,8 +53,9 @@ namespace CSharpToTypeScript
                     .Where(translationResult => string.IsNullOrWhiteSpace(translationResult.Definition) == false);
 
                 Cli.WriteLine($"Writing results to {configuration.Output.Location}", ConsoleColor.Green);
-                Writers
-                    .GetFor(configuration.Output)
+                container
+                    .GetInstance<ITranslationResultWriterFactory>()
+                    .GetWriterFor(configuration.Output.Mode)
                     .Write(nonemptyGenerationResults);
             }
         }
