@@ -37,10 +37,10 @@ namespace CSharpToTypeScript.SimpleInjector
             Container.RegisterSingleton<ITypeScriptExpression, TypeScriptExpression>();
             Container.RegisterSingleton<ISourceTypeMetadataFactory, SourceTypeMetadataFactory>();
             Container.RegisterSingleton<ITranslatedTypeMetadataFactory, TranslatedTypeMetadataFactory>();
-            Container.Register<ITranslationContext, TranslationContext>();
+            Container.RegisterSingleton<ITranslationContext, TranslationContext>();
             Container.RegisterSingleton<ITypeTranslationContextFactory, TypeTranslationContextFactory>();
             Container.RegisterSingleton<RegularTypeTranslationContextFactory>(); // TODO IoC revisit this one
-            Container.Register<TypeTranslationChain>(); // TODO IoC -- interface? Singletone (when factory)
+            Container.Register<TypeTranslationChain>(); // TODO IoC -- ~interface~? Singletone?
 
             // Output
             Container.RegisterSingleton<ITranslationResultWriterFactory, TranslationResultWriterFactory>();

@@ -13,9 +13,10 @@ namespace CSharpToTypeScript.Core.Translation
     public sealed class TranslationContext : ITranslationContext
     {
         private ITypeScriptExpression Expression { get; }
-        public InputConfiguration InputConfiguration { get; }
-        public OutputConfiguration OutputConfiguration { get; }
-        public TranslationConfiguration TranslationConfiguration { get; }
+        private CompleteConfiguration Configuration { get; }
+        public InputConfiguration InputConfiguration => Configuration.Input;
+        public OutputConfiguration OutputConfiguration => Configuration.Output;
+        public TranslationConfiguration TranslationConfiguration => Configuration.Translation;
         public RegularTypeTranslationContextFactory RegularTypeTranslationContextFactory { get; }
 
         // TODO The right way of doing that is using a Graph data structure.
@@ -30,23 +31,13 @@ namespace CSharpToTypeScript.Core.Translation
         public TranslationContext(
             ITypeScriptExpression expression,
             CompleteConfiguration configuration,
-            RegularTypeTranslationContextFactory regularTypeTranslationContextFactory, // TODO NullRef?
-            TypeTranslationChain typeTranslationChain // TODO IoC -- interface?
-            )
+            RegularTypeTranslationContextFactory regularTypeTranslationContextFactory)
         {
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
 
-            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
-            InputConfiguration = configuration.Input;
-            OutputConfiguration = configuration.Output;
-            TranslationConfiguration = configuration.Translation;
+            Configuration = configuration.NullToException(new ArgumentNullException(nameof(configuration)));
 
-            RegularTypeTranslationContextFactory = regularTypeTranslationContextFactory
-                .NullToException(new ArgumentNullException(nameof(regularTypeTranslationContextFactory)));
-
-            typeTranslationChain
-                .BuildDefault(Expression, this)
-                .ForEach(AddTypeTranslationContext);
+            RegularTypeTranslationContextFactory = regularTypeTranslationContextFactory.NullToException(new ArgumentNullException(nameof(regularTypeTranslationContextFactory)));
         }
 
         public bool CanProcess(TypeInfo typeInfo)
@@ -60,8 +51,8 @@ namespace CSharpToTypeScript.Core.Translation
             OrderedTargetTypes.Insert(0, typeInfo);
             AddTypeTranslationContext(RegularTypeTranslationContextFactory.NewFor(typeInfo, this));
         }
-
-        private void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext)
+        
+        public void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext)
         {
             TranslationChain.Add(typeTranslationContext);
         }
@@ -122,7 +113,7 @@ namespace CSharpToTypeScript.Core.Translation
         }
     }
 
-    // TODO IoC -- move to correct location
+    // TODO IoC -- move to correct location, Interface???
     public sealed class RegularTypeTranslationContextFactory
     {
         private Func<TypeInfo, ITranslationContext, RegularTypeTranslationContext> FactoryFunction { get; }

@@ -46,17 +46,16 @@ namespace CSharpToTypeScript.Core.Translation
                 TypeTranslationContextFactory.Direct(typeof(decimal), Expression.Number()),
                 TypeTranslationContextFactory.Direct(typeof(bool), Expression.Bool()),
                 TypeTranslationContextFactory.Direct(typeof(string), Expression.String()),
-                // TODO consider better options if possible
-                TypeTranslationContextFactory.Direct(typeof(char), Expression.String()),
-                TypeTranslationContextFactory.Direct(typeof(DateTime), Expression.Date()),
+                TypeTranslationContextFactory.Direct(typeof(char), Expression.String()), // TODO consider better options if possible
+                TypeTranslationContextFactory.Direct(typeof(DateTime), Expression.Date()), // TODO consider better options if possible
                 // TODO TimeSpan -> ???
-                new EnumTypeTranslationContext(expression, translationContext, TranslatedTypeMetadataFactory.CreateNew()),
-                new NullableTypeTranslationContext(translationContext, TranslatedTypeMetadataFactory.CreateNew()),
-                new GenericDictionaryTypeTranslationContext(expression, translationContext, TranslatedTypeMetadataFactory.CreateNew()),
-                new SpecialTypeTranslationContext(typeof(IDictionary), Expression.UntypedDictionary(), TranslatedTypeMetadataFactory.CreateNew()),
-                new ArrayTypeTranslationContext(expression, translationContext, TranslatedTypeMetadataFactory.CreateNew()),
-                new GenericEnumerableTypeTranslationContext(expression, translationContext, TranslatedTypeMetadataFactory.CreateNew()),
-                new SpecialTypeTranslationContext(typeof(IEnumerable), Expression.UntypedArray(), TranslatedTypeMetadataFactory.CreateNew())
+                TypeTranslationContextFactory.Enum(),
+                TypeTranslationContextFactory.Nullable(),
+                TypeTranslationContextFactory.GenericDictionary(),
+                TypeTranslationContextFactory.Special(typeof(IDictionary), Expression.UntypedDictionary()),
+                TypeTranslationContextFactory.Array(),
+                TypeTranslationContextFactory.GenericEnumerable(),
+                TypeTranslationContextFactory.Special(typeof(IEnumerable), Expression.UntypedArray())
             };
         }
     }
@@ -64,20 +63,63 @@ namespace CSharpToTypeScript.Core.Translation
     public interface ITypeTranslationContextFactory
     {
         ITypeTranslationContext Direct(Type type, string symbol);
+        ITypeTranslationContext Enum();
+        ITypeTranslationContext Nullable();
+        ITypeTranslationContext GenericDictionary();
+        ITypeTranslationContext Special(Type type, string symbol);
+        ITypeTranslationContext Array();
+        ITypeTranslationContext GenericEnumerable();
     }
 
     public sealed class TypeTranslationContextFactory : ITypeTranslationContextFactory
     {
+        private ITypeScriptExpression Expression { get; }
+        private ITranslationContext TranslationContext { get; }
         private ITranslatedTypeMetadataFactory TranslatedTypeMetadataFactory { get; }
 
-        public TypeTranslationContextFactory(ITranslatedTypeMetadataFactory translatedTypeMetadataFactory)
+        public TypeTranslationContextFactory(
+            ITypeScriptExpression expression,
+            ITranslationContext translationContext,
+            ITranslatedTypeMetadataFactory translatedTypeMetadataFactory)
         {
+            Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
+            TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
             TranslatedTypeMetadataFactory = translatedTypeMetadataFactory.NullToException(new ArgumentNullException(nameof(translatedTypeMetadataFactory)));
         }
 
         public ITypeTranslationContext Direct(Type type, string symbol)
         {
-            return new DirectTypeTranslationContext(type, symbol, TranslatedTypeMetadataFactory);
+            return new DirectTypeTranslationContext(TranslatedTypeMetadataFactory, type, symbol);
+        }
+
+        public ITypeTranslationContext Enum()
+        {
+            return new EnumTypeTranslationContext(TranslatedTypeMetadataFactory, TranslationContext, Expression);
+        }
+
+        public ITypeTranslationContext Nullable()
+        {
+            return new NullableTypeTranslationContext(TranslatedTypeMetadataFactory, TranslationContext);
+        }
+
+        public ITypeTranslationContext GenericDictionary()
+        {
+            return new GenericDictionaryTypeTranslationContext(TranslatedTypeMetadataFactory, TranslationContext, Expression);
+        }
+
+        public ITypeTranslationContext Special(Type type, string symbol)
+        {
+            return new SpecialTypeTranslationContext(TranslatedTypeMetadataFactory, type, symbol);
+        }
+
+        public ITypeTranslationContext Array()
+        {
+            return new ArrayTypeTranslationContext(TranslatedTypeMetadataFactory, TranslationContext, Expression);
+        }
+
+        public ITypeTranslationContext GenericEnumerable()
+        {
+            return new GenericEnumerableTypeTranslationContext(TranslatedTypeMetadataFactory, TranslationContext, Expression);
         }
     }
 }

@@ -15,6 +15,7 @@ namespace CSharpToTypeScript.Core.Translation
         string TypeCommentFor(TypeInfo typeInfo);
 
         void AddTypeTranslationContextForType(TypeInfo typeInfo);
+        void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext);
         bool CanProcess(TypeInfo typeInfo);
         ITypeTranslationContext GetByType(Type type);
 

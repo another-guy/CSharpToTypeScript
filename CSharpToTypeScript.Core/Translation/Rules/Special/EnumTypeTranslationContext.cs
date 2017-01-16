@@ -8,18 +8,23 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
 {
     public class EnumTypeTranslationContext : ITypeTranslationContext
     {
-        private ITypeScriptExpression Expression { get; }
-        private ITranslationContext GlobalContext { get; }
         private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
+        private ITranslationContext TranslationContext { get; }
+        private ITypeScriptExpression Expression { get; }
 
         public EnumTypeTranslationContext(
-            ITypeScriptExpression expression,
+            ITranslatedTypeMetadataFactory translatedTypeMetadataFactory,
             ITranslationContext translationContext,
-            ITranslatedTypeMetadata translatedTypeMetadata)
+            ITypeScriptExpression expression)
         {
+            TranslatedTypeMetadata =
+                translatedTypeMetadataFactory
+                    .NullToException(new ArgumentNullException(nameof(translatedTypeMetadataFactory)))
+                    .CreateNew();
+
+            TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
+
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
-            GlobalContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
-            TranslatedTypeMetadata = translatedTypeMetadata.NullToException(new ArgumentNullException(nameof(translatedTypeMetadata)));
         }
 
         public bool AreDependenciesResolved => true;
@@ -35,7 +40,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
         {
             Debug.Assert(CanProcess(specificEnumType));
 
-            var symbol = GlobalContext.SymbolFor(specificEnumType.Name);
+            var symbol = TranslationContext.SymbolFor(specificEnumType.Name);
 
             var definition = GetDefinitionForEnum(symbol, specificEnumType);
 
@@ -48,7 +53,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
         {
             var sb = new StringBuilder();
             
-            sb.Append(GlobalContext.TypeCommentFor(specificEnumType.GetTypeInfo()));
+            sb.Append(TranslationContext.TypeCommentFor(specificEnumType.GetTypeInfo()));
             sb.Append(Expression.NewLine());
             sb.Append(Expression.EnumNameExpression(symbol));
             sb.Append(Expression.BlockBegin());

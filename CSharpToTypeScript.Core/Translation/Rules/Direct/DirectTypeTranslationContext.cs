@@ -6,21 +6,21 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Direct
 {
     public sealed class DirectTypeTranslationContext : ITypeTranslationContext
     {
-        // TODO IoC -- factory instead?
-        public DirectTypeTranslationContext(Type type, string symbol, ITranslatedTypeMetadataFactory translatedTypeMetadataFactory)
+        private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
+        public TypeInfo Type { get; }
+        private string Symbol { get; }
+
+        public DirectTypeTranslationContext(ITranslatedTypeMetadataFactory translatedTypeMetadataFactory, Type type, string symbol)
         {
-            Type = type.NullToException(new ArgumentNullException(nameof(type))).GetTypeInfo();
-
-            Symbol = symbol.NullToException(new ArgumentNullException(nameof(symbol)));
-
             TranslatedTypeMetadata = translatedTypeMetadataFactory
                 .NullToException(new ArgumentNullException(nameof(translatedTypeMetadataFactory)))
                 .CreateNew();
+
+            Type = type.NullToException(new ArgumentNullException(nameof(type))).GetTypeInfo();
+
+            Symbol = symbol.NullToException(new ArgumentNullException(nameof(symbol)));
         }
 
-        public TypeInfo Type { get; }
-        private string Symbol { get; }
-        private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
 
         public bool AreDependenciesResolved => true;
         public void ResolveDependencies() { }

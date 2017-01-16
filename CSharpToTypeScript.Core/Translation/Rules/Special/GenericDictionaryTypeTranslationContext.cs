@@ -7,18 +7,23 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
 {
     public class GenericDictionaryTypeTranslationContext : ITypeTranslationContext
     {
-        private ITypeScriptExpression Expression { get; }
-        private ITranslationContext TranslationContext { get; }
         private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
+        private ITranslationContext TranslationContext { get; }
+        private ITypeScriptExpression Expression { get; }
 
         public GenericDictionaryTypeTranslationContext(
-            ITypeScriptExpression expression,
+            ITranslatedTypeMetadataFactory translatedTypeMetadataFactory,
             ITranslationContext translationContext,
-            ITranslatedTypeMetadata translatedTypeMetadata)
+            ITypeScriptExpression expression)
         {
-            Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
+            TranslatedTypeMetadata =
+                translatedTypeMetadataFactory
+                    .NullToException(new ArgumentNullException(nameof(translatedTypeMetadataFactory)))
+                    .CreateNew();
+
             TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
-            TranslatedTypeMetadata = translatedTypeMetadata.NullToException(new ArgumentNullException(nameof(translatedTypeMetadata)));
+
+            Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
         }
 
         public bool AreDependenciesResolved { get; } = true;

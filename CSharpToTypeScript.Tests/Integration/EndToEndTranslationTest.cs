@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CSharpToTypeScript.Core.Common;
@@ -28,6 +29,12 @@ namespace CSharpToTypeScript.Tests.Integration
                     .ToList();
 
                 var translationContext = container.GetInstance<ITranslationContext>();
+
+                var expression = container.GetInstance<ITypeScriptExpression>();
+                var typeTranslationChain = container.GetInstance<TypeTranslationChain>();
+                typeTranslationChain
+                    .BuildDefault(expression, translationContext)
+                    .ForEach(translationContext.AddTypeTranslationContext);
 
                 var skipRule = container.GetInstance<ISkipTypeRule>();
 

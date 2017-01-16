@@ -7,15 +7,19 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
 {
     public class NullableTypeTranslationContext : ITypeTranslationContext
     {
-        private ITranslationContext TranslationContext { get; }
         private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
+        private ITranslationContext TranslationContext { get; }
 
         public NullableTypeTranslationContext(
-            ITranslationContext translationContext,
-            ITranslatedTypeMetadata translatedTypeMetadata)
+            ITranslatedTypeMetadataFactory translatedTypeMetadataFactory,
+            ITranslationContext translationContext)
         {
+            TranslatedTypeMetadata =
+                translatedTypeMetadataFactory
+                    .NullToException(new ArgumentNullException(nameof(translatedTypeMetadataFactory)))
+                    .CreateNew();
+
             TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
-            TranslatedTypeMetadata = translatedTypeMetadata.NullToException(new ArgumentNullException(nameof(translatedTypeMetadata)));
         }
 
         public bool AreDependenciesResolved => true;
