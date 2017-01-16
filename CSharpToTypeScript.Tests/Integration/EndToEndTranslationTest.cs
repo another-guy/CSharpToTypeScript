@@ -29,11 +29,10 @@ namespace CSharpToTypeScript.Tests.Integration
                     .ToList();
 
                 var translationContext = container.GetInstance<ITranslationContext>();
-
-                var expression = container.GetInstance<ITypeScriptExpression>();
-                var typeTranslationChain = container.GetInstance<TypeTranslationChain>();
-                typeTranslationChain
-                    .BuildDefault(expression, translationContext)
+                
+                container
+                    .GetInstance<TypeTranslationChain>()
+                    .BuildDefault()
                     .ForEach(translationContext.AddTypeTranslationContext);
 
                 var skipRule = container.GetInstance<ISkipTypeRule>();

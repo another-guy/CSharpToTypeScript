@@ -3,6 +3,7 @@ using CSharpToTypeScript.Core.Configuration;
 using CSharpToTypeScript.Core.Input;
 using CSharpToTypeScript.Core.Output;
 using CSharpToTypeScript.Core.Translation;
+using CSharpToTypeScript.Core.Translation.Rules;
 using SimpleInjector;
 
 namespace CSharpToTypeScript.SimpleInjector

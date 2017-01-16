@@ -1,15 +1,15 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
-using CSharpToTypeScript.Core.Common;
-using Newtonsoft.Json;
+﻿using CSharpToTypeScript.Core.Common;
 using CSharpToTypeScript.Core.Configuration;
 using CSharpToTypeScript.Core.Input;
 using CSharpToTypeScript.Core.Output;
 using CSharpToTypeScript.Core.Translation;
 using CSharpToTypeScript.Core.Translation.Rules;
 using CSharpToTypeScript.SimpleInjector;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace CSharpToTypeScript
 {
@@ -36,10 +36,9 @@ namespace CSharpToTypeScript
 
                 var translationContext = container.GetInstance<ITranslationContext>();
 
-                var expression = container.GetInstance<ITypeScriptExpression>();
-                var typeTranslationChain = container.GetInstance<TypeTranslationChain>();
-                typeTranslationChain
-                    .BuildDefault(expression, translationContext)
+                container
+                    .GetInstance<TypeTranslationChain>()
+                    .BuildDefault()
                     .ForEach(translationContext.AddTypeTranslationContext);
 
 
