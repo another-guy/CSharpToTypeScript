@@ -33,14 +33,14 @@ namespace CSharpToTypeScript.Tests.Integration
                 container
                     .GetInstance<TypeTranslationChain>()
                     .BuildDefault()
-                    .ForEach(translationContext.AddTypeTranslationContext);
+                    .ForEach(typeTranslationContext => translationContext.AddTypeTranslationContext(typeTranslationContext, false));
 
-                var skipRule = container.GetInstance<ISkipTypeRule>();
-
+                var skipTypeRule = container.GetInstance<ISkipTypeRule>();
+                var typeTranslationContextFactory = container.GetInstance<ITypeTranslationContextFactory>();
                 // IoC vvvvvvvvvvvvvvvvvvvvvv
                 foreach (var sourceType in translationRootTargetTypes)
-                    if (skipRule.AppliesTo(sourceType) == false)
-                        translationContext.AddTypeTranslationContextForType(sourceType);
+                    if (skipTypeRule.AppliesTo(sourceType) == false)
+                        translationContext.AddTypeTranslationContext(typeTranslationContextFactory.Regular(sourceType), true);
                 ITypeTranslationContext unprocessed;
                 Func<ITypeTranslationContext, bool> withUnresolvedDependencies =
                     typeContext => typeContext.AreDependenciesResolved == false;

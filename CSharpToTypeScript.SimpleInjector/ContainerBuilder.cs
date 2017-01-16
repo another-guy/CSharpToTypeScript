@@ -40,8 +40,7 @@ namespace CSharpToTypeScript.SimpleInjector
             Container.RegisterSingleton<ITranslatedTypeMetadataFactory, TranslatedTypeMetadataFactory>();
             Container.RegisterSingleton<ITranslationContext, TranslationContext>();
             Container.RegisterSingleton<ITypeTranslationContextFactory, TypeTranslationContextFactory>();
-            Container.RegisterSingleton<RegularTypeTranslationContextFactory>(); // TODO IoC revisit this one
-            Container.Register<TypeTranslationChain>(); // TODO IoC -- ~interface~? Singletone?
+            Container.RegisterSingleton<TypeTranslationChain>(); // This is the cornerstone class, this is why it's registered directly and does not implement an interface.
 
             // Output
             Container.RegisterSingleton<ITranslationResultWriterFactory, TranslationResultWriterFactory>();

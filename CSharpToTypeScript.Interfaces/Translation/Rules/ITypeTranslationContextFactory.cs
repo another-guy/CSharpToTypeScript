@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace CSharpToTypeScript.Core.Translation.Rules
 {
@@ -12,5 +13,6 @@ namespace CSharpToTypeScript.Core.Translation.Rules
         ITypeTranslationContext Special(Type type, string symbol);
         ITypeTranslationContext Array();
         ITypeTranslationContext GenericEnumerable();
+        ITypeTranslationContext Regular(TypeInfo typeInfo); // TODO TypeInfo vs Type...
     }
 }

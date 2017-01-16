@@ -5,8 +5,6 @@ using CSharpToTypeScript.Core.Translation.Rules;
 
 namespace CSharpToTypeScript.Core.Translation
 {
-    // TODO IoC -- interface?
-    // TODO IoC -- factory with static instance
     public sealed class TypeTranslationChain
     {
         private ITypeScriptExpression Expression { get; }

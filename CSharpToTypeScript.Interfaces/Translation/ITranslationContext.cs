@@ -13,9 +13,8 @@ namespace CSharpToTypeScript.Core.Translation
         // TODO mark here AND in implementations [Pure]
         string SymbolFor(string symbolBase);
         string TypeCommentFor(TypeInfo typeInfo);
-
-        void AddTypeTranslationContextForType(TypeInfo typeInfo);
-        void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext);
+        
+        void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext, bool inOrdered);
         bool CanProcess(TypeInfo typeInfo);
         ITypeTranslationContext GetByType(Type type);
 

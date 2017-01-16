@@ -17,7 +17,6 @@ namespace CSharpToTypeScript.Core.Translation
         public InputConfiguration InputConfiguration => Configuration.Input;
         public OutputConfiguration OutputConfiguration => Configuration.Output;
         public TranslationConfiguration TranslationConfiguration => Configuration.Translation;
-        public RegularTypeTranslationContextFactory RegularTypeTranslationContextFactory { get; }
 
         // TODO The right way of doing that is using a Graph data structure.
         // Naive list consumption can't guarantee precedence of parent types.
@@ -25,19 +24,12 @@ namespace CSharpToTypeScript.Core.Translation
             new List<TypeInfo>();
 
         // TODO EXPOSE TO CLIENTS AS AN OBJECT -- Make this dynamic -- let clients alter the chain to fit their need
-        public IList<ITypeTranslationContext> TranslationChain { get; } =
-            new List<ITypeTranslationContext>();
+        public IList<ITypeTranslationContext> TranslationChain { get; } = new List<ITypeTranslationContext>();
         
-        public TranslationContext(
-            ITypeScriptExpression expression,
-            CompleteConfiguration configuration,
-            RegularTypeTranslationContextFactory regularTypeTranslationContextFactory)
+        public TranslationContext(ITypeScriptExpression expression, CompleteConfiguration configuration)
         {
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
-
             Configuration = configuration.NullToException(new ArgumentNullException(nameof(configuration)));
-
-            RegularTypeTranslationContextFactory = regularTypeTranslationContextFactory.NullToException(new ArgumentNullException(nameof(regularTypeTranslationContextFactory)));
         }
 
         public bool CanProcess(TypeInfo typeInfo)
@@ -45,15 +37,12 @@ namespace CSharpToTypeScript.Core.Translation
             return TranslationChain
                 .Any(typeTranslationContext => typeTranslationContext.CanProcess(typeInfo.AsType()));
         }
-
-        public void AddTypeTranslationContextForType(TypeInfo typeInfo)
-        {
-            OrderedTargetTypes.Insert(0, typeInfo);
-            AddTypeTranslationContext(RegularTypeTranslationContextFactory.NewFor(typeInfo, this));
-        }
         
-        public void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext)
+        public void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext, bool inOrdered)
         {
+            if (inOrdered)
+                OrderedTargetTypes.Insert(0, (typeTranslationContext as RegularTypeTranslationContext).TypeInfo);
+
             TranslationChain.Add(typeTranslationContext);
         }
 
@@ -110,28 +99,6 @@ namespace CSharpToTypeScript.Core.Translation
                     return "";
             }
             return Expression.SingleLineComment(typeRef);
-        }
-    }
-
-    // TODO IoC -- move to correct location, Interface???
-    public sealed class RegularTypeTranslationContextFactory
-    {
-        private Func<TypeInfo, ITranslationContext, RegularTypeTranslationContext> FactoryFunction { get; }
-
-        public RegularTypeTranslationContextFactory(
-            ITypeScriptExpression expression,
-            ISkipTypeRule skipRule,
-            ISourceTypeMetadataFactory sourceTypeMetadataFactory,
-            ITranslatedTypeMetadataFactory translatedTypeMetadataFactory)
-        {
-            FactoryFunction =
-                (typeInfo, translationContext) =>
-                    new RegularTypeTranslationContext(expression, translationContext, typeInfo, skipRule, sourceTypeMetadataFactory.CreateNew(), translatedTypeMetadataFactory.CreateNew());
-        }
-
-        public ITypeTranslationContext NewFor(TypeInfo typeInfo, ITranslationContext translationContext)
-        {
-            return FactoryFunction(typeInfo, translationContext);
         }
     }
 }
