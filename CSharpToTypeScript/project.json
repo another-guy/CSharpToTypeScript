@@ -7,14 +7,14 @@
 
   "dependencies": {
     "clipr": "1.6.0",
-    "Peppermint":  "1.5.0", 
+    "Peppermint": "1.5.0",
     "CSharpToTypeScript.Core": "0.0.1-*",
+    "CSharpToTypeScript.SimpleInjector": "0.0.1-*",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.1"
     },
-    "Newtonsoft.Json": "9.0.1",
-    "SimpleInjector": "3.3.2"
+    "Newtonsoft.Json": "9.0.1"
   },
 
   "frameworks": {

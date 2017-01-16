@@ -8,8 +8,7 @@ using CSharpToTypeScript.Core.Input;
 using CSharpToTypeScript.Core.Output;
 using CSharpToTypeScript.Core.Translation;
 using CSharpToTypeScript.Core.Translation.Rules;
-using CSharpToTypeScript.Core.Translation.Rules.Regular;
-using SimpleInjector;
+using CSharpToTypeScript.SimpleInjector;
 
 namespace CSharpToTypeScript
 {
@@ -27,7 +26,7 @@ namespace CSharpToTypeScript
                 .UseAsArgFor(JsonConvert.DeserializeObject<CompleteConfiguration>)
                 .WithAllPathsRelativeToFile(configurationPath);
 
-            using (var container = CreateIocContainer(configuration))
+            using (var container = new ContainerBuilder().With(configuration).Validated().Build())
             {
                 var translationRootTargetTypes = container
                     .GetInstance<ITargetTypesLocator>()
@@ -63,33 +62,6 @@ namespace CSharpToTypeScript
                     .GetFor(configuration.Output)
                     .Write(nonemptyGenerationResults);
             }
-        }
-
-        private static Container CreateIocContainer(CompleteConfiguration configuration)
-        {
-            var container = new Container();
-
-            container.RegisterSingleton<ITypeScriptExpression, TypeScriptExpression>();
-            container.RegisterSingleton(configuration);
-            container.RegisterSingleton(() => configuration.Input);
-            container.RegisterSingleton(() => configuration.Translation);
-            container.RegisterSingleton(() => configuration.Output);
-            container.Register<ISkipRule, SkipRule>();
-            container.Register<TypeTranslationChain>(); // TODO IoC -- interface? Singletone (when factory)
-
-            container.Register<ITargetTypesLocator, TargetTypesLocator>();
-
-            container.Register<ITranslationContext, TranslationContext>();
-
-            container.Register<RegularTypeTranslationContextFactory>();
-
-            // container.Register<RegularTypeTranslationContext>();
-            container.Register<ISourceTypeMetadataFactory, SourceTypeMetadataFactory>();
-            container.Register<ITranslatedTypeMetadataFactory, TranslatedTypeMetadataFactory>();
-
-
-            container.Verify();
-            return container;
         }
     }
 }

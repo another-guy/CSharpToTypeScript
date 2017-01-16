@@ -1,0 +1,22 @@
+﻿{
+  "version": "0.0.1-*",
+
+  "buildOptions": {
+    "warningsAsErrors": true
+  },
+
+  "dependencies": {
+    "CSharpToTypeScript.Interfaces": "0.0.1",
+    "CSharpToTypeScript.Core": "0.0.1",
+    "Peppermint": "1.5.0",
+    "NETStandard.Library": "1.6.1",
+    "System.Runtime.Loader": "4.3.0",
+    "SimpleInjector": "3.3.2"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}
