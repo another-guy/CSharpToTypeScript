@@ -35,6 +35,7 @@ $prefixExpected = $tagOfHead + "-"
 
 $interfaceProjectJsonVersion = Get-Content '.\CSharpToTypeScript.Interfaces\project.json' | Out-String | ConvertFrom-Json | select -ExpandProperty version
 $coreProjectJsonVersion = Get-Content '.\CSharpToTypeScript.Core\project.json' | Out-String | ConvertFrom-Json | select -ExpandProperty version
+$iocProjectJsonVersion = Get-Content '.\CSharpToTypeScript.SimpleInjector\project.json' | Out-String | ConvertFrom-Json | select -ExpandProperty version
 $appProjectJsonVersion = Get-Content '.\CSharpToTypeScript\project.json' | Out-String | ConvertFrom-Json | select -ExpandProperty version
 
 if ([string]::IsNullOrEmpty($tagOfHead)) {
@@ -44,14 +45,17 @@ if ([string]::IsNullOrEmpty($tagOfHead)) {
   
   exec { & dotnet pack .\CSharpToTypeScript.Interfaces -c Release -o .\artifacts --version-suffix=$revision }
   exec { & dotnet pack .\CSharpToTypeScript.Core -c Release -o .\artifacts --version-suffix=$revision }
+  exec { & dotnet pack .\CSharpToTypeScript.SimpleInjector -c Release -o .\artifacts --version-suffix=$revision }
   exec { & dotnet pack .\CSharpToTypeScript -c Release -o .\artifacts --version-suffix=$revision }
 
 } elseif ($interfaceProjectJsonVersion.StartsWith($prefixExpected,"CurrentCultureIgnoreCase") -and
 	$coreProjectJsonVersion.StartsWith($prefixExpected,"CurrentCultureIgnoreCase") -and
+	$iocProjectJsonVersion.StartsWith($prefixExpected,"CurrentCultureIgnoreCase") -and
 	$appProjectJsonVersion.StartsWith($prefixExpected,"CurrentCultureIgnoreCase")) {
 
   exec { & dotnet pack .\CSharpToTypeScript.Interfaces -c Release -o .\artifacts }
   exec { & dotnet pack .\CSharpToTypeScript.Core -c Release -o .\artifacts }
+  exec { & dotnet pack .\CSharpToTypeScript.SimpleInjector -c Release -o .\artifacts }
   exec { & dotnet pack .\CSharpToTypeScript -c Release -o .\artifacts }
 
 } else {

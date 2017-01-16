@@ -1,5 +1,5 @@
 {
-  "version": "0.0.1-*",
+  "version": "0.0.2-*",
   "buildOptions": {
     "emitEntryPoint": true,
     "warningsAsErrors": true
@@ -8,8 +8,8 @@
   "dependencies": {
     "clipr": "1.6.0",
     "Peppermint": "1.5.0",
-    "CSharpToTypeScript.Core": "0.0.1-*",
-    "CSharpToTypeScript.SimpleInjector": "0.0.1-*",
+    "CSharpToTypeScript.Core": "0.0.2-*",
+    "CSharpToTypeScript.SimpleInjector": "0.0.2-*",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.1"

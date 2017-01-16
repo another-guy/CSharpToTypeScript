@@ -1,9 +1,9 @@
 ﻿{
-  "version": "0.0.1-*",
+  "version": "0.0.2-*",
 
   "dependencies": {
     "NETStandard.Library": "1.6.1",
-    "CSharpToTypeScript": "0.0.1-*"
+    "CSharpToTypeScript": "0.0.2-*"
   },
 
   "frameworks": {

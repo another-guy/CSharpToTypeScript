@@ -1,12 +1,12 @@
 {
-  "version": "0.0.1-*",
+  "version": "0.0.2-*",
 
   "buildOptions": {
     "warningsAsErrors": true
   },
 
   "dependencies": {
-    "CSharpToTypeScript.Interfaces": "0.0.1",
+    "CSharpToTypeScript.Interfaces": "0.0.2-*",
     "Peppermint": "1.5.0",
     "NETStandard.Library": "1.6.1",
     "CaseExtensions": "1.0.3",

@@ -1,13 +1,13 @@
 ﻿{
-  "version": "0.0.1-*",
+  "version": "0.0.2-*",
 
   "buildOptions": {
     "warningsAsErrors": true
   },
 
   "dependencies": {
-    "CSharpToTypeScript.Interfaces": "0.0.1",
-    "CSharpToTypeScript.Core": "0.0.1",
+    "CSharpToTypeScript.Interfaces": "0.0.2-*",
+    "CSharpToTypeScript.Core": "0.0.2-*",
     "Peppermint": "1.5.0",
     "NETStandard.Library": "1.6.1",
     "System.Runtime.Loader": "4.3.0",
