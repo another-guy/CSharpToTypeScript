@@ -8,6 +8,7 @@ using CSharpToTypeScript.Core.Input;
 using CSharpToTypeScript.Core.Output;
 using CSharpToTypeScript.Core.Translation;
 using CSharpToTypeScript.Core.Translation.Rules;
+using CSharpToTypeScript.Core.Translation.Rules.Regular;
 using SimpleInjector;
 
 namespace CSharpToTypeScript
@@ -35,7 +36,7 @@ namespace CSharpToTypeScript
 
                 var translationContext = container.GetInstance<ITranslationContext>();
 
-                var skipRule = container.GetInstance<SkipRule>();
+                var skipRule = container.GetInstance<ISkipRule>();
 
 
                 // IoC vvvvvvvvvvvvvvvvvvvvvv
@@ -53,7 +54,9 @@ namespace CSharpToTypeScript
 
                 var nonemptyGenerationResults = translationContext
                     .TranslateTargets()
-                    .Where(translationResult => string.IsNullOrWhiteSpace(translationResult.Definition) == false);
+                    .Where(translationResult => string.IsNullOrWhiteSpace(translationResult.Definition) == false)
+                    .ToList() // TODO ToList() is a temporary solution
+                    ;
 
                 Cli.WriteLine($"Writing results to {configuration.Output.Location}", ConsoleColor.Green);
                 Writers
@@ -80,10 +83,9 @@ namespace CSharpToTypeScript
 
             container.Register<RegularTypeTranslationContextFactory>();
 
-
-
-            container.Register<ISourceTypeMetadata, SourceTypeMetadata>();
-            container.Register<ITranslatedTypeMetadata, TranslatedTypeMetadata>();
+            // container.Register<RegularTypeTranslationContext>();
+            container.Register<ISourceTypeMetadataFactory, SourceTypeMetadataFactory>();
+            container.Register<ITranslatedTypeMetadataFactory, TranslatedTypeMetadataFactory>();
 
 
             container.Verify();

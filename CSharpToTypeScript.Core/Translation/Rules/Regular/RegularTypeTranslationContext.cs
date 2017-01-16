@@ -89,12 +89,12 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
 
             IsProcessed = true;
 
-            TranslatedTypeMetadata.Symbol = GlobalContext.SymbolFor(TypeInfo.Name);
+            TranslatedTypeMetadata.Symbol = GlobalContext.SymbolFor(TypeInfo.Name); // TODO IoC symbol name generator to be extracted
 
             var sb = new StringBuilder();
 
             // TODO Class case only now, think of interfaces
-            sb.Append(GlobalContext.TypeCommentFor(TypeInfo));
+            sb.Append(GlobalContext.TypeCommentFor(TypeInfo)); // TODO IoC type name generator to be extracted
             sb.Append(Expression.NewLine());
             sb.Append(Expression.ClassNameExpression(TranslatedTypeMetadata.Symbol));
             if (SourceTypeMetadata.BaseType != null)

@@ -130,17 +130,38 @@ namespace CSharpToTypeScript.Core.Translation
         public RegularTypeTranslationContextFactory(
             ITypeScriptExpression expression,
             SkipRule skipRule,
-            ISourceTypeMetadata sourceTypeMetadata,
-            ITranslatedTypeMetadata translatedTypeMetadata)
+            ISourceTypeMetadataFactory sourceTypeMetadataFactory,
+            ITranslatedTypeMetadataFactory translatedTypeMetadataFactory)
         {
             FactoryFunction =
                 (typeInfo, translationContext) =>
-                    new RegularTypeTranslationContext(expression, translationContext, typeInfo, skipRule, sourceTypeMetadata, translatedTypeMetadata);
+                    new RegularTypeTranslationContext(expression, translationContext, typeInfo, skipRule, sourceTypeMetadataFactory.CreateNew(), translatedTypeMetadataFactory.CreateNew());
         }
 
         public ITypeTranslationContext NewFor(TypeInfo typeInfo, ITranslationContext translationContext)
         {
             return FactoryFunction(typeInfo, translationContext);
+        }
+    }
+
+    public interface ISourceTypeMetadataFactory
+    {
+        ISourceTypeMetadata CreateNew();
+    }
+    public sealed class SourceTypeMetadataFactory : ISourceTypeMetadataFactory {
+        public ISourceTypeMetadata CreateNew()
+        {
+            return new SourceTypeMetadata();
+        }
+    }
+    public interface ITranslatedTypeMetadataFactory
+    {
+        ITranslatedTypeMetadata CreateNew();
+    }
+    public sealed class TranslatedTypeMetadataFactory: ITranslatedTypeMetadataFactory {
+        public ITranslatedTypeMetadata CreateNew()
+        {
+            return new TranslatedTypeMetadata();
         }
     }
 }
