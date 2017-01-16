@@ -24,10 +24,12 @@ namespace CSharpToTypeScript.Core.Translation
             return TranslationChain
                 .Any(typeTranslationContext => typeTranslationContext.CanProcess(typeInfo.AsType()));
         }
-        
-        public void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext, bool inOrdered)
+
+
+        // TODO Get rid of addToOrderedTargets eventually, when closure builder understands the correct order of type declarations based on dependencies
+        public void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext, bool addToOrderedTargets)
         {
-            if (inOrdered)
+            if (addToOrderedTargets)
                 OrderedTargetTypes.Insert(0, (typeTranslationContext as RegularTypeTranslationContext).TypeInfo);
 
             TranslationChain.Add(typeTranslationContext);

@@ -37,7 +37,7 @@ namespace CSharpToTypeScript.Tests.Integration
 
                 var skipTypeRule = container.GetInstance<ISkipTypeRule>();
                 var typeTranslationContextFactory = container.GetInstance<ITypeTranslationContextFactory>();
-                // IoC vvvvvvvvvvvvvvvvvvvvvv
+                // TODO Move to class
                 foreach (var sourceType in translationRootTargetTypes)
                     if (skipTypeRule.AppliesTo(sourceType) == false)
                         translationContext.AddTypeTranslationContext(typeTranslationContextFactory.Regular(sourceType), true);
