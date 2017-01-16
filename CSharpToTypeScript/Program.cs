@@ -37,7 +37,6 @@ namespace CSharpToTypeScript
 
                 var skipRule = container.GetInstance<ISkipRule>();
 
-
                 // IoC vvvvvvvvvvvvvvvvvvvvvv
                 foreach (var sourceType in translationRootTargetTypes)
                     if (skipRule.AppliesTo(sourceType) == false)
@@ -49,13 +48,9 @@ namespace CSharpToTypeScript
                     unprocessed.ResolveDependencies();
                 // IoC ^^^^^^^^^^^^^^^^^^^^^^^
 
-
-
                 var nonemptyGenerationResults = translationContext
                     .TranslateTargets()
-                    .Where(translationResult => string.IsNullOrWhiteSpace(translationResult.Definition) == false)
-                    .ToList() // TODO ToList() is a temporary solution
-                    ;
+                    .Where(translationResult => string.IsNullOrWhiteSpace(translationResult.Definition) == false);
 
                 Cli.WriteLine($"Writing results to {configuration.Output.Location}", ConsoleColor.Green);
                 Writers

@@ -143,25 +143,4 @@ namespace CSharpToTypeScript.Core.Translation
             return FactoryFunction(typeInfo, translationContext);
         }
     }
-
-    public interface ISourceTypeMetadataFactory
-    {
-        ISourceTypeMetadata CreateNew();
-    }
-    public sealed class SourceTypeMetadataFactory : ISourceTypeMetadataFactory {
-        public ISourceTypeMetadata CreateNew()
-        {
-            return new SourceTypeMetadata();
-        }
-    }
-    public interface ITranslatedTypeMetadataFactory
-    {
-        ITranslatedTypeMetadata CreateNew();
-    }
-    public sealed class TranslatedTypeMetadataFactory: ITranslatedTypeMetadataFactory {
-        public ITranslatedTypeMetadata CreateNew()
-        {
-            return new TranslatedTypeMetadata();
-        }
-    }
 }
