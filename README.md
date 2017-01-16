@@ -17,8 +17,8 @@ Translates C# DTOs into compatible TypeScript classes
 **[Milestones](https://github.com/another-guy/CSharpToTypeScript/milestones?direction=asc&sort=due_date&state=open):**
 
 * <del>[v0.0.1 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/1)</del> **Released**
-* [v0.0.2 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/3) **Current**
-* [v0.0.3 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/2)
+* <del>[v0.0.2 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/3)</del> **Released**
+* [v0.0.3 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/2) **Current**
 * [v0.0.4 (alpha)](https://github.com/another-guy/CSharpToTypeScript/milestone/5)
 * [v1.0.0 (release)](https://github.com/another-guy/CSharpToTypeScript/milestone/4)
 
@@ -47,6 +47,16 @@ Manual maintainance of compatible C# data transfer objects (DTO) and their TypeS
 This library is intended to help generating TypeScript enums and classes based on C# type definitions.
 
 ## Installation
+
+List of NuGet packages built from this codebase:
+
+* [CSharpToTypeScript.Interfaces](https://www.nuget.org/packages/CSharpToTypeScript.Interfaces/) Declares interfaces used by `CSharpToTypeScript.Core` package. This is to allow [Stairway pattern](http://stackoverflow.com/questions/29259414/stairway-pattern-implementation) and flexible set up via IoC container of your choice.
+
+* [CSharpToTypeScript.Core](https://www.nuget.org/packages/CSharpToTypeScript.Core/) Default implementation of the translating library.
+
+* [CSharpToTypeScript.SimpleInjector](https://www.nuget.org/packages/CSharpToTypeScript.SimpleInjector/) Provides default IoC setup using SimpleInjector as a framework.
+
+* [CSharpToTypeScript](https://www.nuget.org/packages/CSharpToTypeScript/) A console application that binds things together and lets translation from command line (see syntax above).
 
 // TODO
 
