@@ -15,6 +15,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules
         private ISourceTypeMetadataFactory SourceTypeMetadataFactory { get; }
         private ISkipTypeRule SkipTypeRule { get; }
         private ISymbolNamer SymbolNamer { get; }
+        private ICommenter Commenter { get; }
 
         public TypeTranslationContextFactory(
             ITypeScriptExpression expression,
@@ -22,7 +23,8 @@ namespace CSharpToTypeScript.Core.Translation.Rules
             ITranslatedTypeMetadataFactory translatedTypeMetadataFactory,
             ISourceTypeMetadataFactory sourceTypeMetadataFactory,
             ISkipTypeRule skipTypeRule,
-            ISymbolNamer symbolNamer)
+            ISymbolNamer symbolNamer,
+            ICommenter commenter)
         {
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
             TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
@@ -30,6 +32,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules
             SourceTypeMetadataFactory = sourceTypeMetadataFactory.NullToException(new ArgumentNullException(nameof(sourceTypeMetadataFactory)));
             SkipTypeRule = skipTypeRule.NullToException(new ArgumentNullException(nameof(skipTypeRule)));
             SymbolNamer = symbolNamer.NullToException(new ArgumentNullException(nameof(symbolNamer)));
+            Commenter = commenter.NullToException(new ArgumentNullException(nameof(commenter)));
         }
 
         public ITypeTranslationContext Direct(Type type, string symbol)
@@ -39,7 +42,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules
 
         public ITypeTranslationContext Enum()
         {
-            return new EnumTypeTranslationContext(TranslatedTypeMetadataFactory, TranslationContext, Expression, SymbolNamer);
+            return new EnumTypeTranslationContext(TranslatedTypeMetadataFactory, TranslationContext, Expression, SymbolNamer, Commenter);
         }
 
         public ITypeTranslationContext Nullable()
@@ -69,7 +72,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules
 
         public ITypeTranslationContext Regular(TypeInfo typeInfo)
         {
-            return new RegularTypeTranslationContext(TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, typeInfo);
+            return new RegularTypeTranslationContext(TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
         }
     }
 }

@@ -73,26 +73,5 @@ namespace CSharpToTypeScript.Core.Translation
                     return new TranslationResult(targetType, definition);
                 });
         }
-
-        public string TypeCommentFor(TypeInfo typeInfo)
-        {
-            string typeRef;
-            switch (TranslationConfiguration.SourceTypeReferenceKind)
-            {
-                case SourceTypeReferenceKind.AssemblyQualifiedName:
-                    typeRef = typeInfo.AssemblyQualifiedName;
-                    break;
-                case SourceTypeReferenceKind.FullName:
-                    typeRef = typeInfo.FullName;
-                    break;
-                case SourceTypeReferenceKind.Name:
-                    typeRef = typeInfo.Name;
-                    break;
-                case SourceTypeReferenceKind.None:
-                default:
-                    return "";
-            }
-            return Expression.SingleLineComment(typeRef);
-        }
     }
 }

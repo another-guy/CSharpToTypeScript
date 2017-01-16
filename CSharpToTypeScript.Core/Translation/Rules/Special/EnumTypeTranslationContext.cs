@@ -12,12 +12,14 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
         private ITranslationContext TranslationContext { get; }
         private ITypeScriptExpression Expression { get; }
         private ISymbolNamer SymbolNamer { get; }
+        private ICommenter Commenter { get; }
 
         public EnumTypeTranslationContext(
             ITranslatedTypeMetadataFactory translatedTypeMetadataFactory,
             ITranslationContext translationContext,
             ITypeScriptExpression expression,
-            ISymbolNamer symbolNamer)
+            ISymbolNamer symbolNamer,
+            ICommenter commenter)
         {
             TranslatedTypeMetadata =
                 translatedTypeMetadataFactory
@@ -29,6 +31,8 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
 
             SymbolNamer = symbolNamer.NullToException(new ArgumentNullException(nameof(symbolNamer)));
+
+            Commenter = commenter.NullToException(new ArgumentNullException(nameof(commenter)));
         }
 
         public bool AreDependenciesResolved => true;
@@ -57,7 +61,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
         {
             var sb = new StringBuilder();
             
-            sb.Append(TranslationContext.TypeCommentFor(specificEnumType.GetTypeInfo()));
+            sb.Append(Commenter.TypeCommentFor(specificEnumType.GetTypeInfo()));
             sb.Append(Expression.NewLine());
             sb.Append(Expression.EnumNameExpression(symbol));
             sb.Append(Expression.BlockBegin());
