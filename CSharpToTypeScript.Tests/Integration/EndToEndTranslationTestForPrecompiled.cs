@@ -12,14 +12,14 @@ using Xunit;
 
 namespace CSharpToTypeScript.Tests.Integration
 {
-    public sealed class EndToEndTranslationTest
+    public sealed class EndToEndTranslationTestForPrecompiled
     {
         [Fact]
-        public void CorrectlyTranslatesDemoTargetAssembly()
+        public void CorrectlyTranslatesDemoTargetAssemblies()
         {
-            var completeConfiguration = new InTestConfigurationLoader().GetConfiguration("sample.debug.cfg.json");
+            var completeConfiguration = new InTestConfigurationLoader().GetConfiguration("precompiled.sample.debug.cfg.json");
             var expectedResult = new TestFilesAccessor()
-                .GetSampleFile("sample.debug.cfg.expected.result.txt")
+                .GetSampleFile("precompiled.sample.debug.cfg.expected.result.txt")
                 .UseAsArgFor(File.ReadAllText);
 
             using (var container = new ContainerBuilder().With(completeConfiguration).Validated().Build())

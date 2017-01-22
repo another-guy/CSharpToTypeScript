@@ -13,6 +13,6 @@
   },
 
   "scripts": {
-    "precompile": "dotnet run -p ../CSharpToTypeScript/project.json -- -c ../CSharpToTypeScript.Tests/SampleFiles/sample.debug.cfg.json"
+    "precompile": "dotnet run -p ../CSharpToTypeScript/project.json -- -c ../CSharpToTypeScript.Tests/TestFiles/sample.debug.cfg.json"
   }
 }

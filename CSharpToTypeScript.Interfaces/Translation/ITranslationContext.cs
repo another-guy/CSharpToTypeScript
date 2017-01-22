@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using CSharpToTypeScript.Core.Common;
-using CSharpToTypeScript.Core.Configuration;
 using CSharpToTypeScript.Core.Translation.Rules;
 
 namespace CSharpToTypeScript.Core.Translation

@@ -5,7 +5,7 @@ using CSharpToTypeScript.Tests.Integration;
 
 namespace CSharpToTypeScript.Tests
 {
-    public sealed class TestFiles
+    public sealed class TestFilesAccessor
     {
         public string GetSampleFile(string fileName)
         {
@@ -14,7 +14,7 @@ namespace CSharpToTypeScript.Tests
                 .Parent
                 .Parent
                 .Parent
-                .UseAsArgFor(directory => Path.Combine(directory.FullName, "SampleFiles", fileName));
+                .UseAsArgFor(directory => Path.Combine(directory.FullName, "TestFiles", fileName));
         }
 
         public string GetAssemblyLocation()
