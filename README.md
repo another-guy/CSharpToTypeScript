@@ -34,7 +34,7 @@ dotnet test
 
 # from ./CSharpToTypeScript execute
 dotnet build
-dotnet run -- -c ../CSharpToTypeScript.Tests/SampleFiles/sample.debug.cfg.json
+dotnet run -- -c ../CSharpToTypeScript.Tests/TestFiles/sample.debug.cfg.json
 ```
 
 ## Code Example

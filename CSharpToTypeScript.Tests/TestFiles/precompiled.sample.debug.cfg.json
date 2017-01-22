@@ -1,0 +1,28 @@
+﻿{
+  "Input": {
+    "Assemblies": [
+      "./Precompiled/ClassicLibraryWithDependency.dll",
+      "./Precompiled/CoreLibraryWithDependency.dll"
+    ],
+
+    "IncludeTypes": [ "Demo" ],
+    "ExcludeTypes": [],
+
+    "SkipTypesWithAttribute": [ "System.ObsoleteAttribute" ],
+    "SkipMembersWithAttribute": [ "System.ObsoleteAttribute" ]
+  },
+
+  "Output": {
+    "Location": "C:/temp/Generated/singleFile.from.precompiled.ts",
+    "Mode": "SingleFile"
+  },
+
+  "Translation": {
+    "GeneratedSymbols": {
+      "Prefix": "Ts",
+      "Suffix": "Generated"
+    },
+
+    "SourceTypeReferenceKind": "FullName" 
+  }
+}

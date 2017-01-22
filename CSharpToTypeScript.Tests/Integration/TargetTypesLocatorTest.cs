@@ -12,7 +12,8 @@ namespace CSharpToTypeScript.Tests.Integration
 
         public TargetTypesLocatorTest()
         {
-            var completeConfiguration = new InTestConfigurationLoader().GetConfiguration();
+            var completeConfiguration = new InTestConfigurationLoader()
+                .GetConfiguration("sample.debug.cfg.json");
             Configuration = completeConfiguration.Input;
             TargetTypesLocator = new TargetTypesLocator(Configuration);
         }

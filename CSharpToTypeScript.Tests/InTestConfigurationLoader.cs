@@ -8,11 +8,11 @@ namespace CSharpToTypeScript.Tests
 {
     public sealed class InTestConfigurationLoader
     {
-        public CompleteConfiguration GetConfiguration()
+        public CompleteConfiguration GetConfiguration(string configFile)
         {
-            var testFiles = new TestFiles();
+            var testFiles = new TestFilesAccessor();
             var assemblyLocation = testFiles.GetAssemblyLocation();
-            var configurationPath = testFiles.GetSampleFile("sample.debug.cfg.json");
+            var configurationPath = testFiles.GetSampleFile(configFile);
             return File
                 .ReadAllText(configurationPath)
                 .UseAsArgFor(JsonConvert.DeserializeObject<CompleteConfiguration>)

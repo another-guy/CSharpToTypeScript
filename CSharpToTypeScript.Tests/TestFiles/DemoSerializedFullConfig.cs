@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using CSharpToTypeScript.Core.Configuration;
 
-namespace CSharpToTypeScript.Tests.SampleFiles
+namespace CSharpToTypeScript.Tests.TestFiles
 {
     public class DemoSerializedFullConfig
     {

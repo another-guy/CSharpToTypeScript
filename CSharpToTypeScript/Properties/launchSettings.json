@@ -2,7 +2,7 @@
   "profiles": {
     "CSharpToTypeScript": {
       "commandName": "Project",
-      "commandLineArgs": "-c ../CSharpToTypeScript.Tests/SampleFiles/sample.debug.cfg.json"
+      "commandLineArgs": "-c ../CSharpToTypeScript.Tests/TestFiles/sample.debug.cfg.json"
     }
   }
 }
