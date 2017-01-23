@@ -28,13 +28,14 @@ namespace CSharpToTypeScript.Tests.Integration
                 .ToList();
 
             // Assert
-            Assert.Equal(6, rootTargets.Count);
+            Assert.Equal(7, rootTargets.Count);
             Assert.True(rootTargets.Any(t => t.FullName.EndsWith(".Employee")));
             Assert.True(rootTargets.Any(t => t.FullName.EndsWith(".Money")));
             Assert.True(rootTargets.Any(t => t.FullName.EndsWith(".Currency")));
             Assert.True(rootTargets.Any(t => t.FullName.EndsWith(".Address")));
             Assert.True(rootTargets.Any(t => t.FullName.EndsWith(".KnownButIgnored")));
             Assert.True(rootTargets.Any(t => t.FullName.EndsWith(".OkayishClassWithBadProperty")));
+            Assert.True(rootTargets.Any(t => t.FullName.EndsWith(".MyGenericType`1")));
         }
 
         [Fact]
@@ -51,10 +52,11 @@ namespace CSharpToTypeScript.Tests.Integration
                 .ToList();
 
             // Assert
-            Assert.Equal(3, rootTargets.Count);
+            Assert.Equal(4, rootTargets.Count);
             Assert.True(rootTargets.Any(t => t.FullName.EndsWith(".Address")));
             Assert.True(rootTargets.Any(t => t.FullName.EndsWith(".KnownButIgnored")));
             Assert.True(rootTargets.Any(t => t.FullName.EndsWith(".OkayishClassWithBadProperty")));
+            Assert.True(rootTargets.Any(t => t.FullName.EndsWith(".MyGenericType`1")));
         }
     }
 }
