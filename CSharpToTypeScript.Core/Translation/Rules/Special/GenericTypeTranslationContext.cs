@@ -59,16 +59,16 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
             foreach (var propertyInfo in TypeInfo.GetProperties(flags))
             {
                 SourceTypeMetadata[propertyInfo.Name] = propertyInfo;
-                EnsureTypeWillBeResolved(propertyInfo.PropertyType.GetTypeInfo());
+                EnsureTypeWillBeResolved(propertyInfo.GetPropertyTypeInfoSafe());
             }
 
             foreach (var fieldInfo in TypeInfo.GetFields(flags))
             {
                 SourceTypeMetadata[fieldInfo.Name] = fieldInfo;
-                EnsureTypeWillBeResolved(fieldInfo.FieldType.GetTypeInfo());
+                EnsureTypeWillBeResolved(fieldInfo.GetFieldTypeInfoSafe());
             }
 
-            {
+            { 
                 // TODO Think if this code can be rewritten so that is does not rely on specific types
                 var baseType = TypeInfo.BaseType;
                 if (baseType != null &&
