@@ -2,7 +2,7 @@
 {
     public interface ITypeScriptExpression
     {
-        string ClassNameExpression(string generatedTypeName);
+        string ClassNameExpression(string generatedTypeName, params string[] genericTypeParameters);
 
         string EnumNameExpression(string generatedTypeName);
 

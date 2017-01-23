@@ -41,7 +41,14 @@ namespace CSharpToTypeScript.Tests.Integration
                 // TODO Move to class
                 foreach (var sourceType in translationRootTargetTypes)
                     if (skipTypeRule.AppliesTo(sourceType) == false)
-                        translationContext.AddTypeTranslationContext(typeTranslationContextFactory.Regular(sourceType), true);
+                    {
+                        // TODO Reuse in other places!!!
+                        // TODO Separate class?
+                        var typeTranslationContext = sourceType.IsGenericType ?
+                            typeTranslationContextFactory.GenericType(sourceType) :
+                            typeTranslationContextFactory.Regular(sourceType);
+                        translationContext.AddTypeTranslationContext(typeTranslationContext, true);
+                    }
                 ITypeTranslationContext unprocessed;
                 Func<ITypeTranslationContext, bool> withUnresolvedDependencies =
                     typeContext => typeContext.AreDependenciesResolved == false;

@@ -72,9 +72,9 @@ namespace CSharpToTypeScript.TargetNamespace
     }
 
     // TODO #35 Add generic classes (with and without constraints)
-    public class MyGenericType<T>
+    public class MyGenericType<TProp>
     {
-        public T MyProperty { get; set; }
+        public TProp MyProperty { get; set; }
     }
 }
 

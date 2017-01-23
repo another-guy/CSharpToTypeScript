@@ -16,6 +16,11 @@ export class TsPersonGenerated {
   public NullableBool: boolean; // System.Nullable`1[[System.Boolean, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]
 }
 
+// CSharpToTypeScript.TargetNamespace.MyGenericType`1
+export class TsMyGenericTypeGenerated<TProp> {
+  public MyProperty: TProp; // TProp
+}
+
 // CSharpToTypeScript.TargetNamespace.OkayishClassWithBadProperty
 export class TsOkayishClassWithBadPropertyGenerated {
 }
