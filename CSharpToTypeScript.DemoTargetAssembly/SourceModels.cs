@@ -8,7 +8,6 @@ namespace CSharpToTypeScript.NonTargetNamespace
 
     public class Person
     {
-
         public string FirstName { get; set; }
         public int Age;
         public IList Addresses1 { get; set; }
@@ -70,6 +69,12 @@ namespace CSharpToTypeScript.TargetNamespace
     {
         [Obsolete]
         public string DontUseIt { get; set; }
+    }
+
+    // TODO #35 Add generic classes (with and without constraints)
+    public class MyGenericType<T>
+    {
+        public T MyProperty { get; set; }
     }
 }
 
