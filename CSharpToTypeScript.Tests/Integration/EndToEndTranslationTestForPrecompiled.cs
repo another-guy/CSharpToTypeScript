@@ -14,7 +14,7 @@ namespace CSharpToTypeScript.Tests.Integration
 {
     public sealed class EndToEndTranslationTestForPrecompiled
     {
-        [Fact(Skip = "For now")]
+        [Fact]
         public void CorrectlyTranslatesDemoTargetAssemblies()
         {
             var completeConfiguration = new InTestConfigurationLoader().GetConfiguration("precompiled.sample.debug.cfg.json");

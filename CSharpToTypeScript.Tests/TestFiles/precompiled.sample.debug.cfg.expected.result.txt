@@ -1,1 +1,10 @@
-﻿// TODO
+﻿// Demo.CoreLibraryWithDependency.CoreClassWithDependency
+export class TsCoreClassWithDependencyGenerated {
+  public String1: string; // System.String
+}
+
+// Demo.ClassicLibraryWithDependency.ClassicClassWithDependency
+export class TsClassicClassWithDependencyGenerated {
+  public X: string; // System.String
+}
+

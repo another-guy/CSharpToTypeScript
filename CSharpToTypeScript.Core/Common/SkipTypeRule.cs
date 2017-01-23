@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CSharpToTypeScript.Core.Configuration;
+using CSharpToTypeScript.Core.Translation;
 
 namespace CSharpToTypeScript.Core.Common
 {
@@ -18,7 +19,7 @@ namespace CSharpToTypeScript.Core.Common
         public bool AppliesTo(MemberInfo sourceType)
         {
             return sourceType
-                .GetCustomAttributes()
+                .GetCustomAttributesSafe()
                 .Select(attribute => attribute.GetType().FullName)
                 .Intersect(_skipTypeAttributeNames)
                 .Any();

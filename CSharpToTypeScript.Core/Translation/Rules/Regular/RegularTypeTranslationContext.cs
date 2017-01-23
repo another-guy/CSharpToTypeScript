@@ -58,13 +58,13 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
             foreach (var propertyInfo in TypeInfo.GetProperties(flags))
             {
                 SourceTypeMetadata[propertyInfo.Name] = propertyInfo;
-                EnsureTypeWillBeResolved(propertyInfo.PropertyType.GetTypeInfo());
+                EnsureTypeWillBeResolved(propertyInfo.GetPropertyTypeInfoSafe());
             }
 
             foreach (var fieldInfo in TypeInfo.GetFields(flags))
             {
                 SourceTypeMetadata[fieldInfo.Name] = fieldInfo;
-                EnsureTypeWillBeResolved(fieldInfo.FieldType.GetTypeInfo());
+                EnsureTypeWillBeResolved(fieldInfo.GetFieldTypeInfoSafe());
             }
 
             {
@@ -84,6 +84,9 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
 
         private void EnsureTypeWillBeResolved(TypeInfo typeInfo)
         {
+            if (typeInfo == null)
+                return;
+
             var noTypeTranslationContextRegistered = TranslationContext.CanProcess(typeInfo) == false;
             if (noTypeTranslationContextRegistered)
             {
@@ -144,9 +147,13 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
                 if (SkipTypeRule.AppliesTo(sourceMemberInfo))
                     continue;
                 
-                var type = ((sourceMemberInfo as PropertyInfo)?.PropertyType)
-                    .NullTo((sourceMemberInfo as FieldInfo)?.FieldType);
-                Debug.Assert(type != null, $"sourceMemberInfo is supposed to be either a PropertyInfo or FieldInfo but was {sourceMemberInfo.GetType()}");
+                var type = ((sourceMemberInfo as PropertyInfo)?.GetPropertyTypeSafe())
+                    .NullTo((sourceMemberInfo as FieldInfo)?.GetFieldTypeSafe());
+                
+                // TODO Log this at least
+                // Debug.Assert(type != null, $"sourceMemberInfo is supposed to be either a PropertyInfo or FieldInfo but was {sourceMemberInfo.GetType().Name}");
+                if (type == null)
+                    continue;
 
                 var memberTypeTranslationContext = TranslationContext.GetByType(type);
                 var translatedMemberTypeMetadata = memberTypeTranslationContext.Process(type); // TODO Process is not needed as a part of Interface!!!

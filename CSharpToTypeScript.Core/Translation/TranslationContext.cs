@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using CSharpToTypeScript.Core.Common;
 using CSharpToTypeScript.Core.Translation.Rules;
-using CSharpToTypeScript.Core.Translation.Rules.Regular;
 
 namespace CSharpToTypeScript.Core.Translation
 {
