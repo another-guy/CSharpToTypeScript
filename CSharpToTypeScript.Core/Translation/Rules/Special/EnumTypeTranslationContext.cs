@@ -48,7 +48,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
         {
             Debug.Assert(CanProcess(specificEnumType));
 
-            var symbol = SymbolNamer.GetNameFor(specificEnumType.Name);
+            var symbol = SymbolNamer.GetNameFor(specificEnumType.GetTypeInfo());
 
             var definition = GetDefinitionForEnum(symbol, specificEnumType);
 

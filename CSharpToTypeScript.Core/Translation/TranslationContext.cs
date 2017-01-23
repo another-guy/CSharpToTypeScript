@@ -30,7 +30,10 @@ namespace CSharpToTypeScript.Core.Translation
         public void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext, bool addToOrderedTargets)
         {
             if (addToOrderedTargets)
-                OrderedTargetTypes.Insert(0, (typeTranslationContext as RegularTypeTranslationContext).TypeInfo);
+            {
+                var typeBoundTranslationContext = typeTranslationContext as ITypeBoundTranslationContext;
+                OrderedTargetTypes.Insert(0, typeBoundTranslationContext.TypeInfo);
+            }
 
             TranslationChain.Add(typeTranslationContext);
         }

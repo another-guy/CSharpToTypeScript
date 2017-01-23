@@ -1,10 +1,12 @@
-﻿namespace CSharpToTypeScript.Core.Translation
+﻿using System.Linq;
+
+namespace CSharpToTypeScript.Core.Translation
 {
     public sealed class TypeScriptExpression : ITypeScriptExpression
     {
-        public string ClassNameExpression(string generatedTypeName)
+        public string ClassNameExpression(string generatedTypeName, params string[] genericTypeParameters)
         {
-            return $"export class {generatedTypeName} ";
+            return $"export class {generatedTypeName}{GenericTypeParamsExpression(genericTypeParameters)} ";
         }
 
         public string EnumNameExpression(string generatedTypeName)
@@ -15,6 +17,13 @@
         public string InheritedClassExpression(string parentClassName)
         {
             return $"extends {parentClassName} ";
+        }
+
+        public string GenericTypeParamsExpression(string[] genericTypeParameters)
+        {
+            return genericTypeParameters?.Length >= 1
+                ? "<" + genericTypeParameters.Aggregate((result, parameterName) => result + ", " + parameterName) + ">"
+                : "";
         }
 
         public string BlockBegin()

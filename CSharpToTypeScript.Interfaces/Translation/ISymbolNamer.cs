@@ -1,7 +1,10 @@
-﻿namespace CSharpToTypeScript.Core.Translation
+﻿using System;
+using System.Reflection;
+
+namespace CSharpToTypeScript.Core.Translation
 {
     public interface ISymbolNamer
     {
-        string GetNameFor(string typeInfoName);
+        string GetNameFor(TypeInfo typeInfo, params Type[] genericTypeArguments);
     }
 }

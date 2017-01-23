@@ -24,7 +24,7 @@ namespace CSharpToTypeScript.Core.Translation
                     typeRef = typeInfo.AssemblyQualifiedName;
                     break;
                 case SourceTypeReferenceKind.FullName:
-                    typeRef = typeInfo.FullName;
+                    typeRef = typeInfo.FullName ?? typeInfo.Name;
                     break;
                 case SourceTypeReferenceKind.Name:
                     typeRef = typeInfo.Name;

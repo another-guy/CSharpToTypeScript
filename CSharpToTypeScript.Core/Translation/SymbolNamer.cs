@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using CSharpToTypeScript.Core.Configuration;
 
 namespace CSharpToTypeScript.Core.Translation
@@ -12,10 +14,25 @@ namespace CSharpToTypeScript.Core.Translation
             TranslationConfiguration = translationConfiguration.NullToException(new ArgumentNullException(nameof(translationConfiguration)));
         }
 
-        public string GetNameFor(string symbolBase)
+        public string GetNameFor(TypeInfo typeInfo, Type[] genericTypeArguments)
         {
+            var genericSymbolParts = typeInfo.Name.Split('`');
+            var clearedSymbolBase = genericSymbolParts[0];
+            var genericParameterNumber = genericSymbolParts.Length <= 1 ? 0 : int.Parse(genericSymbolParts[1]);
+            if (genericParameterNumber != genericTypeArguments.Length)
+                throw new InvalidOperationException();
+
+            var genericSuffix =
+                genericParameterNumber <= 0
+                    ? ""
+                    : "<" +
+                      genericTypeArguments
+                          .Select(t => t.Name)
+                          .Aggregate((result, genericTypeName) => result + ", " + genericTypeName) +
+                      ">";
+
             var symbolRule = TranslationConfiguration.GeneratedSymbols;
-            return $"{symbolRule.Prefix}{symbolBase}{symbolRule.Suffix}";
+            return $"{symbolRule.Prefix}{clearedSymbolBase}{symbolRule.Suffix}{genericSuffix}";
         }
     }
 }

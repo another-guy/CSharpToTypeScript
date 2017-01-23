@@ -3,11 +3,11 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using CSharpToTypeScript.Core.Common;
-using CSharpToTypeScript.Core.Translation.Rules.Special;
+using CSharpToTypeScript.Core.Translation.Rules.Regular;
 
-namespace CSharpToTypeScript.Core.Translation.Rules.Regular
+namespace CSharpToTypeScript.Core.Translation.Rules.Special
 {
-    public sealed class RegularTypeTranslationContext : ITypeTranslationContext, ITypeBoundTranslationContext
+    public class GenericTypeTranslationContext : ITypeTranslationContext, ITypeBoundTranslationContext
     {
         private ITranslatedTypeMetadataFactory TranslatedTypeMetadataFactory { get; }
         private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
@@ -20,7 +20,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
         private ICommenter Commenter { get; }
         public TypeInfo TypeInfo { get; }
 
-        public RegularTypeTranslationContext(
+        public GenericTypeTranslationContext(
             ITranslatedTypeMetadataFactory translatedTypeMetadataFactory,
             ISourceTypeMetadataFactory sourceTypeMetadataFactory,
             ITranslationContext translationContext,
@@ -47,9 +47,10 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
             Commenter = commenter.NullToException(new ArgumentNullException(nameof(commenter)));
             TypeInfo = typeInfo.NullToException(new ArgumentNullException(nameof(typeInfo)));
         }
-        
+
         public bool AreDependenciesResolved { get; private set; } = false;
 
+        // TODO Copy-paste in RegularTypeTranslationContext
         public void ResolveDependencies()
         {
             AreDependenciesResolved = true;
@@ -82,6 +83,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
             }
         }
 
+        // TODO Copy-paste in RegularTypeTranslationContext
         private void EnsureTypeWillBeResolved(TypeInfo typeInfo)
         {
             var noTypeTranslationContextRegistered = TranslationContext.CanProcess(typeInfo) == false;
@@ -104,20 +106,20 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
 
         public bool CanProcess(Type type)
         {
-            return TypeInfo.AsType() == type;
+            var isGenericType = type.GetTypeInfo().IsGenericType;
+            return isGenericType;
         }
 
-        public bool IsProcessed { get; private set; } = false;
+        public bool IsProcessed { get; private set; } = true;
 
         public ITranslatedTypeMetadata Process(Type specificTargetType)
         {
             Debug.Assert(CanProcess(specificTargetType));
-            if (IsProcessed) // Prevent from reevaluation on reentry in case of circular type references.
-                return TranslatedTypeMetadata;
+            var genericArgumentTypes = specificTargetType.GetGenericArguments();
 
             IsProcessed = true;
 
-            TranslatedTypeMetadata.Symbol = SymbolNamer.GetNameFor(TypeInfo);
+            TranslatedTypeMetadata.Symbol = SymbolNamer.GetNameFor(TypeInfo, genericArgumentTypes);
 
             var sb = new StringBuilder();
 
@@ -143,7 +145,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
                 var sourceMemberInfo = SourceTypeMetadata[memberName];
                 if (SkipTypeRule.AppliesTo(sourceMemberInfo))
                     continue;
-                
+
                 var type = ((sourceMemberInfo as PropertyInfo)?.PropertyType)
                     .NullTo((sourceMemberInfo as FieldInfo)?.FieldType);
                 Debug.Assert(type != null, $"sourceMemberInfo is supposed to be either a PropertyInfo or FieldInfo but was {sourceMemberInfo.GetType()}");

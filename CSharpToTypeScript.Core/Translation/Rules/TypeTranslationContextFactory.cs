@@ -74,5 +74,10 @@ namespace CSharpToTypeScript.Core.Translation.Rules
         {
             return new RegularTypeTranslationContext(TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
         }
+
+        public ITypeTranslationContext GenericType(TypeInfo typeInfo)
+        {
+            return new GenericTypeTranslationContext(TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
+        }
     }
 }
