@@ -76,6 +76,11 @@ namespace CSharpToTypeScript.TargetNamespace
     {
         public TProp MyProperty { get; set; }
     }
+
+    public class GenericTypeWithClosedType : MyGenericType<long>
+    {
+        public string AdditionalStringProperty { get; set; }
+    }
 }
 
 namespace CSharpToTypeScript.NonTargetNamespace.Nested

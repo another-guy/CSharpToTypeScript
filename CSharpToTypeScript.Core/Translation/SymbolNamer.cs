@@ -8,10 +8,14 @@ namespace CSharpToTypeScript.Core.Translation
     public sealed class SymbolNamer : ISymbolNamer
     {
         private TranslationConfiguration TranslationConfiguration { get; }
+        private ITranslationContext TranslationContext { get; }
 
-        public SymbolNamer(TranslationConfiguration translationConfiguration)
+        public SymbolNamer(
+            TranslationConfiguration translationConfiguration,
+            ITranslationContext translationContext)
         {
             TranslationConfiguration = translationConfiguration.NullToException(new ArgumentNullException(nameof(translationConfiguration)));
+            TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
         }
 
         public string GetNameFor(TypeInfo typeInfo, Type[] genericTypeArguments)
@@ -27,7 +31,10 @@ namespace CSharpToTypeScript.Core.Translation
                     ? ""
                     : "<" +
                       genericTypeArguments
-                          .Select(t => t.Name)
+                          .Select(targetType =>
+                              targetType.IsGenericParameter
+                                  ? targetType.Name
+                                  : TranslationContext.GetByType(targetType).Process(targetType).Symbol)
                           .Aggregate((result, genericTypeName) => result + ", " + genericTypeName) +
                       ">";
 
