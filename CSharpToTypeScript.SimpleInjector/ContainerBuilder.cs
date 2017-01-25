@@ -35,6 +35,7 @@ namespace CSharpToTypeScript.SimpleInjector
             Container.RegisterSingleton<ITargetTypesLocator, TargetTypesLocator>();
 
             // Translation
+            Container.RegisterSingleton<IDiscoveredTypeRegistrator, DiscoveredTypeRegistrator>();
             Container.RegisterSingleton<ITypeScriptExpression, TypeScriptExpression>();
             Container.RegisterSingleton<ISourceTypeMetadataFactory, SourceTypeMetadataFactory>();
             Container.RegisterSingleton<ITranslatedTypeMetadataFactory, TranslatedTypeMetadataFactory>();
