@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using CSharpToTypeScript.Core.Common;
-using CSharpToTypeScript.Core.Translation.Rules.Regular;
 
 namespace CSharpToTypeScript.Core.Translation.Rules.Special
 {
@@ -19,8 +18,10 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
         private ISymbolNamer SymbolNamer { get; }
         private ICommenter Commenter { get; }
         public TypeInfo TypeInfo { get; }
+        private IDiscoveredTypeRegistrator DiscoveredTypeRegistrator { get; }
 
         public GenericTypeTranslationContext(
+            IDiscoveredTypeRegistrator discoveredTypeRegistrator,
             ITranslatedTypeMetadataFactory translatedTypeMetadataFactory,
             ISourceTypeMetadataFactory sourceTypeMetadataFactory,
             ITranslationContext translationContext,
@@ -30,6 +31,8 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
             ICommenter commenter,
             TypeInfo typeInfo)
         {
+            DiscoveredTypeRegistrator = discoveredTypeRegistrator.NullToException(new ArgumentNullException(nameof(discoveredTypeRegistrator)));
+
             TranslatedTypeMetadataFactory = translatedTypeMetadataFactory
                 .NullToException(new ArgumentNullException(nameof(translatedTypeMetadataFactory)));
 
@@ -83,31 +86,14 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
             }
         }
 
-        // TODO Copy-paste in RegularTypeTranslationContext
         private void EnsureTypeWillBeResolved(TypeInfo typeInfo)
         {
-            var noTypeTranslationContextRegistered = TranslationContext.CanProcess(typeInfo) == false;
-            if (noTypeTranslationContextRegistered)
-            {
-                ITypeTranslationContext regularTypeTranslationContext;
-                if (typeInfo.IsGenericParameter)
-                {
-                    regularTypeTranslationContext =
-                        new GenericParameterTranslationContext(TranslatedTypeMetadataFactory, typeInfo);
-                }
-                else
-                {
-                    regularTypeTranslationContext =
-                        new RegularTypeTranslationContext(TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
-                }
-                TranslationContext.AddTypeTranslationContext(regularTypeTranslationContext, true);
-            }
+            DiscoveredTypeRegistrator.RegisterType(typeInfo);
         }
 
         public bool CanProcess(Type type)
         {
-            var isGenericType = type.GetTypeInfo().IsGenericType;
-            return isGenericType;
+            return TypeInfo.AsType() == type;
         }
 
         public bool IsProcessed { get; private set; } = true;

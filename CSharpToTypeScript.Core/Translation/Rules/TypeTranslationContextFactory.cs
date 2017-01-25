@@ -9,6 +9,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules
 {
     public sealed class TypeTranslationContextFactory : ITypeTranslationContextFactory
     {
+        private IDiscoveredTypeRegistrator DiscoveredTypeRegistrator { get; }
         private ITypeScriptExpression Expression { get; }
         private ITranslationContext TranslationContext { get; }
         private ITranslatedTypeMetadataFactory TranslatedTypeMetadataFactory { get; }
@@ -18,6 +19,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules
         private ICommenter Commenter { get; }
 
         public TypeTranslationContextFactory(
+            IDiscoveredTypeRegistrator discoveredTypeRegistrator,
             ITypeScriptExpression expression,
             ITranslationContext translationContext,
             ITranslatedTypeMetadataFactory translatedTypeMetadataFactory,
@@ -26,6 +28,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules
             ISymbolNamer symbolNamer,
             ICommenter commenter)
         {
+            DiscoveredTypeRegistrator = discoveredTypeRegistrator.NullToException(new ArgumentNullException(nameof(discoveredTypeRegistrator)));
             Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
             TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
             TranslatedTypeMetadataFactory = translatedTypeMetadataFactory.NullToException(new ArgumentNullException(nameof(translatedTypeMetadataFactory)));
@@ -72,12 +75,12 @@ namespace CSharpToTypeScript.Core.Translation.Rules
 
         public ITypeTranslationContext Regular(TypeInfo typeInfo)
         {
-            return new RegularTypeTranslationContext(TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
+            return new RegularTypeTranslationContext(DiscoveredTypeRegistrator, TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
         }
 
         public ITypeTranslationContext GenericType(TypeInfo typeInfo)
         {
-            return new GenericTypeTranslationContext(TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
+            return new GenericTypeTranslationContext(DiscoveredTypeRegistrator, TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
         }
     }
 }

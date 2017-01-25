@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using CSharpToTypeScript.Core.Common;
-using CSharpToTypeScript.Core.Translation.Rules.Special;
 
 namespace CSharpToTypeScript.Core.Translation.Rules.Regular
 {
@@ -11,7 +10,6 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
     {
         private ITranslatedTypeMetadataFactory TranslatedTypeMetadataFactory { get; }
         private ITranslatedTypeMetadata TranslatedTypeMetadata { get; }
-        private ISourceTypeMetadataFactory SourceTypeMetadataFactory { get; }
         private ISourceTypeMetadata SourceTypeMetadata { get; }
         private ITranslationContext TranslationContext { get; }
         private ISkipTypeRule SkipTypeRule { get; }
@@ -20,7 +18,10 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
         private ICommenter Commenter { get; }
         public TypeInfo TypeInfo { get; }
 
+        private IDiscoveredTypeRegistrator DiscoveredTypeRegistrator { get; }
+
         public RegularTypeTranslationContext(
+            IDiscoveredTypeRegistrator discoveredTypeRegistrator,
             ITranslatedTypeMetadataFactory translatedTypeMetadataFactory,
             ISourceTypeMetadataFactory sourceTypeMetadataFactory,
             ITranslationContext translationContext,
@@ -30,15 +31,16 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
             ICommenter commenter,
             TypeInfo typeInfo)
         {
+            DiscoveredTypeRegistrator = discoveredTypeRegistrator.NullToException(new ArgumentNullException(nameof(discoveredTypeRegistrator)));
+
             TranslatedTypeMetadataFactory = translatedTypeMetadataFactory
                 .NullToException(new ArgumentNullException(nameof(translatedTypeMetadataFactory)));
 
             TranslatedTypeMetadata = TranslatedTypeMetadataFactory.CreateNew();
-
-            SourceTypeMetadataFactory = sourceTypeMetadataFactory
-                    .NullToException(new ArgumentNullException(nameof(sourceTypeMetadataFactory)));
-
-            SourceTypeMetadata = sourceTypeMetadataFactory.CreateNew();
+            
+            SourceTypeMetadata = sourceTypeMetadataFactory
+                .NullToException(new ArgumentNullException(nameof(sourceTypeMetadataFactory)))
+                .CreateNew();
 
             TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
             SkipTypeRule = skipTypeRule.NullToException(new ArgumentNullException(nameof(skipTypeRule)));
@@ -84,25 +86,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
 
         private void EnsureTypeWillBeResolved(TypeInfo typeInfo)
         {
-            if (typeInfo == null)
-                return;
-
-            var noTypeTranslationContextRegistered = TranslationContext.CanProcess(typeInfo) == false;
-            if (noTypeTranslationContextRegistered)
-            {
-                ITypeTranslationContext regularTypeTranslationContext;
-                if (typeInfo.IsGenericParameter)
-                {
-                    regularTypeTranslationContext =
-                        new GenericParameterTranslationContext(TranslatedTypeMetadataFactory, typeInfo);
-                }
-                else
-                {
-                    regularTypeTranslationContext =
-                        new RegularTypeTranslationContext(TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
-                }
-                TranslationContext.AddTypeTranslationContext(regularTypeTranslationContext, true);
-            }
+            DiscoveredTypeRegistrator.RegisterType(typeInfo);
         }
 
         public bool CanProcess(Type type)
