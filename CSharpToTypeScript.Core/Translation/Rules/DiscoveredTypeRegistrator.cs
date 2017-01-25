@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using CSharpToTypeScript.Core.Common;
 using CSharpToTypeScript.Core.Translation.Rules.Regular;
 using CSharpToTypeScript.Core.Translation.Rules.Special;
@@ -44,18 +45,27 @@ namespace CSharpToTypeScript.Core.Translation.Rules
             var noTypeTranslationContextRegistered = TranslationContext.CanProcess(typeInfo) == false;
             if (noTypeTranslationContextRegistered)
             {
-                ITypeTranslationContext regularTypeTranslationContext;
-                if (typeInfo.IsGenericParameter)
+                ITypeTranslationContext typeTranslationContext;
+                if (typeInfo.IsGenericType)
                 {
-                    regularTypeTranslationContext =
+                    typeTranslationContext =
+                        new GenericTypeTranslationContext(this, TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
+                }
+                else if (typeInfo.IsGenericParameter)
+                {
+                    typeTranslationContext =
                         new GenericParameterTranslationContext(TranslatedTypeMetadataFactory, typeInfo);
+                }
+                else if (typeInfo.IsGenericTypeDefinition)
+                {
+                    throw new InvalidOperationException("Ooops");
                 }
                 else
                 {
-                    regularTypeTranslationContext =
+                    typeTranslationContext =
                         new RegularTypeTranslationContext(this, TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
                 }
-                TranslationContext.AddTypeTranslationContext(regularTypeTranslationContext, true);
+                TranslationContext.AddTypeTranslationContext(typeTranslationContext, true);
             }
         }
     }

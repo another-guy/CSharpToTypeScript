@@ -1,4 +1,16 @@
-﻿// CSharpToTypeScript.NonTargetNamespace.Person
+﻿// MyGenericType`2
+export class TsMyGenericTypeGenerated<TKey, string> {
+  public MyProperty1: TKey; // TKey
+  public MyProperty2: string; // System.String
+}
+
+// CSharpToTypeScript.TargetNamespace.MyGenericType`2[[System.Int64, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]
+export class TsMyGenericTypeGenerated<number, string> {
+  public MyProperty1: number; // System.Int64
+  public MyProperty2: string; // System.String
+}
+
+// CSharpToTypeScript.NonTargetNamespace.Person
 export class TsPersonGenerated {
   public FirstName: string; // System.String
   public Addresses1: any[]; // System.Collections.IList
@@ -16,14 +28,20 @@ export class TsPersonGenerated {
   public NullableBool: boolean; // System.Nullable`1[[System.Boolean, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]
 }
 
-// CSharpToTypeScript.TargetNamespace.GenericTypeWithClosedType
-export class TsGenericTypeWithClosedTypeGenerated extends TsMyGenericTypeGenerated<number> {
+// CSharpToTypeScript.TargetNamespace.GenericTypeWithMixedTypes`1
+export class TsGenericTypeWithMixedTypesGenerated<TKey> extends TsMyGenericTypeGenerated<TKey, string> {
+  public Key1: TKey; // TKey
+}
+
+// CSharpToTypeScript.TargetNamespace.GenericTypeWithClosedTypes
+export class TsGenericTypeWithClosedTypesGenerated extends TsMyGenericTypeGenerated<number, string> {
   public AdditionalStringProperty: string; // System.String
 }
 
-// CSharpToTypeScript.TargetNamespace.MyGenericType`1
-export class TsMyGenericTypeGenerated<TProp> {
-  public MyProperty: TProp; // TProp
+// CSharpToTypeScript.TargetNamespace.MyGenericType`2
+export class TsMyGenericTypeGenerated<TProp1, TProp2> {
+  public MyProperty1: TProp1; // TProp1
+  public MyProperty2: TProp2; // TProp2
 }
 
 // CSharpToTypeScript.TargetNamespace.OkayishClassWithBadProperty

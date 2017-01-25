@@ -71,7 +71,6 @@ namespace CSharpToTypeScript.TargetNamespace
         public string DontUseIt { get; set; }
     }
 
-    // TODO #35 Add generic classes (with and without constraints)
     public class MyGenericType<TProp1, TProp2>
     {
         public TProp1 MyProperty1 { get; set; }
