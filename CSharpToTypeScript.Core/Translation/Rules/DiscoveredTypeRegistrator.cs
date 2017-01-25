@@ -27,14 +27,13 @@ namespace CSharpToTypeScript.Core.Translation.Rules
             ISymbolNamer symbolNamer,
             ICommenter commenter)
         {
-            // TODO NullCheck
-            SourceTypeMetadataFactory = sourceTypeMetadataFactory;
-            TranslatedTypeMetadataFactory = translatedTypeMetadataFactory;
-            TranslationContext = translationContext;
-            SkipTypeRule = skipTypeRule;
-            Expression = expression;
-            SymbolNamer = symbolNamer;
-            Commenter = commenter;
+            SourceTypeMetadataFactory = sourceTypeMetadataFactory.NullToException(new ArgumentNullException(nameof(sourceTypeMetadataFactory)));
+            TranslatedTypeMetadataFactory = translatedTypeMetadataFactory.NullToException(new ArgumentNullException(nameof(translatedTypeMetadataFactory)));
+            TranslationContext = translationContext.NullToException(new ArgumentNullException(nameof(translationContext)));
+            SkipTypeRule = skipTypeRule.NullToException(new ArgumentNullException(nameof(skipTypeRule)));
+            Expression = expression.NullToException(new ArgumentNullException(nameof(expression)));
+            SymbolNamer = symbolNamer.NullToException(new ArgumentNullException(nameof(symbolNamer)));
+            Commenter = commenter.NullToException(new ArgumentNullException(nameof(commenter)));
         }
 
         public void RegisterType(TypeInfo typeInfo)
