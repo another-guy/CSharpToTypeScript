@@ -88,7 +88,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
 
         private void EnsureTypeWillBeResolved(TypeInfo typeInfo)
         {
-            DiscoveredTypeRegistrator.RegisterType(typeInfo);
+            DiscoveredTypeRegistrator.RegisterType(dependency: TypeInfo, dependentType: typeInfo);
         }
 
         public bool CanProcess(Type type)
@@ -117,7 +117,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
             {
                 var baseTypeType = SourceTypeMetadata.BaseType.AsType();
 
-                var typeTranslationContext = TranslationContext.GetByType(baseTypeType);
+                var typeTranslationContext = TranslationContext.GetTranslationContextFor(baseTypeType);
                 var translatedBaseTypeMetadata = typeTranslationContext.Process(baseTypeType);
 
                 var baseTypeSymbol = translatedBaseTypeMetadata.Symbol;
@@ -136,7 +136,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
                     .NullTo((sourceMemberInfo as FieldInfo)?.FieldType);
                 Debug.Assert(type != null, $"sourceMemberInfo is supposed to be either a PropertyInfo or FieldInfo but was {sourceMemberInfo.GetType()}");
 
-                var memberTypeTranslationContext = TranslationContext.GetByType(type);
+                var memberTypeTranslationContext = TranslationContext.GetTranslationContextFor(type);
                 var translatedMemberTypeMetadata = memberTypeTranslationContext.Process(type); // TODO Process is not needed as a part of Interface!!!
 
                 var sourceTypeComment = Commenter.TypeCommentFor(type.GetTypeInfo());

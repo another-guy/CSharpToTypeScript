@@ -34,7 +34,7 @@ namespace CSharpToTypeScript.Tests.Integration
                 container
                     .GetInstance<TypeTranslationChain>()
                     .BuildDefault()
-                    .ForEach(typeTranslationContext => translationContext.AddTypeTranslationContext(typeTranslationContext, false));
+                    .ForEach(typeTranslationContext => translationContext.AddTypeTranslationContext(typeTranslationContext));
 
                 var skipTypeRule = container.GetInstance<ISkipTypeRule>();
                 var typeTranslationContextFactory = container.GetInstance<ITypeTranslationContextFactory>();
@@ -47,7 +47,7 @@ namespace CSharpToTypeScript.Tests.Integration
                         var typeTranslationContext = sourceType.IsGenericType ?
                             typeTranslationContextFactory.GenericType(sourceType) :
                             typeTranslationContextFactory.Regular(sourceType);
-                        translationContext.AddTypeTranslationContext(typeTranslationContext, true);
+                        translationContext.AddTypeTranslationContext(typeTranslationContext);
                     }
                 ITypeTranslationContext unprocessed;
                 Func<ITypeTranslationContext, bool> withUnresolvedDependencies =

@@ -34,7 +34,7 @@ namespace CSharpToTypeScript.Core.Translation
                           .Select(targetType =>
                               targetType.IsGenericParameter
                                   ? targetType.Name
-                                  : TranslationContext.GetByType(targetType).Process(targetType).Symbol)
+                                  : TranslationContext.GetTranslationContextFor(targetType).Process(targetType).Symbol)
                           .Aggregate((result, genericTypeName) => result + ", " + genericTypeName) +
                       ">";
 

@@ -47,11 +47,11 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
             var valueType = genericArgumentTypes[1];
 
             var translatedKeySymbol = TranslationContext
-                .GetByType(keyType)
+                .GetTranslationContextFor(keyType)
                 .Process(keyType)
                 .Symbol;
             var translatedValueSymbol = TranslationContext
-                .GetByType(valueType)
+                .GetTranslationContextFor(valueType)
                 .Process(valueType)
                 .Symbol;
 

@@ -11,9 +11,9 @@ namespace CSharpToTypeScript.Core.Translation
     {
         // TODO mark here AND in implementations [Pure]
         
-        void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext, bool inOrdered);
+        void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext);
         bool CanProcess(TypeInfo typeInfo);
-        ITypeTranslationContext GetByType(Type type);
+        ITypeTranslationContext GetTranslationContextFor(Type type);
 
         
 
@@ -22,5 +22,6 @@ namespace CSharpToTypeScript.Core.Translation
         IList<TypeInfo> OrderedTargetTypes { get; }
 
         IList<ITypeTranslationContext> TranslationChain { get; }
+        void RegisterDependency(TypeInfo dependentType, TypeInfo dependency);
     }
 }

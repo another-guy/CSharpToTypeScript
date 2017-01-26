@@ -52,9 +52,12 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
         
         public bool AreDependenciesResolved { get; private set; } = false;
 
+        // TODO Copy-paste with generic type translation context
         public void ResolveDependencies()
         {
             AreDependenciesResolved = true;
+
+            TranslationContext.RegisterDependency(TypeInfo, null);
 
             const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
             foreach (var propertyInfo in TypeInfo.GetProperties(flags))
@@ -86,7 +89,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
 
         private void EnsureTypeWillBeResolved(TypeInfo typeInfo)
         {
-            DiscoveredTypeRegistrator.RegisterType(typeInfo);
+            DiscoveredTypeRegistrator.RegisterType(dependency: TypeInfo, dependentType: typeInfo);
         }
 
         public bool CanProcess(Type type)
@@ -116,7 +119,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
             {
                 var baseTypeType = SourceTypeMetadata.BaseType.AsType();
 
-                var typeTranslationContext = TranslationContext.GetByType(baseTypeType);
+                var typeTranslationContext = TranslationContext.GetTranslationContextFor(baseTypeType);
                 var translatedBaseTypeMetadata = typeTranslationContext.Process(baseTypeType);
 
                 var baseTypeSymbol = translatedBaseTypeMetadata.Symbol;
@@ -139,7 +142,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Regular
                 if (type == null)
                     continue;
 
-                var memberTypeTranslationContext = TranslationContext.GetByType(type);
+                var memberTypeTranslationContext = TranslationContext.GetTranslationContextFor(type);
                 var translatedMemberTypeMetadata = memberTypeTranslationContext.Process(type); // TODO Process is not needed as a part of Interface!!!
 
                 var sourceTypeComment = Commenter.TypeCommentFor(type.GetTypeInfo());

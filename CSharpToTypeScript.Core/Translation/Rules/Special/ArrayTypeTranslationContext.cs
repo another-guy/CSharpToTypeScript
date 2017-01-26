@@ -40,7 +40,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
             Debug.Assert(specificTargetType.IsArray);
 
             var elementType = specificTargetType.GetElementType();
-            var elementTypeSymbol = TranslationContext.GetByType(elementType).Process(elementType).Symbol;
+            var elementTypeSymbol = TranslationContext.GetTranslationContextFor(elementType).Process(elementType).Symbol;
             TranslatedTypeMetadata.Symbol = Expression.GenericArrayOf(elementTypeSymbol);
             return TranslatedTypeMetadata;
         }

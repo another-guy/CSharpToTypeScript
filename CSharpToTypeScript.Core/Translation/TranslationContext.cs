@@ -5,15 +5,41 @@ using System.Linq;
 using System.Reflection;
 using CSharpToTypeScript.Core.Common;
 using CSharpToTypeScript.Core.Translation.Rules;
+using Z.Graphs;
 
 namespace CSharpToTypeScript.Core.Translation
 {
     public sealed class TranslationContext : ITranslationContext
     {
-        // TODO The right way of doing that is using a Graph data structure.
-        // Naive list consumption can't guarantee precedence of parent types.
-        public IList<TypeInfo> OrderedTargetTypes { get; } = // TODO Make it immutable for clients
-            new List<TypeInfo>();
+        private readonly OrGraph<TypeInfo, bool> _typeInfoDependencyGraph = new OrGraph<TypeInfo, bool>();
+        public IList<TypeInfo> OrderedTargetTypes
+        {
+            get
+            {
+                var orderedTargetTypes = new TopSort()
+                    .Run(_typeInfoDependencyGraph)
+                    .Select(vertex => vertex.Key)
+                    .ToList();
+                return orderedTargetTypes;
+            }
+        }
+
+        public void RegisterDependency(TypeInfo dependentType, TypeInfo dependency)
+        {
+            var dependentTypeVertex = _typeInfoDependencyGraph.Vertices.SingleOrDefault(v => v.Key == dependentType);
+            if (dependentTypeVertex == null)
+                dependentTypeVertex = _typeInfoDependencyGraph.AddVertex(dependentType);
+
+            if (dependency != null)
+            {
+                var dependencyVertex = _typeInfoDependencyGraph.Vertices.SingleOrDefault(v => v.Key == dependency);
+                if (dependencyVertex == null)
+                    dependencyVertex = _typeInfoDependencyGraph.AddVertex(dependency);
+
+                if (_typeInfoDependencyGraph.Edges.Any() == false)
+                    _typeInfoDependencyGraph.AddEdge(dependencyVertex, dependentTypeVertex, true);
+            }
+        }
 
         // TODO EXPOSE TO CLIENTS AS AN OBJECT -- Make this dynamic -- let clients alter the chain to fit their need
         public IList<ITypeTranslationContext> TranslationChain { get; } = new List<ITypeTranslationContext>();
@@ -23,21 +49,13 @@ namespace CSharpToTypeScript.Core.Translation
             return TranslationChain
                 .Any(typeTranslationContext => typeTranslationContext.CanProcess(typeInfo.AsType()));
         }
-
-
-        // TODO Get rid of addToOrderedTargets eventually, when closure builder understands the correct order of type declarations based on dependencies
-        public void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext, bool addToOrderedTargets)
+        
+        public void AddTypeTranslationContext(ITypeTranslationContext typeTranslationContext)
         {
-            if (addToOrderedTargets)
-            {
-                var typeBoundTranslationContext = typeTranslationContext as ITypeBoundTranslationContext;
-                OrderedTargetTypes.Insert(0, typeBoundTranslationContext.TypeInfo);
-            }
-
             TranslationChain.Add(typeTranslationContext);
         }
 
-        public ITypeTranslationContext GetByType(Type type)
+        public ITypeTranslationContext GetTranslationContextFor(Type type)
         {
             return this.First(typeTranslationContext => typeTranslationContext.CanProcess(type));
         }

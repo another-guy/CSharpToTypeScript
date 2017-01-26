@@ -11,10 +11,8 @@ namespace CSharpToTypeScript.Core.Translation.Rules
         private ISourceTypeMetadataFactory SourceTypeMetadataFactory { get; }
         private ITranslatedTypeMetadataFactory TranslatedTypeMetadataFactory { get; }
         private ITranslationContext TranslationContext { get; }
-
         private ISkipTypeRule SkipTypeRule { get; }
         private ITypeScriptExpression Expression { get; }
-
         private ISymbolNamer SymbolNamer { get; }
         private ICommenter Commenter { get; }
 
@@ -36,35 +34,39 @@ namespace CSharpToTypeScript.Core.Translation.Rules
             Commenter = commenter.NullToException(new ArgumentNullException(nameof(commenter)));
         }
 
-        public void RegisterType(TypeInfo typeInfo)
+        // TODO use dependency
+        public void RegisterType(TypeInfo dependency, TypeInfo dependentType)
         {
-            if (typeInfo == null)
+            if (dependentType == null)
                 return;
 
-            var noTypeTranslationContextRegistered = TranslationContext.CanProcess(typeInfo) == false;
+            var noTypeTranslationContextRegistered = TranslationContext.CanProcess(dependentType) == false;
             if (noTypeTranslationContextRegistered)
             {
                 ITypeTranslationContext typeTranslationContext;
-                if (typeInfo.IsGenericType)
+
+                if (dependentType.IsGenericType)
                 {
                     typeTranslationContext =
-                        new GenericTypeTranslationContext(this, TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
+                        new GenericTypeTranslationContext(this, TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, dependentType);
                 }
-                else if (typeInfo.IsGenericParameter)
+                else if (dependentType.IsGenericParameter)
                 {
                     typeTranslationContext =
-                        new GenericParameterTranslationContext(TranslatedTypeMetadataFactory, typeInfo);
+                        new GenericParameterTranslationContext(TranslatedTypeMetadataFactory, dependentType);
                 }
-                else if (typeInfo.IsGenericTypeDefinition)
+                else if (dependentType.IsGenericTypeDefinition)
                 {
                     throw new InvalidOperationException("Ooops");
                 }
                 else
                 {
                     typeTranslationContext =
-                        new RegularTypeTranslationContext(this, TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, typeInfo);
+                        new RegularTypeTranslationContext(this, TranslatedTypeMetadataFactory, SourceTypeMetadataFactory, TranslationContext, SkipTypeRule, Expression, SymbolNamer, Commenter, dependentType);
                 }
-                TranslationContext.AddTypeTranslationContext(typeTranslationContext, true);
+
+                TranslationContext.AddTypeTranslationContext(typeTranslationContext);
+                TranslationContext.RegisterDependency(dependentType, dependency);
             }
         }
     }

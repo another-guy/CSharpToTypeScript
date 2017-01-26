@@ -45,7 +45,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
 
             var genericArgumentType = genericArguments.Single();
             var genericArgumentTranslatesSymbol = TranslationContext
-                .GetByType(genericArgumentType)
+                .GetTranslationContextFor(genericArgumentType)
                 .Process(genericArgumentType)
                 .Symbol;
 

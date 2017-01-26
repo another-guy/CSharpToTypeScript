@@ -37,7 +37,7 @@ namespace CSharpToTypeScript.Core.Translation.Rules.Special
             TranslatedTypeMetadata.Symbol = specificEnumType
                 .GetGenericArguments()
                 .Single()
-                .UseAsArgFor(argumentType => TranslationContext.GetByType(argumentType).Process(argumentType))
+                .UseAsArgFor(argumentType => TranslationContext.GetTranslationContextFor(argumentType).Process(argumentType))
                 .Symbol;
             return TranslatedTypeMetadata;
         }

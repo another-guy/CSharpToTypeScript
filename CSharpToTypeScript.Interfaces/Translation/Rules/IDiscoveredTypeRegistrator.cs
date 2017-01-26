@@ -4,6 +4,6 @@ namespace CSharpToTypeScript.Core.Translation.Rules
 {
     public interface IDiscoveredTypeRegistrator
     {
-        void RegisterType(TypeInfo typeInfo);
+        void RegisterType(TypeInfo dependency, TypeInfo dependentType);
     }
 }
